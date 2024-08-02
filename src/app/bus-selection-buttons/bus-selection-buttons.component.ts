@@ -15,10 +15,29 @@ import {buses} from "../typings/BusSelection";
 export class BusSelectionButtonsComponent {
   @Input() selectedOptions!: string[][];
   @Output() updateCheckList = new EventEmitter<[string[], number]>
+  @Output() updatedUsedBuses = new EventEmitter<[string[], number]>
   @Input() index !: number;
+  @Input() usedBuses !: Map<number, string[]>;
   isChecked(value: string): boolean {
+    // console.log(this.selectedOptions)
     if(this.selectedOptions.length == 0 || this.selectedOptions[this.index].length == 0) return false
     return this.selectedOptions[this.index].includes(value);
+  }
+
+  constructor() {
+
+  }
+
+  isDisabled(busId: string){
+    for(const entry of this.usedBuses.entries()){
+      if(entry[0] == this.index) continue
+      for(const bus of entry[1]){
+        if(busId == bus){
+          return true
+        }
+      }
+    }
+    return false
   }
 
   onCheckboxChange(event: any) {
@@ -32,8 +51,7 @@ export class BusSelectionButtonsComponent {
   }
 
   sortPassengers() {
-    // this.updateCheckList.emit(this.selectedOptions[this.index])
-    console.log('Selected options:', this.selectedOptions[this.index]);
+    this.updatedUsedBuses.emit([this.selectedOptions[this.index], this.index])
     // Add your sorting logic here
   }
 

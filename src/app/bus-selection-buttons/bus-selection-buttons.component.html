@@ -35,6 +35,7 @@
       [value]="bus.busId"
       (change)="onCheckboxChange($event)"
       [checked]="isChecked(bus.busId)"
+      [disabled]="isDisabled(bus.busId)"
     />
     {{ bus.busId }}
   </label>

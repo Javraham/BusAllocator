@@ -29,11 +29,15 @@ export class AppComponent {
   busList: Bus[] = [];
   htmlContent: SafeHtml = "";
   busSelections: string[][] = [];
+  usedBuses: Map<number, string[]> = new Map<number, string[]>;
 
   updateBusSelections(event: [string[], number]) {
-    console.log(event)
     this.busSelections[event[1]] = event[0]
-    console.log(this.busSelections)
+  }
+
+  updateUsedBuses(event: [string[], number]) {
+    this.usedBuses.set(event[1], event[0]);
+    console.log(this.usedBuses)
   }
 
   constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private busService: BusService) {
