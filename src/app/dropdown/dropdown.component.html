@@ -1,0 +1,48 @@
+<style>
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-toggle {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    z-index: 1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+  }
+
+  .dropdown.open .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-item {
+    display: block;
+    padding: 5px;
+  }
+</style>
+
+<!-- app.component.html -->
+<div class="dropdown" [ngClass]="{'open': isDropdownOpen}">
+  <button class="dropdown-toggle" type="button" (click)="toggleDropdown()">
+    {{ getButtonText() }}
+  </button>
+  <div class="dropdown-menu" *ngIf="isDropdownOpen">
+    <label *ngFor="let bus of buses" class="dropdown-item">
+      <input type="checkbox" [value]="bus.capacity" (change)="onCheckboxChange(bus.busId, $event)">
+      {{ bus.busId }}
+    </label>
+  </div>
+</div>
+
+
