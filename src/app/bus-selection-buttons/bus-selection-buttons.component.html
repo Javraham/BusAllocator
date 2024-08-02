@@ -1,0 +1,43 @@
+<style>
+  .checkbox-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .checkbox-container label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .sort-button {
+    background: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .sort-button:hover {
+    background: #0056b3; /* Darker blue on hover */
+  }
+
+
+</style>
+<div class="checkbox-container">
+  <label *ngFor="let bus of buses">
+    <input
+      type="checkbox"
+      [value]="bus.busId"
+      (change)="onCheckboxChange($event)"
+      [checked]="isChecked(bus.busId)"
+    />
+    {{ bus.busId }}
+  </label>
+</div>
+<button class="sort-button" (click)="sortPassengers()">Sort Passengers</button>
+

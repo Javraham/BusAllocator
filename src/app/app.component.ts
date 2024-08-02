@@ -12,12 +12,12 @@ import {SidePanelComponent} from "./side-panel/side-panel.component";
 import { CommonModule } from '@angular/common';
 import {Bus} from "./services/bus"; // Import CommonModule
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import {DropdownComponent} from "./dropdown/dropdown.component";
+import {BusSelectionButtonsComponent} from "./bus-selection-buttons/bus-selection-buttons.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PassengerComponent, SidePanelComponent, CommonModule, DropdownComponent],
+  imports: [RouterOutlet, PassengerComponent, SidePanelComponent, CommonModule, BusSelectionButtonsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -28,6 +28,13 @@ export class AppComponent {
   today: string = '';
   busList: Bus[] = [];
   htmlContent: SafeHtml = "";
+  busSelections: string[][] = [];
+
+  updateBusSelections(event: [string[], number]) {
+    console.log(event)
+    this.busSelections[event[1]] = event[0]
+    console.log(this.busSelections)
+  }
 
   constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private busService: BusService) {
     this.fetchOptions = {
@@ -45,7 +52,9 @@ export class AppComponent {
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
     const day = String(today.getDate()).padStart(2, '0');
     this.today = `${year}-${month}-${day}`;
-    this.getTodaysPassengers()
+    this.getTodaysPassengers().then(data => {
+      this.resetBusSelection()
+    })
   }
 
   getHTML() {
@@ -55,7 +64,15 @@ export class AppComponent {
 
   async onDateChange(event: any){
     this.passengers = await this.apiService.getPassengers(event.target.value, this.fetchOptions)
-    this.organizePassengers()
+    this.busSelections = []
+    this.resetBusSelection()
+  }
+
+  resetBusSelection() {
+    this.busSelections = []
+    for(let i = 0; i<this.getNumOfPassengersByTime().length; i++){
+      this.busSelections.push([])
+    }
   }
 
   organizePassengers() {
@@ -87,8 +104,7 @@ export class AppComponent {
   }
 
   getPassengersByTime(time: string) {
-    const newPassengers = this.passengers.filter(val => val.startTime == time)
-    return newPassengers
+    return this.passengers.filter(val => val.startTime == time)
   }
 
   async getTodaysPassengers() {
