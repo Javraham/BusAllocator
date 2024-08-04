@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import {Bus} from "./services/bus"; // Import CommonModule
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {BusSelectionButtonsComponent} from "./bus-selection-buttons/bus-selection-buttons.component";
+import {PassengersService} from "./services/passengers.service";
 
 @Component({
   selector: 'app-root',
@@ -29,18 +30,22 @@ export class AppComponent {
   busList: Bus[] = [];
   htmlContent: SafeHtml = "";
   busSelections: string[][] = [];
-  usedBuses: Map<number, string[]> = new Map<number, string[]>;
+  usedBuses: Map<string, string[]> = new Map<string, string[]>;
 
   updateBusSelections(event: [string[], number]) {
     this.busSelections[event[1]] = event[0]
   }
 
-  updateUsedBuses(event: [string[], number]) {
+  updateUsedBuses(event: [string[], string]) {
     this.usedBuses.set(event[1], event[0]);
+    const filteredPassengers = this.getPassengersByTime(event[1])
+    const filteredBuses = buses.filter(val => event[0].includes(val.busId))
+    console.log(filteredBuses, filteredPassengers)
     console.log(this.usedBuses)
+    this.organizePassengers(filteredBuses, filteredPassengers)
   }
 
-  constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private busService: BusService) {
+  constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private passengerService: PassengersService) {
     this.fetchOptions = {
       endpoint: '/booking.json/booking-search',  // Replace with your actual endpoint
       accessKey: 'bbcf21ba55a94a11b99c10c65406f4f6',
@@ -58,18 +63,21 @@ export class AppComponent {
     this.today = `${year}-${month}-${day}`;
     this.getTodaysPassengers().then(data => {
       this.resetBusSelection()
+      this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
     })
   }
 
   getHTML() {
     this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(this.tourBusOrganizer.printResult());
-
+    console.log(this.tourBusOrganizer.getBuses())
   }
 
   async onDateChange(event: any){
     this.passengers = await this.apiService.getPassengers(event.target.value, this.fetchOptions)
-    this.busSelections = []
+    this.usedBuses = new Map<string, string[]>();
     this.resetBusSelection()
+    this.tourBusOrganizer.resetBuses();
+    this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
   }
 
   resetBusSelection() {
@@ -79,21 +87,24 @@ export class AppComponent {
     }
   }
 
-  organizePassengers() {
-    const organizer = new TourOrganizer(buses)
-    organizer.loadData(this.passengers)
-    organizer.allocatePassengers()
-    organizer.buses.forEach(bus => {
-      console.log(bus, bus.getCurrentLoad())
-    })
+  organizePassengers(busInfoList: IBus[], passengers: Passenger[]) {
+    const organizer = new TourOrganizer(busInfoList)
+    organizer.loadData(passengers)
+    if(organizer.allocatePassengers()){
+      organizer.buses.forEach(bus => {
+        console.log(bus, bus.getCurrentLoad())
+      })
+      this.busList = organizer.buses;
+      this.tourBusOrganizer.setBuses(passengers[0].startTime, organizer.buses);
+    }
+
 
     this.busList = organizer.buses;
     console.log(this.busList)
-    this.tourBusOrganizer.setBuses(organizer.buses);
   }
 
   getNumOfPassengersByTime() {
-    const map: Map<string, number> = new Map<string, number>
+    const map: Map<string, number> = new Map<string, number>();
     for(const passenger of this.passengers){
       if(map.has(passenger.startTime)){
         let passengers = map.get(passenger.startTime) as number
@@ -113,7 +124,6 @@ export class AppComponent {
 
   async getTodaysPassengers() {
     this.passengers = await this.apiService.getPassengers(this.today, this.fetchOptions)
-    this.organizePassengers()
   }
 
   async getTomorrowsPassengers() {

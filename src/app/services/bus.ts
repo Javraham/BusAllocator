@@ -12,6 +12,10 @@ export class Bus {
     this.passengers = [];
   }
 
+  getPassengers() {
+    return this.passengers
+  }
+
   setBusDetails(busId: string, capacity: number) {
     this.busId = busId;
     this.capacity = capacity;

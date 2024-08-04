@@ -111,7 +111,7 @@ export class TourOrganizer {
 
       if (!success) {
         console.error("Unable to allocate all passengers.");
-        return this.allocatePassengersBackup()
+        return false
       }
 
       return success;
@@ -121,30 +121,4 @@ export class TourOrganizer {
     }
   }
 
-  printResult(): void {
-    for (const bus of this.buses) {
-      console.log(`\nBus: ${bus.busId}\nPickups: ${bus.getCurrentLoad()} TOTAL PAX`);
-      const pickupLocations = bus.getPassengersByPickupLocations();
-
-      for (const [pickup, numOfTickets] of Object.entries(pickupLocations)) {
-        console.log(`${pickup} - ${numOfTickets} PAX`);
-      }
-
-      const noBoatPassengers = bus.getNumOfNoBoatPassengers();
-      if (noBoatPassengers[0] > 0 || noBoatPassengers[1] > 0) {
-        console.log(`\nNo boat - ${noBoatPassengers[0]} Adults, ${noBoatPassengers[1]} Children`);
-        bus.getNoBoatPassengers().forEach(passenger => {
-          console.log(`${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults, ${passenger.numOfChildren} Children`);
-        });
-      }
-
-      const boatPassengers = bus.getNumOfBoatPassengers();
-      if (boatPassengers[0] > 0 || boatPassengers[1] > 0) {
-        console.log(`\nBoat Cruise - ${boatPassengers[0]} Adults, ${boatPassengers[1]} Children`);
-        bus.getBoatPassengers().forEach(passenger => {
-          console.log(`${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults, ${passenger.numOfChildren} Children`);
-        });
-      }
-    }
-  }
 }

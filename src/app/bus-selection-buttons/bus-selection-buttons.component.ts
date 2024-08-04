@@ -15,9 +15,10 @@ import {buses} from "../typings/BusSelection";
 export class BusSelectionButtonsComponent {
   @Input() selectedOptions!: string[][];
   @Output() updateCheckList = new EventEmitter<[string[], number]>
-  @Output() updatedUsedBuses = new EventEmitter<[string[], number]>
+  @Output() updatedUsedBuses = new EventEmitter<[string[], string]>
   @Input() index !: number;
-  @Input() usedBuses !: Map<number, string[]>;
+  @Input() usedBuses !: Map<string, string[]>;
+  @Input() time!: string;
   isChecked(value: string): boolean {
     // console.log(this.selectedOptions)
     if(this.selectedOptions.length == 0 || this.selectedOptions[this.index].length == 0) return false
@@ -30,7 +31,7 @@ export class BusSelectionButtonsComponent {
 
   isDisabled(busId: string){
     for(const entry of this.usedBuses.entries()){
-      if(entry[0] == this.index) continue
+      if(entry[0] == this.time) continue
       for(const bus of entry[1]){
         if(busId == bus){
           return true
@@ -51,7 +52,7 @@ export class BusSelectionButtonsComponent {
   }
 
   sortPassengers() {
-    this.updatedUsedBuses.emit([this.selectedOptions[this.index], this.index])
+    this.updatedUsedBuses.emit([this.selectedOptions[this.index], this.time])
     // Add your sorting logic here
   }
 
