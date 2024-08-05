@@ -1,2 +1,36 @@
-<p>passenger works!</p>
-<button (click)="printBuses()">Press</button>
+<style>
+  .passenger-container{
+    background-color: white;
+    border-radius: 5px;
+    border-left: 10px solid #4B7FCC;
+    padding: 1.1em;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  p{
+    font-weight: 700;
+    font-size: 1.1em;
+    margin: 0;
+    word-wrap: break-word; /* Breaks long words to fit within the container */
+    overflow-wrap: break-word;
+  }
+
+  .bi{
+    font-size: 1.4em;
+  }
+</style>
+
+<div class="passenger-container" [ngStyle]="getStyles()">
+  <p>{{passengerInfo.firstName}} {{passengerInfo.lastName}}</p>
+  <i class="bi bi-dot"></i>
+  <p>{{passengerInfo.numOfPassengers}} {{passengerInfo.numOfPassengers === 1 ? "Passenger" : "Passengers"}}</p>
+  <i class="bi bi-dot" *ngIf="passengerInfo.numOfChildren !== 0"></i>
+  <p *ngIf="passengerInfo.numOfChildren !== 0">{{passengerInfo.numOfChildren}} {{passengerInfo.numOfChildren === 1 ? "Child" : "Children"}}</p>
+  <i class="bi bi-dot"></i>
+  <p>{{passengerInfo.hasJourney ? "Boat Cruise + Journey" : passengerInfo.hasBoat ? "Boat Cruise" : "No Boat"}}</p>
+</div>

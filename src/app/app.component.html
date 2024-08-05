@@ -79,7 +79,7 @@
 </style>
 <main>
   <nav class="navbar-default">
-    <h4>Bokun System</h4>
+    <h4>{{title}}</h4>
     <button class="styled-button float-end" (click)="getHTML()">Generate List</button>
   </nav>
   <div class="container-fluid" id="content">
@@ -105,9 +105,20 @@
             [successMap]="successMap"
           >
           </app-bus-selection-buttons>
-          <div *ngFor="let passenger of getPassengersByTime(time[0])">
-            <p>{{passenger.firstName}} {{passenger.lastName}}</p>
-          </div>
+          <div *ngIf="getBusesByTime(time[0]); then isAllocated else isNotAllocated"></div>
+          <ng-template #isAllocated>
+            <div *ngFor="let bus of getBusesByTime(time[0])">
+              <h5>{{bus.busId}} - {{bus.getCurrentLoad()}} Passengers</h5>
+              <div *ngFor="let passenger of bus.getPassengers()">
+                <app-passenger [passengerInfo]="passenger" [busColor]="bus.color"></app-passenger>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template #isNotAllocated>
+            <div *ngFor="let passenger of getPassengersByTime(time[0])">
+              <app-passenger [passengerInfo]="passenger" [busColor]="'#4B7FCC'"></app-passenger>
+            </div>
+          </ng-template>
         </div>
       </div>
       <div class="col-sm-6">

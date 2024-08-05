@@ -24,9 +24,14 @@ export class TourOrganizerService {
     this.TimeToPassengersMap = map;
   }
 
-  getBuses(){
+  getAllBuses(){
     return this.buses
   }
+
+  getBusesByTime(time: string) {
+    return this.buses.get(time);
+  }
+
 
   resetBuses() {
     this.buses = new Map<string, Bus[]>();

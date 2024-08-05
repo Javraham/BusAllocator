@@ -4,12 +4,14 @@ import {IBus} from "../typings/BusSelection";
 export class Bus {
   busId: string = '';
   capacity: number = 0;
+  color: string = '';
   passengers: Passenger[] = [];
 
-  constructor(busId: string, capacity: number) {
+  constructor(busId: string, capacity: number, color: string) {
     this.busId = busId;
     this.capacity = capacity;
     this.passengers = [];
+    this.color = color;
   }
 
   getPassengers() {

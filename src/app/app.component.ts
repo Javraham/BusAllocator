@@ -71,7 +71,6 @@ export class AppComponent {
 
   getHTML() {
     this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(this.tourBusOrganizer.printResult());
-    console.log(this.tourBusOrganizer.getBuses())
   }
 
   async onDateChange(event: any){
@@ -81,6 +80,10 @@ export class AppComponent {
     this.resetBusSelection()
     this.tourBusOrganizer.resetBuses();
     this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+  }
+
+  getBusesByTime(time: string){
+    return this.tourBusOrganizer.getBusesByTime(time)
   }
 
   resetBusesForTime(event: [string, number]){
