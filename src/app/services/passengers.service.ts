@@ -61,12 +61,22 @@ export class PassengersService {
   }
 
   getBoatPassengers(passengers: Passenger[]): Passenger[] {
-    return passengers.filter(passenger => passenger.hasBoat);
+    return passengers.filter(passenger => passenger.hasBoat && !passenger.hasJourney);
+  }
+
+  getJourneyPassengers(passengers: Passenger[]): Passenger[] {
+    return passengers.filter(passenger => passenger.hasJourney);
   }
 
   getNumOfBoatPassengers(passengers: Passenger[]): [number, number] {
     const adults = this.getBoatPassengers(passengers).reduce((total, passenger) => total + (passenger.numOfPassengers - passenger.numOfChildren), 0);
     const children = this.getBoatPassengers(passengers).reduce((total, passenger) => total + passenger.numOfChildren, 0);
+    return [adults, children];
+  }
+
+  getNumOfJourneyPassengers(passengers: Passenger[]): [number, number] {
+    const adults = this.getJourneyPassengers(passengers).reduce((total, passenger) => total + (passenger.numOfPassengers - passenger.numOfChildren), 0);
+    const children = this.getJourneyPassengers(passengers).reduce((total, passenger) => total + passenger.numOfChildren, 0);
     return [adults, children];
   }
 

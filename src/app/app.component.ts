@@ -31,6 +31,8 @@ export class AppComponent {
   htmlContent: SafeHtml = "";
   busSelections: string[][] = [];
   usedBuses: Map<string, string[]> = new Map<string, string[]>;
+  successMap: Map<string, boolean> = new Map<string, boolean>();
+  protected readonly buses = buses;
 
   updateBusSelections(event: [string[], number]) {
     this.busSelections[event[1]] = event[0]
@@ -75,9 +77,17 @@ export class AppComponent {
   async onDateChange(event: any){
     this.passengers = await this.apiService.getPassengers(event.target.value, this.fetchOptions)
     this.usedBuses = new Map<string, string[]>();
+    this.successMap = new Map<string, boolean>();
     this.resetBusSelection()
     this.tourBusOrganizer.resetBuses();
     this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+  }
+
+  resetBusesForTime(event: [string, number]){
+    this.usedBuses.delete(event[0]);
+    this.successMap.delete(event[0]);
+    this.busSelections[event[1]] = [];
+    this.tourBusOrganizer.resetBusesForTime(event[0]);
   }
 
   resetBusSelection() {
@@ -96,11 +106,15 @@ export class AppComponent {
       })
       this.busList = organizer.buses;
       this.tourBusOrganizer.setBuses(passengers[0].startTime, organizer.buses);
+      this.successMap.set(passengers[0].startTime, true)
     }
-
+    else{
+      this.successMap.set(passengers[0].startTime, false)
+    }
 
     this.busList = organizer.buses;
     console.log(this.busList)
+    console.log(this.successMap)
   }
 
   getNumOfPassengersByTime() {
@@ -126,19 +140,4 @@ export class AppComponent {
     this.passengers = await this.apiService.getPassengers(this.today, this.fetchOptions)
   }
 
-  async getTomorrowsPassengers() {
-    const today = new Date();
-    const tomorrow = new Date(today);
-
-    tomorrow.setDate(today.getDate() + 1);
-
-    const year = tomorrow.getFullYear();
-    const month = String(tomorrow.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
-    const day = String(tomorrow.getDate()).padStart(2, '0');
-
-    this.passengers = await this.apiService.getPassengers(`${year}-${month}-${day}`, this.fetchOptions)
-    console.log(this.passengers)
-  }
-
-  protected readonly buses = buses;
 }

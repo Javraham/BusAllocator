@@ -32,6 +32,10 @@ export class TourOrganizerService {
     this.buses = new Map<string, Bus[]>();
   }
 
+  resetBusesForTime(time: string) {
+    this.buses.delete(time);
+  }
+
   printResult() {
     let htmlResult = ""
     for(const time of this.buses.keys()) {
@@ -53,35 +57,52 @@ export class TourOrganizerService {
           htmlResult += "<br/>"
 
           if (noBoatPassengers[1] !== 0) {
-            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} Adults, ${noBoatPassengers[1]} Children</strong></p>`
+            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} ${noBoatPassengers[0] !== 1 ? "Adults" : "Adult"}, ${noBoatPassengers[1]} ${noBoatPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
           } else {
-            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} Adults</strong></p>`
+            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} ${noBoatPassengers[0] !== 1 ? "Adults" : "Adult"}</strong></p>`
           }
           this.passengerService.getNoBoatPassengers(bus.getPassengers()).forEach(passenger => {
+            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults, ${passenger.numOfChildren} Children</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
-            console.log(`${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults, ${passenger.numOfChildren} Children`);
           });
         }
         htmlResult += '<br/>'
         const boatPassengers = this.passengerService.getNumOfBoatPassengers(bus.getPassengers());
         if (boatPassengers[0] > 0 || boatPassengers[1] > 0) {
           if (boatPassengers[1] !== 0) {
-            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} Adults, ${boatPassengers[1]} Children</strong></p>`
+            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} ${boatPassengers[0] !== 1 ? "Adults" : "Adult"}, ${boatPassengers[1]} ${boatPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
           } else {
             htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} Adults</strong></p>`
           }
           console.log(`\nBoat Cruise - ${boatPassengers[0]} Adults, ${boatPassengers[1]} Children`);
           this.passengerService.getBoatPassengers(bus.getPassengers()).forEach(passenger => {
+            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults, ${passenger.numOfChildren} Children</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
-            console.log(`${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults, ${passenger.numOfChildren} Children`);
+          });
+        }
+        htmlResult += '<br/>'
+        const journeyPassengers = this.passengerService.getNumOfJourneyPassengers(bus.getPassengers());
+        if (journeyPassengers[0] > 0 || journeyPassengers[1] > 0) {
+          if (journeyPassengers[1] !== 0) {
+            htmlResult += `<p>Boat Cruise + Journey - <strong>${journeyPassengers[0]} ${journeyPassengers[0] !== 1 ? "Adults" : "Adult"}, ${journeyPassengers[1]} ${journeyPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
+          } else {
+            htmlResult += `<p>Boat Cruise + Journey - <strong>${journeyPassengers[0]} ${journeyPassengers[0] !== 1 ? "Adults" : "Adult"}</strong></p>`
+          }
+          this.passengerService.getJourneyPassengers(bus.getPassengers()).forEach(passenger => {
+            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
+            if (passenger.numOfChildren !== 0) {
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+            } else {
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+            }
           });
         }
         htmlResult += '<hr style="background-color: grey; height: 1px"/>'
@@ -90,7 +111,7 @@ export class TourOrganizerService {
     console.log(this.buses)
     for(const time of this.TimeToPassengersMap.keys()){
       if(!this.buses.has(time)){
-        htmlResult += `<p style="font-weight: 700; font-size: 1.2em">${parseInt(time) == 0 ? time.slice(1) : time} - ${this.passengerService.getTotalPassengers(this.TimeToPassengersMap.get(time))} TOTAL PAX</p>`
+        htmlResult += `<p style="font-weight: 700; font-size: 1.2em">${parseInt(time[0]) == 0 ? time.slice(1) : time} - ${this.passengerService.getTotalPassengers(this.TimeToPassengersMap.get(time))} TOTAL PAX</p>`
         const pickupLocations = this.passengerService.getPassengersByPickupLocations(this.TimeToPassengersMap.get(time) as Passenger[]);
 
         Array.from(pickupLocations.entries()).forEach(val => {
@@ -101,15 +122,16 @@ export class TourOrganizerService {
           htmlResult += "<br/>"
 
           if (noBoatPassengers[1] !== 0) {
-            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} Adults, ${noBoatPassengers[1]} Children</strong></p>`
+            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} ${noBoatPassengers[0] !== 1 ? "Adults" : "Adult"}, ${noBoatPassengers[1]} ${noBoatPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
           } else {
             htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} Adults</strong></p>`
           }
           this.passengerService.getNoBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
+            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults, ${passenger.numOfChildren} Children</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           });
         }
@@ -117,15 +139,33 @@ export class TourOrganizerService {
         const boatPassengers = this.passengerService.getNumOfBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]);
         if (boatPassengers[0] > 0 || boatPassengers[1] > 0) {
           if (boatPassengers[1] !== 0) {
-            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} Adults, ${boatPassengers[1]} Children</strong></p>`
+            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} ${boatPassengers[0] !== 1 ? "Adults" : "Adult"}, ${boatPassengers[1]} ${boatPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
           } else {
-            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} Adults</strong></p>`
+            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} ${boatPassengers[0] !== 1 ? "Adults" : "Adult"}</strong></p>`
           }
           this.passengerService.getBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
+            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults, ${passenger.numOfChildren} Children</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${passenger.numOfPassengers - passenger.numOfChildren} Adults</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+            }
+          });
+        }
+        htmlResult += '<br/>'
+        const journeyPassengers = this.passengerService.getNumOfJourneyPassengers(this.TimeToPassengersMap.get(time) as Passenger[]);
+        if (journeyPassengers[0] > 0 || journeyPassengers[1] > 0) {
+          if (journeyPassengers[1] !== 0) {
+            htmlResult += `<p>Boat Cruise + Journey - <strong>${journeyPassengers[0]} ${journeyPassengers[0] !== 1 ? "Adults" : "Adult"}, ${journeyPassengers[1]} ${journeyPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
+          } else {
+            htmlResult += `<p>Boat Cruise + Journey  - <strong>${journeyPassengers[0]} ${journeyPassengers[0] !== 1 ? "Adults" : "Adult"}</strong></p>`
+          }
+          this.passengerService.getJourneyPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
+            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
+            if (passenger.numOfChildren !== 0) {
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+            } else {
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           });
         }

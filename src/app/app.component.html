@@ -94,7 +94,17 @@
         <h4>Passenger List</h4>
         <div *ngFor="let time of getNumOfPassengersByTime(); let i = index">
           <h5>{{time[0][0] === "0" ? time[0].slice(1) : time[0]}} - {{time[1]}} Passengers</h5>
-          <app-bus-selection-buttons [time]="time[0]" [usedBuses]="usedBuses" (updatedUsedBuses)="updateUsedBuses($event)" [index]="i" (updateCheckList)="updateBusSelections($event)" [selectedOptions]="busSelections"></app-bus-selection-buttons>
+          <app-bus-selection-buttons
+            (removeBuses)="resetBusesForTime($event)"
+            [time]="time[0]"
+            [usedBuses]="usedBuses"
+            (updatedUsedBuses)="updateUsedBuses($event)"
+            [index]="i"
+            (updateCheckList)="updateBusSelections($event)"
+            [selectedOptions]="busSelections"
+            [successMap]="successMap"
+          >
+          </app-bus-selection-buttons>
           <div *ngFor="let passenger of getPassengersByTime(time[0])">
             <p>{{passenger.firstName}} {{passenger.lastName}}</p>
           </div>

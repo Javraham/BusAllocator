@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {NgClass, NgForOf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {buses} from "../typings/BusSelection";
 
 @Component({
@@ -7,7 +7,8 @@ import {buses} from "../typings/BusSelection";
   standalone: true,
   imports: [
     NgClass,
-    NgForOf
+    NgForOf,
+    NgIf
   ],
   templateUrl: './bus-selection-buttons.component.html',
   styleUrl: './bus-selection-buttons.component.css'
@@ -16,9 +17,12 @@ export class BusSelectionButtonsComponent {
   @Input() selectedOptions!: string[][];
   @Output() updateCheckList = new EventEmitter<[string[], number]>
   @Output() updatedUsedBuses = new EventEmitter<[string[], string]>
+  @Output() removeBuses = new EventEmitter<[string, number]>
   @Input() index !: number;
   @Input() usedBuses !: Map<string, string[]>;
   @Input() time!: string;
+  @Input() successMap!: Map<string, boolean>;
+
   isChecked(value: string): boolean {
     // console.log(this.selectedOptions)
     if(this.selectedOptions.length == 0 || this.selectedOptions[this.index].length == 0) return false
@@ -26,7 +30,6 @@ export class BusSelectionButtonsComponent {
   }
 
   constructor() {
-
   }
 
   isDisabled(busId: string){
@@ -54,7 +57,12 @@ export class BusSelectionButtonsComponent {
   sortPassengers() {
     this.updatedUsedBuses.emit([this.selectedOptions[this.index], this.time])
     // Add your sorting logic here
+    console.log(this.successMap)
   }
 
   protected readonly buses = buses;
+
+  resetBuses() {
+    this.removeBuses.emit([this.time, this.index])
+  }
 }

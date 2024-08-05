@@ -62,13 +62,15 @@ export class ApiService {
         "includeLower": true,
         "includeUpper": true,
         "to": date
-      }
+      },
+      "bookingStatuses": [
+        "CONFIRMED"
+      ]
     }
 
     const jsonData = await this.fetchBokunData(fetchOptions);
 
     const data: Passenger[] = await jsonData.items
-      .filter((val: any) => val.productBookings[0]?.status !== "CANCELLED")
       .map((val: any) => {
         const productBooking = val.productBookings[0];
 
