@@ -51,35 +51,57 @@ export class TourOrganizer {
     }
   }
 
-  allocatePassengersBackup(): boolean {
+  allocatePassengers(): boolean {
     try {
       const sortedLocations = Array.from(this.pickupLocations).sort((a, b) => {
-        return this.getNumOfPassengersByPickup(b[0])-this.getNumOfPassengersByPickup(a[0])
+        return this.getNumOfPassengersByPickup(b[0]) - this.getNumOfPassengersByPickup(a[0]);
       });
-      const unallocatedPassengers: Passenger[] = []
-      console.log("Sorted", sortedLocations)
-      for (const [location, passengers] of sortedLocations) {
-        const availableBuses = this.buses.filter(bus =>
-          bus.getCurrentLoad() + this.getNumOfPassengersByPickup(location) <= bus.capacity)
-          .sort((a, b) => a.getCurrentLoad() - b.getCurrentLoad() || a.capacity - b.capacity);
-        if(availableBuses[0]){
-          passengers.forEach(passenger => availableBuses[0].addPassenger(passenger));
-          console.log(availableBuses[0], availableBuses[0].getCurrentLoad())
+
+      const shuffle = (array: any[]) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
         }
-        else{
-          passengers.forEach(passenger => unallocatedPassengers.push(passenger));
+      };
+
+      const allocate = (index: number): boolean => {
+        if (index >= sortedLocations.length) {
+          return true;
         }
 
+        const [location, passengers] = sortedLocations[index];
+        const availableBuses = this.buses.filter(bus =>
+          bus.getCurrentLoad() + this.getNumOfPassengersByPickup(location) <= bus.capacity);
+
+        shuffle(availableBuses); // Shuffle the available buses
+
+        for (const bus of availableBuses) {
+          if (bus.getCurrentLoad() + this.getNumOfPassengersByPickup(location) <= bus.capacity) {
+            passengers.forEach(passenger => bus.addPassenger(passenger));
+            if (allocate(index + 1)) {
+              return true;
+            }
+            passengers.forEach(passenger => bus.removePassenger(passenger)); // Backtrack
+          }
+        }
+        return false;
+      };
+
+      const success = allocate(0);
+
+      if (!success) {
+        console.error("Unable to allocate all passengers.");
+        return this.allocatePassengersBackup()
       }
-      console.log("unallocated", unallocatedPassengers)
-      return true;
+
+      return success;
     } catch (error) {
-      console.error(error)
-      return false
+      console.error(error);
+      return false;
     }
   }
 
-  allocatePassengers(): boolean {
+  allocatePassengersBackup(): boolean {
     try {
       const sortedLocations = Array.from(this.pickupLocations).sort((a, b) => {
         return this.getNumOfPassengersByPickup(b[0]) - this.getNumOfPassengersByPickup(a[0]);

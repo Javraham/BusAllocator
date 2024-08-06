@@ -78,11 +78,11 @@
   }
 </style>
 <main>
-  <nav class="navbar-default">
+  <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
     <h4>{{title}}</h4>
     <button class="styled-button float-end" (click)="getHTML()">Generate List</button>
   </nav>
-  <div class="container-fluid" id="content">
+  <div class="container-fluid" id="content" #content>
     <div class="row date">
       <div class="col-sm-3">
         <label for="date" style="font-size: 2rem">Tour Date: </label>
@@ -90,7 +90,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-lg-6">
         <h4>Passenger List</h4>
         <div *ngFor="let time of getNumOfPassengersByTime(); let i = index">
           <h5>{{time[0][0] === "0" ? time[0].slice(1) : time[0]}} - {{time[1]}} Passengers</h5>
@@ -108,7 +108,7 @@
           <div *ngIf="getBusesByTime(time[0]); then isAllocated else isNotAllocated"></div>
           <ng-template #isAllocated>
             <div *ngFor="let bus of getBusesByTime(time[0])">
-              <h5>{{bus.busId}} - {{bus.getCurrentLoad()}} Passengers</h5>
+              <h5>Bus ({{bus.busId}}) - {{bus.getCurrentLoad()}} Passengers</h5>
               <div *ngFor="let passenger of bus.getPassengers()">
                 <app-passenger [passengerInfo]="passenger" [busColor]="bus.color"></app-passenger>
               </div>
@@ -121,7 +121,7 @@
           </ng-template>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-lg-6">
         <h4>Generated List</h4>
         <div class="text-area" contenteditable="true" [innerHTML]="htmlContent">
         </div>

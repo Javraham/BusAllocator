@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {ApiService} from "./services/api.service";
 import {FetchBookingDataOptions} from "./typings/fetch-data-booking-options";
@@ -23,6 +23,13 @@ import {PassengersService} from "./services/passengers.service";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  @ViewChild('navbar') navbar!: ElementRef;
+  @ViewChild('content') content!: ElementRef;
+
+  ngAfterViewInit() {
+    const navbarHeight = this.navbar.nativeElement.offsetHeight;
+    this.content.nativeElement.style.marginTop = `${navbarHeight}px`;
+  }
   title = 'Bus Allocator';
   fetchOptions: FetchBookingDataOptions;
   passengers: Passenger[] = [];

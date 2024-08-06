@@ -7,14 +7,14 @@
     margin-top: 15px;
     margin-bottom: 15px;
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
     align-items: center;
     overflow: hidden;
   }
 
   p{
     font-weight: 700;
-    font-size: 1.1em;
+    font-size: 1.2rem;
     margin: 0;
     word-wrap: break-word; /* Breaks long words to fit within the container */
     overflow-wrap: break-word;
@@ -23,14 +23,32 @@
   .bi{
     font-size: 1.4em;
   }
+
+  button {
+    font-size: 1.2rem;
+    background-color: white;
+    padding: 1.1rem;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  /* Active button styling */
+  button.active {
+    background-color: red;
+    color: yellow;
+    font-size: 18px;
+  }
 </style>
 
 <div class="passenger-container" [ngStyle]="getStyles()">
-  <p>{{passengerInfo.firstName}} {{passengerInfo.lastName}}</p>
-  <i class="bi bi-dot"></i>
-  <p>{{passengerInfo.numOfPassengers}} {{passengerInfo.numOfPassengers === 1 ? "Passenger" : "Passengers"}}</p>
-  <i class="bi bi-dot" *ngIf="passengerInfo.numOfChildren !== 0"></i>
-  <p *ngIf="passengerInfo.numOfChildren !== 0">{{passengerInfo.numOfChildren}} {{passengerInfo.numOfChildren === 1 ? "Child" : "Children"}}</p>
-  <i class="bi bi-dot"></i>
-  <p>{{passengerInfo.hasJourney ? "Boat Cruise + Journey" : passengerInfo.hasBoat ? "Boat Cruise" : "No Boat"}}</p>
+  <div style="display: flex; align-items: center">
+    <p>{{passengerInfo.firstName}} {{passengerInfo.lastName}}</p>
+    <i class="bi bi-dot"></i>
+    <p>{{passengerInfo.numOfPassengers}} {{passengerInfo.numOfPassengers === 1 ? "Passenger" : "Passengers"}}</p>
+    <i class="bi bi-dot" *ngIf="passengerInfo.numOfChildren !== 0"></i>
+    <p *ngIf="passengerInfo.numOfChildren !== 0">{{passengerInfo.numOfChildren}} {{passengerInfo.numOfChildren === 1 ? "Child" : "Children"}}</p>
+<!--    <i class="bi bi-dot"></i>-->
+<!--    <p>{{passengerInfo.hasJourney ? "Boat Cruise + Journey" : passengerInfo.hasBoat ? "Boat Cruise" : "No Boat"}}</p>-->
+  </div>
+  <button [ngClass]="{'active': isActive}" [ngStyle]="getButtonStyles()" (click)="toggleButton()">Exclude</button>
 </div>
