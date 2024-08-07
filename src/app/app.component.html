@@ -58,7 +58,7 @@
     background-color: white;
     border-radius: 10px;
     height: 50vh;
-    overflow: scroll;
+    overflow-y: auto;
     padding-left: 1em;
     padding-top: 10px;
   }
@@ -76,53 +76,66 @@
     padding-top: 10px;
     padding-bottom: 10px;
   }
+
+  #date {
+    text-align: left;
+  }
 </style>
 <main>
   <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
     <h4>{{title}}</h4>
-    <button class="styled-button float-end" (click)="getHTML()">Generate List</button>
+    <button class="styled-button float-end d-none d-md-inline" (click)="getHTML()">Generate List</button>
+    <button class="styled-button float-end d-md-none" (click)="getHTML()"><i class="bi bi-list-check"></i></button>
   </nav>
   <div class="container-fluid" id="content" #content>
+
     <div class="row date">
-      <div class="col-sm-3">
-        <label for="date" style="font-size: 2rem">Tour Date: </label>
-        <input id="date" type="date" class="form-control" [value]="today" (change)="onDateChange($event)"/>
+      <div class="col-md-4 col-sm-6 date">
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+          <input id="date" type="date" class="form-control" [value]="today" (change)="onDateChange($event)" />
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-4 ">
+        <button class="btn btn-primary"><i class="bi bi-lock-fill"></i> Authorize</button>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-6">
-        <h4>Passenger List</h4>
-        <div *ngFor="let time of getNumOfPassengersByTime(); let i = index">
-          <h5>{{time[0][0] === "0" ? time[0].slice(1) : time[0]}} - {{time[1]}} Passengers</h5>
-          <app-bus-selection-buttons
-            (removeBuses)="resetBusesForTime($event)"
-            [time]="time[0]"
-            [usedBuses]="usedBuses"
-            (updatedUsedBuses)="updateUsedBuses($event)"
-            [index]="i"
-            (updateCheckList)="updateBusSelections($event)"
-            [selectedOptions]="busSelections"
-            [successMap]="successMap"
-          >
-          </app-bus-selection-buttons>
-          <div *ngIf="getBusesByTime(time[0]); then isAllocated else isNotAllocated"></div>
-          <ng-template #isAllocated>
-            <div *ngFor="let bus of getBusesByTime(time[0])">
-              <h5>Bus ({{bus.busId}}) - {{bus.getCurrentLoad()}} Passengers</h5>
-              <div *ngFor="let passenger of bus.getPassengers()">
+   <div *ngIf="loadContent">
+      <h4>Passenger List</h4>
+      <div *ngFor="let time of getNumOfPassengersByTime(); let i = index">
+        <h5>{{time[0][0] === "0" ? time[0].slice(1) : time[0]}} - {{time[1]}} Passengers</h5>
+        <app-bus-selection-buttons
+          (removeBuses)="resetBusesForTime($event)"
+          [time]="time[0]"
+          [usedBuses]="usedBuses"
+          (updatedUsedBuses)="updateUsedBuses($event)"
+          [index]="i"
+          (updateCheckList)="updateBusSelections($event)"
+          [selectedOptions]="busSelections"
+          [successMap]="successMap"
+        >
+        </app-bus-selection-buttons>
+        <div *ngIf="getBusesByTime(time[0]); then isAllocated else isNotAllocated"></div>
+        <ng-template #isAllocated>
+          <div *ngFor="let bus of getBusesByTime(time[0])">
+            <h5>Bus ({{bus.busId}}) - {{bus.getCurrentLoad()}} Passengers</h5>
+            <div class="row">
+              <div class="col-md-6 col-sm-12" *ngFor="let passenger of bus.getPassengers()">
                 <app-passenger [passengerInfo]="passenger" [busColor]="bus.color"></app-passenger>
               </div>
             </div>
-          </ng-template>
-          <ng-template #isNotAllocated>
-            <div *ngFor="let passenger of getPassengersByTime(time[0])">
-              <app-passenger [passengerInfo]="passenger" [busColor]="'#4B7FCC'"></app-passenger>
+          </div>
+        </ng-template>
+        <ng-template #isNotAllocated>
+          <div class="row">
+            <div *ngFor="let passenger of getPassengersByTime(time[0])" class="col-md-6 col-sm-12">
+              <app-passenger (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4B7FCC'"></app-passenger>
             </div>
-          </ng-template>
-        </div>
+          </div>
+        </ng-template>
       </div>
-      <div class="col-lg-6">
-        <h4>Generated List</h4>
+      <div style="margin-top: 20px" class="input-group">
+        <h5>Generated List</h5>
         <div class="text-area" contenteditable="true" [innerHTML]="htmlContent">
         </div>
       </div>

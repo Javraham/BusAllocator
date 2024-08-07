@@ -44,6 +44,7 @@ export class ApiService {
 
       if (!response.ok) {
         console.log("error occurred!");
+        throw new Error('Error: Cannot load passengers')
       }
 
       return await response.json();
@@ -67,60 +68,63 @@ export class ApiService {
         "CONFIRMED"
       ]
     }
+    try {
+      const jsonData = await this.fetchBokunData(fetchOptions);
 
-    const jsonData = await this.fetchBokunData(fetchOptions);
+      const data: Passenger[] = await jsonData.items
+        .map((val: any) => {
+          const productBooking = val.productBookings[0];
 
-    const data: Passenger[] = await jsonData.items
-      .map((val: any) => {
-        const productBooking = val.productBookings[0];
+          const numOfPassengers = productBooking?.totalParticipants;
+          const pickup = productBooking?.fields?.pickupPlace?.title ?? productBooking?.fields?.pickupPlaceDescription;
+          const hasBoat = productBooking?.rateTitle.includes("Boat");
+          const hasJourney = productBooking?.rateTitle.includes("AND");
+          const startTime = productBooking?.fields?.startTimeStr;
 
-        const numOfPassengers = productBooking?.totalParticipants;
-        const pickup = productBooking?.fields?.pickupPlace?.title ?? productBooking?.fields?.pickupPlaceDescription;
-        const hasBoat = productBooking?.rateTitle.includes("Boat");
-        const hasJourney = productBooking?.rateTitle.includes("AND");
-        const startTime = productBooking?.fields?.startTimeStr;
+          const numOfChildren = productBooking?.fields?.priceCategoryBookings.reduce((total: number, val: any) => {
+            return val?.pricingCategory.ticketCategory === "CHILD" ? total + 1 : total
+          }, 0)
 
-        const numOfChildren = productBooking?.fields?.priceCategoryBookings.reduce((total: number, val: any) => {
-          return val?.pricingCategory.ticketCategory === "CHILD" ? total + 1 : total
-        }, 0)
+          return {
+            confirmationCode: val.confirmationCode,
+            startTime,
+            firstName: val.customer.firstName,
+            lastName: val.customer.lastName,
+            email: val.customer.email,
+            numOfPassengers,
+            pickup,
+            hasBoat,
+            numOfChildren,
+            hasJourney
+          };
+        });
 
-        return {
-          confirmationCode: val.confirmationCode,
-          startTime,
-          firstName: val.customer.firstName,
-          lastName: val.customer.lastName,
-          email: val.customer.email,
-          numOfPassengers,
-          pickup,
-          hasBoat,
-          numOfChildren,
-          hasJourney
-        };
-      });
-
-    const map: Map<string, number> = new Map<string, number>
-    for(const data_set of data){
-      if(map.has(data_set.startTime)){
-        let passengers = map.get(data_set.startTime) as number
-        passengers += data_set.numOfPassengers;
-        map.set(data_set.startTime, passengers)
+      const map: Map<string, number> = new Map<string, number>
+      for (const data_set of data) {
+        if (map.has(data_set.startTime)) {
+          let passengers = map.get(data_set.startTime) as number
+          passengers += data_set.numOfPassengers;
+          map.set(data_set.startTime, passengers)
+        } else {
+          map.set(data_set.startTime, data_set.numOfPassengers)
+        }
       }
-      else{
-        map.set(data_set.startTime, data_set.numOfPassengers)
-      }
+      const totalPassengers: number[] = jsonData.items.reduce((total: number, current: any) => {
+        if (current.productBookings[0].status !== 'CANCELLED') {
+          return total + current.productBookings[0].totalParticipants
+        } else {
+          return total
+        }
+      }, 0)
+
+      console.log(totalPassengers)
+      console.log(map)
+      // console.log(data)
+      return data
     }
-    const totalPassengers: number[] = jsonData.items.reduce((total: number, current: any) => {
-      if(current.productBookings[0].status !== 'CANCELLED'){
-        return total + current.productBookings[0].totalParticipants
-      }
-      else{
-        return total
-      }
-    }, 0)
 
-    console.log(totalPassengers)
-    console.log(map)
-    // console.log(data)
-    return data
+    catch (e){
+      throw new Error("Problem with Authentication")
+    }
   }
 }

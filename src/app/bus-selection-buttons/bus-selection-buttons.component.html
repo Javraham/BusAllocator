@@ -1,7 +1,5 @@
 <style>
   .checkbox-container {
-    display: flex;
-    gap: 10px;
   }
 
   .checkbox-container label {
@@ -43,14 +41,12 @@
     /*align-items: center;*/
     gap: 5px;
     padding: 10px;
-    width: 80%;
     border-radius: 5px;
   }
 
   .error-text{
     color: #b63f3f;
     margin: 0;
-    white-space: nowrap;
     font-weight: 600;
   }
 
@@ -60,14 +56,12 @@
     /*align-items: center;*/
     gap: 5px;
     padding: 10px;
-    width: 80%;
     border-radius: 5px;
   }
 
   .success-text{
     color: #0ab937;
     margin: 0;
-    white-space: nowrap;
     font-weight: 600;
   }
 
@@ -79,15 +73,15 @@
 </style>
 <div class="bus-selection-container">
   <ng-template  #success>
-    <div class="success-msg" *ngIf="successMap.get(time); else failed">
+    <div class="success-msg col-md-6" *ngIf="successMap.get(time); else failed" >
       <i class="bi bi-check-circle" style="color: #0ab937"></i>
       <p class="success-text">Passengers Allocated Successfully!</p>
     </div>
   </ng-template>
   <ng-template #failed>
-    <div class="error-msg" >
+    <div class="error-msg col-md-6">
       <i class="bi bi-exclamation-circle" style="color: #b63f3f"></i>
-      <p class="error-text">Error! Cannot Allocate Passengers</p>
+      <p class="error-text">Error! Cannot Allocate Passengers. Please add buses or remove passengers</p>
     </div>
   </ng-template>
 
@@ -95,9 +89,8 @@
 
   </div>
 
-
-  <div class="checkbox-container">
-    <label *ngFor="let bus of buses">
+  <div >
+    <div *ngFor="let bus of buses" class="checkbox-inline checkbox-container">
       <input
         type="checkbox"
         [value]="bus.busId"
@@ -105,8 +98,9 @@
         [checked]="isChecked(bus.busId)"
         [disabled]="isDisabled(bus.busId)"
       />
-      {{ bus.busId }}
-    </label>
+      <label>{{ bus.busId }}</label>
+    </div>
+
   </div>
   <div>
     <button class="sort-button" (click)="sortPassengers()">Sort Passengers</button>

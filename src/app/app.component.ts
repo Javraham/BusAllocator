@@ -39,6 +39,8 @@ export class AppComponent {
   busSelections: string[][] = [];
   usedBuses: Map<string, string[]> = new Map<string, string[]>;
   successMap: Map<string, boolean> = new Map<string, boolean>();
+  excludedPassengers: Passenger[] = [];
+  loadContent: boolean = false;
   protected readonly buses = buses;
 
   updateBusSelections(event: [string[], number]) {
@@ -73,6 +75,7 @@ export class AppComponent {
     this.getTodaysPassengers().then(data => {
       this.resetBusSelection()
       this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+      this.loadContent = true
     })
   }
 
@@ -81,7 +84,8 @@ export class AppComponent {
   }
 
   async onDateChange(event: any){
-    this.passengers = await this.apiService.getPassengers(event.target.value, this.fetchOptions)
+    const passengers = await this.apiService.getPassengers(event.target.value, this.fetchOptions)
+    this.passengers = passengers.filter(val => val.pickup != null)
     this.usedBuses = new Map<string, string[]>();
     this.successMap = new Map<string, boolean>();
     this.resetBusSelection()
@@ -147,7 +151,17 @@ export class AppComponent {
   }
 
   async getTodaysPassengers() {
-    this.passengers = await this.apiService.getPassengers(this.today, this.fetchOptions)
+    try{
+      const passengers = await this.apiService.getPassengers(this.today, this.fetchOptions)
+      this.passengers = passengers.filter(val => val.pickup != null)
+    }
+    catch (e: any){
+      console.log(e)
+    }
+
   }
 
+  updatePassengerExclusionList(event: Passenger) {
+    this.excludedPassengers.push(event)
+  }
 }

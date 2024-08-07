@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
 import {TourOrganizerService} from "../services/tour-organizer.service";
 import {TourOrganizer} from "../services/organizer";
 import {Passenger} from "../typings/passenger";
@@ -21,12 +21,18 @@ export class PassengerComponent {
   @Input() passengerInfo !: Passenger;
   @Input() busColor !: string;
   isActive: boolean = false;
+  @Output() updatePassengerExclusionList = new EventEmitter<Passenger>()
 
   constructor(private tourOrganizer: TourOrganizerService) {
   }
 
   toggleButton() {
     this.isActive = !this.isActive;
+    console.log(this.isActive)
+  }
+
+  removePassenger() {
+    this.updatePassengerExclusionList.emit(this.passengerInfo);
   }
 
   getButtonStyles() {
