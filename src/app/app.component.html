@@ -99,13 +99,13 @@
       <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
         <div class="input-group">
           <span class="input-group-addon">AccessKey</span>
-          <input class="form-control"/>
+          <input class="form-control" type="password"/>
         </div>
       </div>
       <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
         <div class="input-group">
           <span class="input-group-addon">SecretKey</span>
-          <input class="form-control"/>
+          <input class="form-control" type="password"/>
         </div>
       </div>
     </div>
@@ -139,7 +139,7 @@
           <div *ngFor="let bus of getBusesByTime(time[0])">
             <h5>Bus ({{bus.busId}}) - {{bus.getCurrentLoad()}} Passengers</h5>
             <div class="row">
-              <div class="col-md-6 col-sm-12" *ngFor="let passenger of bus.getPassengers()">
+              <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of bus.getPassengers()">
                 <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="bus.color"></app-passenger>
               </div>
             </div>
@@ -147,7 +147,7 @@
           <div *ngIf="excludedPassengersMap.has(time[0]) && (excludedPassengersMap.get(time[0])?.length || 0) > 0">
             <h5>Excluded Passengers</h5>
             <div class="row">
-              <div class="col-md-6 col-sm-12" *ngFor="let passenger of excludedPassengersMap.get(time[0])">
+              <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of excludedPassengersMap.get(time[0])">
                 <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4B7FCC'"></app-passenger>
               </div>
             </div>
@@ -155,13 +155,13 @@
         </ng-template>
         <ng-template #isNotAllocated>
           <div class="row">
-            <div *ngFor="let passenger of getPassengersByTime(time[0])" class="col-md-6 col-sm-12">
+            <div *ngFor="let passenger of getPassengersByTime(time[0])" class="col-lg-4 col-md-6 col-sm-12">
               <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4B7FCC'"></app-passenger>
             </div>
           </div>
         </ng-template>
       </div>
-      <div style="margin-top: 20px" class="input-group">
+      <div style="margin-top: 20px" class="">
         <h5>Generated List</h5>
         <div class="text-area" contenteditable="true" [innerHTML]="htmlContent">
         </div>
