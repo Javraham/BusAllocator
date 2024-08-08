@@ -29,6 +29,7 @@ export class PassengerComponent {
 
   toggleButton() {
     this.updatePassengerExclusionList.emit(this.passengerInfo)
+    console.log(this.passengerInfo)
     console.log(this.excludedPassengers)
   }
 

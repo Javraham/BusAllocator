@@ -14,8 +14,8 @@ import {buses} from "../typings/BusSelection";
   styleUrl: './bus-selection-buttons.component.css'
 })
 export class BusSelectionButtonsComponent {
-  @Input() selectedOptions!: string[][];
-  @Output() updateCheckList = new EventEmitter<[string[], number]>
+  @Input() selectedOptions !: Map<string, string[]>;
+  @Output() updateCheckList = new EventEmitter<[string[], string]>
   @Output() updatedUsedBuses = new EventEmitter<[string[], string]>
   @Output() removeBuses = new EventEmitter<[string, number]>
   @Input() index !: number;
@@ -24,9 +24,9 @@ export class BusSelectionButtonsComponent {
   @Input() successMap!: Map<string, boolean>;
 
   isChecked(value: string): boolean {
-    // console.log(this.selectedOptions)
-    if(this.selectedOptions.length == 0 || this.selectedOptions[this.index].length == 0) return false
-    return this.selectedOptions[this.index].includes(value);
+    const optionsForTime = this.selectedOptions.get(this.time);
+    if (!optionsForTime || optionsForTime.length === 0) return false;
+    return optionsForTime.includes(value);
   }
 
   constructor() {
@@ -46,18 +46,21 @@ export class BusSelectionButtonsComponent {
 
   onCheckboxChange(event: any) {
     const value = event.target.value;
+    const optionsForTime = this.selectedOptions.get(this.time) || [];
+
     if (event.target.checked) {
-      this.selectedOptions[this.index].push(value);
+      optionsForTime.push(value);
+      this.selectedOptions.set(this.time, optionsForTime)
     } else {
-      this.selectedOptions[this.index] = this.selectedOptions[this.index].filter(v => v !== value);
+      this.selectedOptions.set(this.time, optionsForTime.filter(v => v !== value));
     }
-    this.updateCheckList.emit([this.selectedOptions[this.index], this.index])
+    console.log(this.selectedOptions)
+    this.updateCheckList.emit([this.selectedOptions.get(this.time) || [], this.time]);
   }
 
   sortPassengers() {
-    this.updatedUsedBuses.emit([this.selectedOptions[this.index], this.time])
-    // Add your sorting logic here
-    console.log(this.successMap)
+    this.updatedUsedBuses.emit([this.selectedOptions.get(this.time) || [], this.time]);
+    console.log(this.successMap);
   }
 
   protected readonly buses = buses;

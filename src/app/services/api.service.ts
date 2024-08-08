@@ -117,9 +117,6 @@ export class ApiService {
         }
       }, 0)
 
-      console.log(totalPassengers)
-      console.log(map)
-      // console.log(data)
       return data
     }
 

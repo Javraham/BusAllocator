@@ -36,19 +36,22 @@ export class AppComponent {
   today: string = '';
   busList: Bus[] = [];
   htmlContent: SafeHtml = "";
-  busSelections: string[][] = [];
+  busSelections: Map<string, string[]> = new Map<string, string[]>;
   usedBuses: Map<string, string[]> = new Map<string, string[]>;
   successMap: Map<string, boolean> = new Map<string, boolean>();
+  excludedPassengersMap: Map<string, Passenger[]> = new Map<string, Passenger[]>();
   excludedPassengers: Passenger[] = [];
   loadContent: boolean = false;
   protected readonly buses = buses;
 
-  updateBusSelections(event: [string[], number]) {
-    this.busSelections[event[1]] = event[0]
+  updateBusSelections(event: [string[], string]) {
+    this.busSelections.set(event[1], event[0])
+    console.log("app", this.busSelections)
   }
 
   updateUsedBuses(event: [string[], string]) {
     this.usedBuses.set(event[1], event[0]);
+    this.excludedPassengersMap.set(event[1], this.excludedPassengers.filter(val => val.startTime == event[1]));
     const filteredPassengers = this.getPassengersByTime(event[1]).filter(val => this.excludedPassengers.filter(passenger => passenger.confirmationCode == val.confirmationCode).length == 0)
     const filteredBuses = buses.filter(val => event[0].includes(val.busId))
     console.log(filteredBuses, filteredPassengers)
@@ -100,15 +103,13 @@ export class AppComponent {
   resetBusesForTime(event: [string, number]){
     this.usedBuses.delete(event[0]);
     this.successMap.delete(event[0]);
-    this.busSelections[event[1]] = [];
+    this.busSelections.delete(event[0]);
     this.tourBusOrganizer.resetBusesForTime(event[0]);
   }
 
   resetBusSelection() {
-    this.busSelections = []
-    for(let i = 0; i<this.getNumOfPassengersByTime().length; i++){
-      this.busSelections.push([])
-    }
+    this.excludedPassengers = []
+    this.busSelections = new Map<string, string[]>()
   }
 
   organizePassengers(busInfoList: IBus[], passengers: Passenger[]) {
@@ -127,13 +128,12 @@ export class AppComponent {
     }
 
     this.busList = organizer.buses;
-    console.log(this.busList)
-    console.log(this.successMap)
   }
 
   getNumOfPassengersByTime() {
+    const passengers = this.passengers.filter(passenger => this.excludedPassengers.filter(val => passenger.confirmationCode == val.confirmationCode).length == 0)
     const map: Map<string, number> = new Map<string, number>();
-    for(const passenger of this.passengers){
+    for(const passenger of passengers){
       if(map.has(passenger.startTime)){
         let passengers = map.get(passenger.startTime) as number
         passengers += passenger.numOfPassengers;
@@ -143,6 +143,7 @@ export class AppComponent {
         map.set(passenger.startTime, passenger.numOfPassengers)
       }
     }
+    // console.log(Array.from(map.entries()))
     return Array.from(map.entries())
   }
 
@@ -163,11 +164,12 @@ export class AppComponent {
 
   updatePassengerExclusionList(event: Passenger) {
     if(this.excludedPassengers.filter(val => val.confirmationCode == event.confirmationCode).length != 0){
-      const index = this.excludedPassengers.indexOf(event);
+      const index = this.excludedPassengers.findIndex(val => val.confirmationCode == event.confirmationCode);
       this.excludedPassengers.splice(index, 1)
     }
     else{
       this.excludedPassengers.push(event)
     }
+    console.log(this.excludedPassengersMap)
   }
 }
