@@ -33,7 +33,7 @@ export class AppComponent {
   title = 'Bus Allocator';
   fetchOptions: FetchBookingDataOptions;
   passengers: Passenger[] = [];
-  today: string = '';
+  date: string = '';
   busList: Bus[] = [];
   htmlContent: SafeHtml = "";
   busSelections: Map<string, string[]> = new Map<string, string[]>;
@@ -74,26 +74,20 @@ export class AppComponent {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
     const day = String(today.getDate()).padStart(2, '0');
-    this.today = `${year}-${month}-${day}`;
-    this.getTodaysPassengers().then(data => {
-      this.resetBusSelection()
-      this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
-      this.loadContent = true
-    })
+    this.date = `${year}-${month}-${day}`;
+    // this.getTodaysPassengers().then(data => {
+    //   this.resetBusSelection()
+    //   this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+    //   this.loadContent = true
+    // })
   }
 
   getHTML() {
     this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(this.tourBusOrganizer.printResult());
   }
 
-  async onDateChange(event: any){
-    const passengers = await this.apiService.getPassengers(event.target.value, this.fetchOptions)
-    this.passengers = passengers.filter(val => val.pickup != null)
-    this.usedBuses = new Map<string, string[]>();
-    this.successMap = new Map<string, boolean>();
-    this.resetBusSelection()
-    this.tourBusOrganizer.resetBuses();
-    this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+  onDateChange(event: any){
+    this.date = event.target.value;
   }
 
   getBusesByTime(time: string){
@@ -155,17 +149,6 @@ export class AppComponent {
     return this.passengers.filter(val => val.startTime == time)
   }
 
-  async getTodaysPassengers() {
-    try{
-      const passengers = await this.apiService.getPassengers(this.today, this.fetchOptions)
-      this.passengers = passengers.filter(val => val.pickup != null)
-    }
-    catch (e: any){
-      console.log(e)
-    }
-
-  }
-
   updatePassengerExclusionList(event: Passenger) {
     if(this.excludedPassengers.filter(val => val.confirmationCode == event.confirmationCode).length != 0){
       const index = this.excludedPassengers.findIndex(val => val.confirmationCode == event.confirmationCode);
@@ -175,5 +158,16 @@ export class AppComponent {
       this.excludedPassengers.push(event)
     }
     console.log(this.excludedPassengersMap)
+  }
+
+  async loadPassengers() {
+    const passengers = await this.apiService.getPassengers(this.date, this.fetchOptions)
+    this.loadContent = true;
+    this.passengers = passengers.filter(val => val.pickup != null)
+    this.usedBuses = new Map<string, string[]>();
+    this.successMap = new Map<string, boolean>();
+    this.resetBusSelection()
+    this.tourBusOrganizer.resetBuses();
+    this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
   }
 }

@@ -70,6 +70,7 @@
     flex-direction: column;
     gap: 10px;
   }
+
 </style>
 <div class="bus-selection-container">
   <ng-template  #success>
@@ -92,13 +93,15 @@
   <div >
     <div *ngFor="let bus of buses" class="checkbox-inline checkbox-container">
       <input
+        role="switch"
+        class="form-check-input"
         type="checkbox"
         [value]="bus.busId"
         (change)="onCheckboxChange($event)"
         [checked]="isChecked(bus.busId)"
         [disabled]="isDisabled(bus.busId)"
       />
-      <label>{{ bus.busId }}</label>
+      <label class="form-check-label">{{ bus.busId }}</label>
     </div>
 
   </div>

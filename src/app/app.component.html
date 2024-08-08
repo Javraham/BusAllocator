@@ -65,7 +65,9 @@
 
   .date{
     margin-bottom: 10px;
+    margin-top: 10px;
   }
+
   h1{
     color: black;
   }
@@ -88,16 +90,34 @@
     <button class="styled-button float-end d-md-none" (click)="getHTML()"><i class="bi bi-list-check"></i></button>
   </nav>
   <div class="container-fluid" id="content" #content>
-
-    <div class="row date">
-      <div class="col-md-4 col-sm-6 date">
+    <div class="row">
+      <div class="col-md-2 col-sm-4" style="margin-bottom: 10px;">
+        <button class="btn btn-primary"><i class="bi bi-lock-fill"></i> Authorize</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
         <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-          <input id="date" type="date" class="form-control" [value]="today" (change)="onDateChange($event)" />
+          <span class="input-group-addon">AccessKey</span>
+          <input class="form-control"/>
         </div>
       </div>
-      <div class="col-md-2 col-sm-4 ">
-        <button class="btn btn-primary"><i class="bi bi-lock-fill"></i> Authorize</button>
+      <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
+        <div class="input-group">
+          <span class="input-group-addon">SecretKey</span>
+          <input class="form-control"/>
+        </div>
+      </div>
+    </div>
+    <div class="row date">
+      <div class="col-md-3 col-sm-6" style="margin-bottom: 10px; padding-right: 0">
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+          <input id="date" type="date" class="form-control" [value]="date" (change)="onDateChange($event)" />
+        </div>
+      </div>
+      <div class="col-md-2 col-sm-4">
+        <button class="btn btn-primary" (click)="loadPassengers()">Load passengers</button>
       </div>
     </div>
    <div *ngIf="loadContent">
