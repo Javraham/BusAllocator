@@ -49,7 +49,7 @@ export class AppComponent {
 
   updateUsedBuses(event: [string[], string]) {
     this.usedBuses.set(event[1], event[0]);
-    const filteredPassengers = this.getPassengersByTime(event[1])
+    const filteredPassengers = this.getPassengersByTime(event[1]).filter(val => this.excludedPassengers.filter(passenger => passenger.confirmationCode == val.confirmationCode).length == 0)
     const filteredBuses = buses.filter(val => event[0].includes(val.busId))
     console.log(filteredBuses, filteredPassengers)
     console.log(this.usedBuses)
@@ -162,6 +162,12 @@ export class AppComponent {
   }
 
   updatePassengerExclusionList(event: Passenger) {
-    this.excludedPassengers.push(event)
+    if(this.excludedPassengers.filter(val => val.confirmationCode == event.confirmationCode).length != 0){
+      const index = this.excludedPassengers.indexOf(event);
+      this.excludedPassengers.splice(index, 1)
+    }
+    else{
+      this.excludedPassengers.push(event)
+    }
   }
 }

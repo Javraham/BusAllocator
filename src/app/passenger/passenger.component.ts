@@ -19,6 +19,7 @@ import {NgClass, NgIf, NgStyle} from "@angular/common";
 })
 export class PassengerComponent {
   @Input() passengerInfo !: Passenger;
+  @Input() excludedPassengers !: Passenger[];
   @Input() busColor !: string;
   isActive: boolean = false;
   @Output() updatePassengerExclusionList = new EventEmitter<Passenger>()
@@ -27,19 +28,22 @@ export class PassengerComponent {
   }
 
   toggleButton() {
-    this.isActive = !this.isActive;
-    console.log(this.isActive)
-  }
-
-  removePassenger() {
-    this.updatePassengerExclusionList.emit(this.passengerInfo);
+    this.updatePassengerExclusionList.emit(this.passengerInfo)
+    console.log(this.excludedPassengers)
   }
 
   getButtonStyles() {
-    return {
+    return this.excludedPassengers.filter(val => this.passengerInfo.confirmationCode == val.confirmationCode).length == 0 ? {
       "border": "1px solid " + this.busColor,
       "color": this.busColor
     }
+    :
+      {
+        "border": "1px solid " + this.busColor,
+        "color": "white",
+        "background-color": this.busColor
+      }
+
   }
   getStyles() {
     return {
