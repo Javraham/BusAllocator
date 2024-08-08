@@ -46,7 +46,7 @@ export class TourOrganizerService {
     for(const time of this.buses.keys()) {
       const busList = this.buses.get(time) as Bus[]
       if (busList.length > 0) {
-        htmlResult += `<p style="font-weight: 700; font-size: 1.2em">${parseInt(time[0]) == 0 ? time.slice(1) : time} - ${this.passengerService.getTotalPassengers(this.TimeToPassengersMap.get(time))} TOTAL PAX</p>`
+        htmlResult += `<p style="font-weight: 700; font-size: 1.2em">${parseInt(time[0]) == 0 ? time.slice(1) : time} - ${busList.reduce((total, current:Bus) => total + current.getCurrentLoad(), 0)} TOTAL PAX</p>`
       }
       for (const bus of busList) {
         htmlResult += `<p style="font-weight: 700">Bus (${bus.busId})</p>

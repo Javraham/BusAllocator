@@ -109,13 +109,6 @@ export class ApiService {
           map.set(data_set.startTime, data_set.numOfPassengers)
         }
       }
-      const totalPassengers: number[] = jsonData.items.reduce((total: number, current: any) => {
-        if (current.productBookings[0].status !== 'CANCELLED') {
-          return total + current.productBookings[0].totalParticipants
-        } else {
-          return total
-        }
-      }, 0)
 
       return data
     }

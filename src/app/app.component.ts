@@ -143,8 +143,12 @@ export class AppComponent {
         map.set(passenger.startTime, passenger.numOfPassengers)
       }
     }
-    // console.log(Array.from(map.entries()))
-    return Array.from(map.entries())
+
+    return Array.from(map.entries()).sort((a, b) => {
+      const timeA = a[0];
+      const timeB = b[0];
+      return timeA.localeCompare(timeB);
+    });
   }
 
   getPassengersByTime(time: string) {
