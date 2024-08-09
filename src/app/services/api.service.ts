@@ -19,6 +19,15 @@ export class ApiService {
     return CryptoJS.enc.Base64.stringify(hmac);
   }
 
+  setKeys(form: any) {
+    localStorage.setItem("access", form.accessKey);
+    localStorage.setItem("secret", form.secretKey)
+  }
+
+  clearKeys() {
+    localStorage.clear()
+  }
+
   fetchBokunData = async (props: FetchBookingDataOptions): Promise<any> => {
     const { endpoint, accessKey, secretKey, httpMethod, date, body } = props;
     const url = `${this.url}${endpoint}`;
@@ -26,8 +35,8 @@ export class ApiService {
     const headers = {
       'Content-Type': 'application/json',
       'X-Bokun-Date': date,
-      'X-Bokun-Signature': this.generateBokunSignature(date, accessKey, httpMethod, endpoint, secretKey),
-      'X-Bokun-AccessKey': accessKey
+      'X-Bokun-Signature': this.generateBokunSignature(date, localStorage.getItem("access") || "", httpMethod, endpoint, localStorage.getItem("secret") || ""),
+      'X-Bokun-AccessKey': localStorage.getItem("access") || ""
     };
 
     try {

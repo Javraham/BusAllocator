@@ -43,6 +43,7 @@ export class AppComponent {
   excludedPassengersMap: Map<string, Passenger[]> = new Map<string, Passenger[]>();
   excludedPassengers: Passenger[] = [];
   loadContent: boolean = false;
+  isAuthorized: boolean = localStorage.length > 0;
 
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
@@ -173,7 +174,13 @@ export class AppComponent {
   }
 
   Authorize(form: any) {
+    this.isAuthorized = !this.isAuthorized;
+    if(this.isAuthorized){
+      this.apiService.clearKeys()
+      this.form.reset()
+    }
     console.log(this.form.value.accessKey)
+    this.apiService.setKeys(this.form.value)
   }
 
 }
