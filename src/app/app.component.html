@@ -85,9 +85,7 @@
 </style>
 <main>
   <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
-    <h4>{{title}}</h4>
-    <button class="styled-button float-end d-none d-md-inline" (click)="getHTML()">Generate List</button>
-    <button class="styled-button float-end d-md-none" (click)="getHTML()"><i class="bi bi-list-check"></i></button>
+    <img src="assets/logo.png" alt="Logo" width="231" height="49" />
   </nav>
   <div class="container-fluid" id="content" #content>
     <div class="row">
@@ -162,7 +160,7 @@
         </ng-template>
       </div>
       <div style="margin-top: 20px" class="">
-        <h5>Generated List</h5>
+        <button class="styled-button" (click)="getHTML()">Generate List</button>
         <div class="text-area" contenteditable="true" [innerHTML]="htmlContent">
         </div>
       </div>

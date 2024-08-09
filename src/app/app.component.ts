@@ -9,7 +9,7 @@ import {BusService} from "./services/bus.service";
 import {TourOrganizer} from "./services/organizer";
 import {PassengerComponent} from "./passenger/passenger.component";
 import {SidePanelComponent} from "./side-panel/side-panel.component";
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {Bus} from "./services/bus"; // Import CommonModule
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {BusSelectionButtonsComponent} from "./bus-selection-buttons/bus-selection-buttons.component";
@@ -18,7 +18,7 @@ import {PassengersService} from "./services/passengers.service";
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PassengerComponent, SidePanelComponent, CommonModule, BusSelectionButtonsComponent],
+  imports: [RouterOutlet, PassengerComponent, SidePanelComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -75,11 +75,6 @@ export class AppComponent {
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
     const day = String(today.getDate()).padStart(2, '0');
     this.date = `${year}-${month}-${day}`;
-    // this.getTodaysPassengers().then(data => {
-    //   this.resetBusSelection()
-    //   this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
-    //   this.loadContent = true
-    // })
   }
 
   getHTML() {

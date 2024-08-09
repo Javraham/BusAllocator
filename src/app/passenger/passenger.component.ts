@@ -4,6 +4,7 @@ import {TourOrganizer} from "../services/organizer";
 import {Passenger} from "../typings/passenger";
 import {Input} from "@angular/core";
 import {NgClass, NgIf, NgStyle} from "@angular/common";
+import {pickups} from "../typings/ipickup";
 
 
 @Component({
@@ -51,4 +52,10 @@ export class PassengerComponent {
       'border-left': "10px solid " + this.busColor
     }
   }
+
+  getPickupAbbrev(passenger: Passenger): string {
+    const pickupAbbrev = pickups.find(pickup => passenger.pickup.includes(pickup.name))?.abbreviation;
+    return pickupAbbrev ? ` (${pickupAbbrev}) ` : 'No Location';
+  }
+
 }

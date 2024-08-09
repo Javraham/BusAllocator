@@ -95,7 +95,8 @@ export class ApiService {
             pickup,
             hasBoat,
             numOfChildren,
-            hasJourney
+            hasJourney,
+            phoneNumber: val.customer.phoneNumber
           };
         });
 

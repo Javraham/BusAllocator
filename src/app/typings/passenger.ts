@@ -8,5 +8,6 @@ export interface Passenger {
   email: string,
   hasBoat: boolean,
   numOfChildren: number,
-  hasJourney: boolean
+  hasJourney: boolean,
+  phoneNumber: string
 }

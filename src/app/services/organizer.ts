@@ -28,6 +28,7 @@ export class TourOrganizer {
       const hasJourney = passengerData['hasJourney'];
       const startTime = passengerData['startTime'];
       const confirmationCode = passengerData['confirmationCode']
+      const phoneNumber = passengerData['phoneNumber']
 
       const passenger: Passenger = {
         confirmationCode,
@@ -39,7 +40,8 @@ export class TourOrganizer {
         hasBoat,
         numOfPassengers,
         hasJourney,
-        startTime
+        startTime,
+        phoneNumber
       };
 
       if (!this.pickupLocations.has(pickup)) {

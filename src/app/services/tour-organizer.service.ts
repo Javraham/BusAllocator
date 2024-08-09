@@ -81,9 +81,9 @@ export class TourOrganizerService {
           this.passengerService.getNoBoatPassengers(bus.getPassengers()).forEach(passenger => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           });
         }
@@ -99,9 +99,9 @@ export class TourOrganizerService {
           this.passengerService.getBoatPassengers(bus.getPassengers()).forEach(passenger => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           });
         }
@@ -116,9 +116,9 @@ export class TourOrganizerService {
           this.passengerService.getJourneyPassengers(bus.getPassengers()).forEach(passenger => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           });
         }
@@ -150,9 +150,9 @@ export class TourOrganizerService {
           this.passengerService.getNoBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           });
         }
@@ -167,9 +167,9 @@ export class TourOrganizerService {
           this.passengerService.getBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           });
         }
@@ -184,9 +184,9 @@ export class TourOrganizerService {
           this.passengerService.getJourneyPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           });
         }

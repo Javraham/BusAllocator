@@ -52,11 +52,12 @@
 
 <div class="passenger-container" [ngStyle]="getStyles()">
   <div class="info-container">
-    <p>{{passengerInfo.firstName}} {{passengerInfo.lastName}}</p>
+    <div>
+      <p>{{passengerInfo.firstName}} {{passengerInfo.lastName}}</p>
+      <p>{{getPickupAbbrev(passengerInfo)}}</p>
+    </div>
     <p style="font-weight: 400">{{passengerInfo.numOfPassengers}} {{passengerInfo.numOfPassengers === 1 ? "Passenger" : "Passengers"}}</p>
     <p style="font-weight: 400" *ngIf="passengerInfo.numOfChildren !== 0">{{passengerInfo.numOfChildren}} {{passengerInfo.numOfChildren === 1 ? "Child" : "Children"}}</p>
-<!--    <i class="bi bi-dot"></i>-->
-<!--    <p>{{passengerInfo.hasJourney ? "Boat Cruise + Journey" : passengerInfo.hasBoat ? "Boat Cruise" : "No Boat"}}</p>-->
   </div>
   <button [ngClass]="{'active': isActive}" [ngStyle]="getButtonStyles()" (click)="toggleButton()">Exclude</button>
 </div>
