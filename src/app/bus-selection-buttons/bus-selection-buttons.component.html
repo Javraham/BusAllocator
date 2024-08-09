@@ -76,7 +76,9 @@
   <ng-template  #success>
     <div class="success-msg col-md-6" *ngIf="successMap.get(time)?.[0] || false; else failed" >
       <i class="bi bi-check-circle" style="color: #0ab937"></i>
-      <p class="success-text">Passengers Allocated Successfully! <strong *ngIf="successMap.get(time)?.[1]">Buses were split!</strong></p>
+      <p class="success-text">Passengers Allocated Successfully! <strong *ngIf="successMap.get(time)?.[1]">
+        Passengers from the same pickup locations were split into different buses
+      </strong></p>
     </div>
   </ng-template>
   <ng-template #failed>
