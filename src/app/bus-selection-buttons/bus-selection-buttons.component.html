@@ -22,13 +22,13 @@
   .reset-button {
     background: white; /* Blue background */
     color: #4169E0;
-    border: none;
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
     transition: background 0.3s ease;
     margin-left: 10px;
+    border: 1px solid #4169E0;
   }
 
   .sort-button:hover {
@@ -74,9 +74,9 @@
 </style>
 <div class="bus-selection-container">
   <ng-template  #success>
-    <div class="success-msg col-md-6" *ngIf="successMap.get(time); else failed" >
+    <div class="success-msg col-md-6" *ngIf="successMap.get(time)?.[0] || false; else failed" >
       <i class="bi bi-check-circle" style="color: #0ab937"></i>
-      <p class="success-text">Passengers Allocated Successfully!</p>
+      <p class="success-text">Passengers Allocated Successfully! <strong *ngIf="successMap.get(time)?.[1]">Buses were split!</strong></p>
     </div>
   </ng-template>
   <ng-template #failed>

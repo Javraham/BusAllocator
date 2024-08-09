@@ -21,7 +21,7 @@ export class BusSelectionButtonsComponent {
   @Input() index !: number;
   @Input() usedBuses !: Map<string, string[]>;
   @Input() time!: string;
-  @Input() successMap!: Map<string, boolean>;
+  @Input() successMap!: Map<string, [boolean, boolean]>;
 
   isChecked(value: string): boolean {
     const optionsForTime = this.selectedOptions.get(this.time);

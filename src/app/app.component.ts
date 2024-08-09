@@ -38,7 +38,7 @@ export class AppComponent {
   htmlContent: SafeHtml = "";
   busSelections: Map<string, string[]> = new Map<string, string[]>;
   usedBuses: Map<string, string[]> = new Map<string, string[]>;
-  successMap: Map<string, boolean> = new Map<string, boolean>();
+  successMap: Map<string, [boolean, boolean]> = new Map<string, [boolean, boolean]>();
   excludedPassengersMap: Map<string, Passenger[]> = new Map<string, Passenger[]>();
   excludedPassengers: Passenger[] = [];
   loadContent: boolean = false;
@@ -115,16 +115,18 @@ export class AppComponent {
   organizePassengers(busInfoList: IBus[], passengers: Passenger[]) {
     const organizer = new TourOrganizer(busInfoList)
     organizer.loadData(passengers)
-    if(organizer.allocatePassengers()){
+    const isAllocated = organizer.allocatePassengers()
+    if(isAllocated[0]){
+      console.log(isAllocated)
       organizer.buses.forEach(bus => {
         console.log(bus, bus.getCurrentLoad())
       })
       this.busList = organizer.buses;
       this.tourBusOrganizer.setBuses(passengers[0].startTime, organizer.buses);
-      this.successMap.set(passengers[0].startTime, true)
+      this.successMap.set(passengers[0].startTime, isAllocated)
     }
     else{
-      this.successMap.set(passengers[0].startTime, false)
+      this.successMap.set(passengers[0].startTime, isAllocated)
     }
 
     this.busList = organizer.buses;
@@ -173,7 +175,7 @@ export class AppComponent {
       this.loadContent = true;
       this.passengers = passengers.filter(val => val.pickup != null)
       this.usedBuses = new Map<string, string[]>();
-      this.successMap = new Map<string, boolean>();
+      this.successMap = new Map<string, [boolean, boolean]>();
       this.resetBusSelection()
       this.tourBusOrganizer.resetBuses();
       this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))

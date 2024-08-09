@@ -37,19 +37,26 @@ export class PassengerComponent {
   getButtonStyles() {
     return this.excludedPassengers.filter(val => this.passengerInfo.confirmationCode == val.confirmationCode).length == 0 ? {
       "border": "1px solid " + this.busColor,
-      "color": this.busColor
-    }
+      "color": this.busColor,
+        "background-color": this.busColor + 9,
+      "font-weight": "600"
+      }
     :
       {
         "border": "1px solid " + this.busColor,
         "color": "white",
-        "background-color": this.busColor
+        "background-color": this.busColor,
+        "font-weight": "600"
       }
 
   }
   getStyles() {
     return {
-      'border-left': "10px solid " + this.busColor
+      'border-left': "10px solid " + this.busColor,
+      'background-color': "white",
+      // 'border-right': "1px solid " + this.busColor,
+      // 'border-top': "1px solid " + this.busColor,
+      // 'border-bottom': "1px solid " + this.busColor
     }
   }
 
