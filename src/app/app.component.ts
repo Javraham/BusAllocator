@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, model, OnInit, ViewChild} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {ApiService} from "./services/api.service";
 import {FetchBookingDataOptions} from "./typings/fetch-data-booking-options";
@@ -14,11 +14,12 @@ import {Bus} from "./services/bus"; // Import CommonModule
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {BusSelectionButtonsComponent} from "./bus-selection-buttons/bus-selection-buttons.component";
 import {PassengersService} from "./services/passengers.service";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PassengerComponent, SidePanelComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage],
+  imports: [RouterOutlet, PassengerComponent, SidePanelComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -42,6 +43,11 @@ export class AppComponent {
   excludedPassengersMap: Map<string, Passenger[]> = new Map<string, Passenger[]>();
   excludedPassengers: Passenger[] = [];
   loadContent: boolean = false;
+
+  form = new FormGroup({
+    accessKey: new FormControl('', Validators.required),
+    secretKey: new FormControl('', [Validators.required, Validators.email])
+  });
   protected readonly buses = buses;
 
   updateBusSelections(event: [string[], string]) {
@@ -165,4 +171,9 @@ export class AppComponent {
     this.tourBusOrganizer.resetBuses();
     this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
   }
+
+  Authorize(form: any) {
+    console.log(this.form.value.accessKey)
+  }
+
 }

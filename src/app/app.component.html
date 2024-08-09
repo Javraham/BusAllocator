@@ -7,7 +7,6 @@
 
   nav {
     background-color: white; /* Background color */
-    border-bottom: 1px solid grey;
     margin: 0;
     display: flex;
     justify-content: space-between;
@@ -23,7 +22,7 @@
   }
 
   .styled-button {
-    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    background: linear-gradient(135deg, #FC5923 0%, #4169E0 100%);
     color: white;
     border: none;
     border-radius: 25px;
@@ -37,13 +36,13 @@
   }
 
   .styled-button:hover {
-    background: linear-gradient(135deg, #a777e3 0%, #6e8efb 100%);
+    background: linear-gradient(135deg, #4169E0 0%, #FC5923 100%);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
 
   .styled-button:active {
-    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    background: linear-gradient(135deg, #FC5923 0%, #4169E0 100%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transform: translateY(0);
     color: white; /* Ensure text color stays white */
@@ -89,23 +88,24 @@
   </nav>
   <div class="container-fluid" id="content" #content>
     <div class="row">
-      <div class="col-md-2 col-sm-4" style="margin-bottom: 10px;">
-        <button class="btn btn-primary"><i class="bi bi-lock-fill"></i> Authorize</button>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
-        <div class="input-group">
-          <span class="input-group-addon">AccessKey</span>
-          <input class="form-control" type="password"/>
+      <form [formGroup]="form" #authorize (ngSubmit)="Authorize(authorize)" style="padding-left: 0">
+        <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
+          <div class="input-group">
+            <span class="input-group-addon">AccessKey</span>
+            <input class="form-control" formControlName="accessKey" name="access-key" type="password" required/>
+          </div>
         </div>
-      </div>
-      <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
-        <div class="input-group">
-          <span class="input-group-addon">SecretKey</span>
-          <input class="form-control" type="password"/>
+        <div class="col-md-3 col-sm-5" style="margin-bottom: 10px;">
+          <div class="input-group">
+            <span class="input-group-addon">SecretKey</span>
+            <input class="form-control" formControlName="secretKey" name="secret-key" type="password" required/>
+          </div>
         </div>
-      </div>
+        <div class="col-md-2 col-sm-4" style="margin-bottom: 10px;">
+          <button type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-lock-fill" style="color: white"></i> Authorize</button>
+        </div>
+      </form>
+
     </div>
     <div class="row date">
       <div class="col-md-3 col-sm-6" style="margin-bottom: 10px; padding-right: 0">
@@ -115,7 +115,7 @@
         </div>
       </div>
       <div class="col-md-2 col-sm-4">
-        <button class="btn btn-primary" (click)="loadPassengers()">Load passengers</button>
+        <button class="btn btn-primary" style="background-color: #4169E0; color: white" (click)="loadPassengers()">Load passengers</button>
       </div>
     </div>
    <div *ngIf="loadContent">
@@ -146,7 +146,7 @@
             <h5>Excluded Passengers</h5>
             <div class="row">
               <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of excludedPassengersMap.get(time[0])">
-                <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4B7FCC'"></app-passenger>
+                <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4169E0'"></app-passenger>
               </div>
             </div>
           </div>
@@ -154,7 +154,7 @@
         <ng-template #isNotAllocated>
           <div class="row">
             <div *ngFor="let passenger of getPassengersByTime(time[0])" class="col-lg-4 col-md-6 col-sm-12">
-              <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4B7FCC'"></app-passenger>
+              <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4169E0'"></app-passenger>
             </div>
           </div>
         </ng-template>
