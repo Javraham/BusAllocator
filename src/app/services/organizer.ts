@@ -53,11 +53,25 @@ export class TourOrganizer {
     }
   }
 
-  allocatePassengers(): boolean {
+  getSortedLocation() {
+    return Array.from(this.pickupLocations).sort((a, b) => {
+      return this.getNumOfPassengersByPickup(b[0]) - this.getNumOfPassengersByPickup(a[0]);
+    });
+  }
+
+  allocatePassengers(sortedLocations = this.getSortedLocation()): boolean {
     try {
-      const sortedLocations = Array.from(this.pickupLocations).sort((a, b) => {
-        return this.getNumOfPassengersByPickup(b[0]) - this.getNumOfPassengersByPickup(a[0]);
-      });
+
+      console.log(sortedLocations)
+
+      const totalCapacities = this.buses.reduce((bus, currentBus) => bus + currentBus.capacity, 0)
+      const totalPassengers = sortedLocations.reduce((val, current) => {
+        return val + current[1].reduce((passenger, currentPassenger) => passenger + currentPassenger.numOfPassengers, 0)
+      }, 0)
+
+      if(totalCapacities + 1 < totalPassengers){
+        return false
+      }
 
       const shuffle = (array: any[]) => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -86,14 +100,38 @@ export class TourOrganizer {
             passengers.forEach(passenger => bus.removePassenger(passenger)); // Backtrack
           }
         }
-        return false;
-      };
+
+        // const specialBus = this.buses.find(bus => bus.busId === 'N1');
+        // if (specialBus) {
+        //   const originalCapacity = specialBus.capacity;
+        //   specialBus.capacity += 1; // Temporarily increase capacity
+        //
+        //   // Retry allocation
+        //   const retrySuccess = allocate(index);
+        //
+        //   // Revert capacity back to original
+        //   specialBus.capacity = originalCapacity;
+        //
+        //   console.log("buses splitted")
+        //   return retrySuccess;
+        // }
+        return false
+      }
 
       const success = allocate(0);
 
       if (!success) {
-        console.error("Unable to allocate all passengers.");
-        return this.allocatePassengersBackup()
+        const busN1 = this.buses.find(val => val.busId === 'N1');
+
+        if (busN1 && busN1.capacity === 13) {
+          busN1.capacity = 14;
+          console.log(this.buses)
+          return this.allocatePassengers()
+        }
+        else{
+          console.error("Unable to allocate all passengers.");
+        }
+        // return this.allocatePassengersBackup()
       }
 
       return success;

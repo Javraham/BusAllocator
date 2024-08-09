@@ -81,6 +81,21 @@
   #date {
     text-align: left;
   }
+
+  .error-msg {
+    background-color: #fda5a5;
+    display: flex;
+    /*align-items: center;*/
+    gap: 5px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .error-text{
+    color: #b63f3f;
+    margin: 0;
+    font-weight: 600;
+  }
 </style>
 <main>
   <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
@@ -88,21 +103,24 @@
   </nav>
   <div class="container-fluid" id="content" #content>
     <div class="row">
-      <form [formGroup]="form" #authorize (ngSubmit)="Authorize(authorize)" style="padding-left: 0">
+      <form [formGroup]="form" (ngSubmit)="Authorize()" style="padding-left: 0">
         <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
           <div class="input-group">
             <span class="input-group-addon">AccessKey</span>
-            <input class="form-control" formControlName="accessKey" name="access-key" type="password" required/>
+            <input class="form-control" formControlName="accessKey" name="access-key" type="text" required/>
           </div>
         </div>
         <div class="col-md-3 col-sm-5" style="margin-bottom: 10px;">
           <div class="input-group">
             <span class="input-group-addon">SecretKey</span>
-            <input class="form-control" formControlName="secretKey" name="secret-key" type="password" required/>
+            <input class="form-control" formControlName="secretKey" name="secret-key" type="text" required/>
           </div>
         </div>
         <div class="col-md-2 col-sm-4" style="margin-bottom: 10px;">
-          <button type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-lock-fill" style="color: white"></i> Authorize</button>
+          <button *ngIf="!isAuthorized; else notAuthorized" type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-lock-fill" style="color: white"></i> Authorize</button>
+          <ng-template #notAuthorized>
+            <button type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-unlock-fill" style="color: white"></i> Logout</button>
+          </ng-template>
         </div>
       </form>
 
@@ -117,6 +135,10 @@
       <div class="col-md-2 col-sm-4">
         <button class="btn btn-primary" style="background-color: #4169E0; color: white" (click)="loadPassengers()">Load passengers</button>
       </div>
+    </div>
+    <div *ngIf="errorMsg.length > 0" class="error-msg col-md-6">
+      <i class="bi bi-exclamation-circle" style="color: #b63f3f"></i>
+      <p class="error-text">{{errorMsg}}</p>
     </div>
    <div *ngIf="loadContent">
       <h4>Passenger List</h4>

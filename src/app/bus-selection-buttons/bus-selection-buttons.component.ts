@@ -54,13 +54,11 @@ export class BusSelectionButtonsComponent {
     } else {
       this.selectedOptions.set(this.time, optionsForTime.filter(v => v !== value));
     }
-    console.log(this.selectedOptions)
     this.updateCheckList.emit([this.selectedOptions.get(this.time) || [], this.time]);
   }
 
   sortPassengers() {
     this.updatedUsedBuses.emit([this.selectedOptions.get(this.time) || [], this.time]);
-    console.log(this.successMap);
   }
 
   protected readonly buses = buses;

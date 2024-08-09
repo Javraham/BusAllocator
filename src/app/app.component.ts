@@ -8,7 +8,6 @@ import {buses, IBus} from "./typings/BusSelection";
 import {BusService} from "./services/bus.service";
 import {TourOrganizer} from "./services/organizer";
 import {PassengerComponent} from "./passenger/passenger.component";
-import {SidePanelComponent} from "./side-panel/side-panel.component";
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {Bus} from "./services/bus"; // Import CommonModule
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -19,7 +18,7 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PassengerComponent, SidePanelComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule],
+  imports: [RouterOutlet, PassengerComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -43,17 +42,18 @@ export class AppComponent {
   excludedPassengersMap: Map<string, Passenger[]> = new Map<string, Passenger[]>();
   excludedPassengers: Passenger[] = [];
   loadContent: boolean = false;
-  isAuthorized: boolean = localStorage.length > 0;
+  isAuthorized: boolean = localStorage.getItem('access') != null && localStorage.getItem('secret') != null;
+  errorMsg: string = "";
 
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
     secretKey: new FormControl('', [Validators.required, Validators.email])
   });
+
   protected readonly buses = buses;
 
   updateBusSelections(event: [string[], string]) {
     this.busSelections.set(event[1], event[0])
-    console.log("app", this.busSelections)
   }
 
   updateUsedBuses(event: [string[], string]) {
@@ -69,8 +69,6 @@ export class AppComponent {
   constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private passengerService: PassengersService) {
     this.fetchOptions = {
       endpoint: '/booking.json/booking-search',  // Replace with your actual endpoint
-      accessKey: 'bbcf21ba55a94a11b99c10c65406f4f6',
-      secretKey: '765b889ad3344f5886a717cd8b490152',
       date: new Date().toISOString().replace('T', ' ').substring(0, 19),
       httpMethod: "POST",
     };
@@ -82,6 +80,12 @@ export class AppComponent {
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
     const day = String(today.getDate()).padStart(2, '0');
     this.date = `${year}-${month}-${day}`;
+    if(this.isAuthorized){
+      this.form.get('accessKey')?.disable();
+      this.form.get('secretKey')?.disable();
+    }
+    console.log(localStorage.getItem('access'))
+    console.log(this.isAuthorized)
   }
 
   getHTML() {
@@ -163,24 +167,38 @@ export class AppComponent {
   }
 
   async loadPassengers() {
-    const passengers = await this.apiService.getPassengers(this.date, this.fetchOptions)
-    this.loadContent = true;
-    this.passengers = passengers.filter(val => val.pickup != null)
-    this.usedBuses = new Map<string, string[]>();
-    this.successMap = new Map<string, boolean>();
-    this.resetBusSelection()
-    this.tourBusOrganizer.resetBuses();
-    this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+    try{
+      const passengers = await this.apiService.getPassengers(this.date, this.fetchOptions)
+      this.errorMsg = "";
+      this.loadContent = true;
+      this.passengers = passengers.filter(val => val.pickup != null)
+      this.usedBuses = new Map<string, string[]>();
+      this.successMap = new Map<string, boolean>();
+      this.resetBusSelection()
+      this.tourBusOrganizer.resetBuses();
+      this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+    }
+    catch (e: any){
+      this.errorMsg = e.message;
+      this.loadContent = false
+    }
+
   }
 
-  Authorize(form: any) {
-    this.isAuthorized = !this.isAuthorized;
-    if(this.isAuthorized){
-      this.apiService.clearKeys()
-      this.form.reset()
+  Authorize() {
+    if(!this.isAuthorized){
+      this.apiService.setKeys(this.form.value);
+      this.form.reset();
+      this.form.get('accessKey')?.disable();
+      this.form.get('secretKey')?.disable();
     }
-    console.log(this.form.value.accessKey)
-    this.apiService.setKeys(this.form.value)
+
+    else{
+      this.apiService.clearKeys();
+      this.form.get('accessKey')?.enable();
+      this.form.get('secretKey')?.enable();
+    }
+    this.isAuthorized = !this.isAuthorized;
   }
 
 }

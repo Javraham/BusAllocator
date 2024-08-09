@@ -29,7 +29,7 @@ export class ApiService {
   }
 
   fetchBokunData = async (props: FetchBookingDataOptions): Promise<any> => {
-    const { endpoint, accessKey, secretKey, httpMethod, date, body } = props;
+    const { endpoint, httpMethod, date, body } = props;
     const url = `${this.url}${endpoint}`;
 
     const headers = {
@@ -124,7 +124,7 @@ export class ApiService {
     }
 
     catch (e){
-      throw new Error("Problem with Authentication")
+      throw new Error("Problem with authentication: Please double check your access and secret keys")
     }
   }
 }
