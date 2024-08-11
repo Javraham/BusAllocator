@@ -14,9 +14,11 @@
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     transition: background 0.3s ease;
+    margin-right: 10px;
+    margin-bottom: 10px;
   }
 
   .reset-button {
@@ -24,11 +26,12 @@
     color: #4169E0;
     border-radius: 5px;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     transition: background 0.3s ease;
-    margin-left: 10px;
     border: 1px solid #4169E0;
+    margin-right: 10px;
+    margin-bottom: 10px;
   }
 
   .sort-button:hover {
@@ -71,6 +74,7 @@
     gap: 10px;
   }
 
+
 </style>
 <div class="bus-selection-container">
   <ng-template  #success>
@@ -109,10 +113,10 @@
     </div>
 
   </div>
-  <div>
-    <button class="sort-button" (click)="sortPassengers()">Sort Passengers</button>
-    <button class="reset-button" (click)="selectAll()">Select All Buses</button>
-    <button class="reset-button" (click)="resetBuses()">Reset Buses</button>
+  <div class="button-container">
+    <button class="sort-button " (click)="sortPassengers()">Sort Passengers</button>
+    <button class="reset-button " (click)="selectAll()">Select All Buses</button>
+    <button class="reset-button " (click)="resetBuses()">Reset Buses</button>
   </div>
 </div>
 
