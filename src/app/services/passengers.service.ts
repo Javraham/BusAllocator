@@ -41,17 +41,25 @@ export class PassengersService {
       }
     }
 
-    return pickupLocations
+    // return pickupLocations
 
     try {
-      const extractTime = (location: string): Date => {
-        const timeStr = location.split(" - ")[0].split(" ").slice(1).join(" ");
-        return new Date(`1970-01-01T${timeStr}:00`);
-      };
+      const extractTime = (str: any) => {
+        const timeMatch = str.match(/\b(\d{1,2}):(\d{2})\s*(AM|PM)\b/);
+        if (timeMatch) {
+          let [ , hours, minutes, period ] = timeMatch;
+          hours = parseInt(hours);
+          minutes = parseInt(minutes);
+          if (period === "PM" && hours !== 12) hours += 12;
+          if (period === "AM" && hours === 12) hours = 0;
+          return hours * 60 + minutes; // Convert time to minutes since midnight
+        }
+        return 0;
+      }
 
       return new Map(
-        Object.keys(pickupLocations)
-          .sort((a, b) => extractTime(a).getTime() - extractTime(b).getTime())
+        Array.from(pickupLocations.keys())
+          .sort((a, b) => extractTime(a) - extractTime(b))
           .map(key => [key, pickupLocations.get(key) as number])
       );
 

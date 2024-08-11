@@ -74,21 +74,23 @@ export class ApiService {
         "to": date
       },
       "bookingStatuses": [
-        "CONFIRMED"
+        "CONFIRMED",
       ]
     }
     try {
       const jsonData = await this.fetchBokunData(fetchOptions);
 
       const data: Passenger[] = await jsonData.items
+        .filter((val: any) => val.productBookings[0].status !== "CANCELLED")
         .map((val: any) => {
           const productBooking = val.productBookings[0];
-
+          console.log(productBooking.rateTitle)
           const numOfPassengers = productBooking?.totalParticipants;
           const pickup = productBooking?.fields?.pickupPlace?.title ?? productBooking?.fields?.pickupPlaceDescription;
           const hasBoat = productBooking?.rateTitle.includes("Boat");
           const hasJourney = productBooking?.rateTitle.includes("AND");
           const startTime = productBooking?.fields?.startTimeStr;
+          const option = productBooking?.rateTitle
 
           const numOfChildren = productBooking?.fields?.priceCategoryBookings.reduce((total: number, val: any) => {
             return val?.pricingCategory.ticketCategory === "CHILD" ? total + 1 : total
@@ -105,7 +107,8 @@ export class ApiService {
             hasBoat,
             numOfChildren,
             hasJourney,
-            phoneNumber: val.customer.phoneNumber
+            phoneNumber: val.customer.phoneNumber,
+            option
           };
         });
 
@@ -119,7 +122,7 @@ export class ApiService {
           map.set(data_set.startTime, data_set.numOfPassengers)
         }
       }
-
+      console.log(data)
       return data
     }
 

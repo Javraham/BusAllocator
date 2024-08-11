@@ -66,4 +66,8 @@ export class BusSelectionButtonsComponent {
   resetBuses() {
     this.removeBuses.emit([this.time, this.index])
   }
+
+  selectAll() {
+    this.updateCheckList.emit([buses.map(val => val.busId) || [], this.time]);
+  }
 }

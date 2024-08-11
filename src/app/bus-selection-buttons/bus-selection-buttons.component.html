@@ -1,4 +1,4 @@
-<style>
+<style xmlns="http://www.w3.org/1999/html">
   .checkbox-container {
   }
 
@@ -102,13 +102,16 @@
         (change)="onCheckboxChange($event)"
         [checked]="isChecked(bus.busId)"
         [disabled]="isDisabled(bus.busId)"
+        style="transform: scale(1.3)"
+        [id] = bus.busId
       />
-      <label class="form-check-label">{{ bus.busId }}</label>
+      <label style="font-size: 1.1em" [for] = bus.busId class="form-check-label">{{ bus.busId }}</label>
     </div>
 
   </div>
   <div>
     <button class="sort-button" (click)="sortPassengers()">Sort Passengers</button>
+    <button class="reset-button" (click)="selectAll()">Select All Buses</button>
     <button class="reset-button" (click)="resetBuses()">Reset Buses</button>
   </div>
 </div>
