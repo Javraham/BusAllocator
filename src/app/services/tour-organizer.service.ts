@@ -64,63 +64,23 @@ export class TourOrganizerService {
         htmlResult += `<p style="font-weight: 700">Bus (${bus.busId})</p>
                      <p style="font-weight: 700">Pickups: ${bus.getCurrentLoad()} TOTAL PAX</p>`
         const pickupLocations = this.passengerService.getPassengersByPickupLocations(bus.getPassengers());
-        console.log(pickupLocations)
 
         Array.from(pickupLocations.entries()).forEach(val => {
           htmlResult += `<p>${val[0]} - ${val[1]} PAX</p>`
         })
-        const noBoatPassengers = this.passengerService.getNumOfNoBoatPassengers(bus.getPassengers());
-        if (noBoatPassengers[0] > 0 || noBoatPassengers[1] > 0) {
-          htmlResult += "<br/>"
 
-          if (noBoatPassengers[1] !== 0) {
-            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} ${noBoatPassengers[0] !== 1 ? "Adults" : "Adult"}, ${noBoatPassengers[1]} ${noBoatPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
-          } else {
-            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} ${noBoatPassengers[0] !== 1 ? "Adults" : "Adult"}</strong></p>`
-          }
-          this.passengerService.getNoBoatPassengers(bus.getPassengers()).forEach(passenger => {
+        for(const option of this.passengerService.getOptionsToPassengers(bus.passengers).keys()){
+          htmlResult += "<br/>"
+          const [numOfAdults, numOfChildren] = this.passengerService.getNumOfPassengersForOption(option, bus.passengers)
+          htmlResult += `<p>${option} - <strong>${numOfAdults} ${numOfAdults !== 1 ? "Adults" : "Adult"}${numOfChildren > 0 ? ', ' + numOfChildren + ' ' + (numOfChildren !== 1 ? "Children" : "Child") : ""}</strong></p>`
+          this.passengerService.getOptionsToPassengers(bus.getPassengers()).get(option)?.forEach(passenger => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
               htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
               htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
-          });
-        }
-        htmlResult += '<br/>'
-        const boatPassengers = this.passengerService.getNumOfBoatPassengers(bus.getPassengers());
-        if (boatPassengers[0] > 0 || boatPassengers[1] > 0) {
-          if (boatPassengers[1] !== 0) {
-            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} ${boatPassengers[0] !== 1 ? "Adults" : "Adult"}, ${boatPassengers[1]} ${boatPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
-          } else {
-            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} Adults</strong></p>`
-          }
-          console.log(`\nBoat Cruise - ${boatPassengers[0]} Adults, ${boatPassengers[1]} Children`);
-          this.passengerService.getBoatPassengers(bus.getPassengers()).forEach(passenger => {
-            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
-            if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
-            } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
-            }
-          });
-        }
-        htmlResult += '<br/>'
-        const journeyPassengers = this.passengerService.getNumOfJourneyPassengers(bus.getPassengers());
-        if (journeyPassengers[0] > 0 || journeyPassengers[1] > 0) {
-          if (journeyPassengers[1] !== 0) {
-            htmlResult += `<p>Boat Cruise + Journey - <strong>${journeyPassengers[0]} ${journeyPassengers[0] !== 1 ? "Adults" : "Adult"}, ${journeyPassengers[1]} ${journeyPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
-          } else {
-            htmlResult += `<p>Boat Cruise + Journey - <strong>${journeyPassengers[0]} ${journeyPassengers[0] !== 1 ? "Adults" : "Adult"}</strong></p>`
-          }
-          this.passengerService.getJourneyPassengers(bus.getPassengers()).forEach(passenger => {
-            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
-            if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
-            } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
-            }
-          });
+          })
         }
         htmlResult += '<hr style="background-color: grey; height: 1px"/>'
       }
@@ -138,57 +98,19 @@ export class TourOrganizerService {
         Array.from(pickupLocations.entries()).forEach(val => {
           htmlResult += `<p>${val[0]} - ${val[1]} PAX</p>`
         })
-        const noBoatPassengers = this.passengerService.getNumOfNoBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]);
-        if (noBoatPassengers[0] > 0 || noBoatPassengers[1] > 0) {
-          htmlResult += "<br/>"
 
-          if (noBoatPassengers[1] !== 0) {
-            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} ${noBoatPassengers[0] !== 1 ? "Adults" : "Adult"}, ${noBoatPassengers[1]} ${noBoatPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
-          } else {
-            htmlResult += `<p>No Boat - <strong>${noBoatPassengers[0]} Adults</strong></p>`
-          }
-          this.passengerService.getNoBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
+        for(const option of this.passengerService.getOptionsToPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).keys()){
+          htmlResult += "<br/>"
+          const [numOfAdults, numOfChildren] = this.passengerService.getNumOfPassengersForOption(option, this.TimeToPassengersMap.get(time) as Passenger[])
+          htmlResult += `<p>${option} - <strong>${numOfAdults} ${numOfAdults !== 1 ? "Adults" : "Adult"}, ${numOfChildren > 0 ? ', ' + numOfChildren + ' ' + (numOfChildren !== 1 ? "Children" : "Child") : ""}</strong></p>`
+          this.passengerService.getOptionsToPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).get(option)?.forEach(passenger => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
               htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
               htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
-          });
-        }
-        htmlResult += '<br/>'
-        const boatPassengers = this.passengerService.getNumOfBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]);
-        if (boatPassengers[0] > 0 || boatPassengers[1] > 0) {
-          if (boatPassengers[1] !== 0) {
-            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} ${boatPassengers[0] !== 1 ? "Adults" : "Adult"}, ${boatPassengers[1]} ${boatPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
-          } else {
-            htmlResult += `<p>Boat Cruise - <strong>${boatPassengers[0]} ${boatPassengers[0] !== 1 ? "Adults" : "Adult"}</strong></p>`
-          }
-          this.passengerService.getBoatPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
-            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
-            if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
-            } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
-            }
-          });
-        }
-        htmlResult += '<br/>'
-        const journeyPassengers = this.passengerService.getNumOfJourneyPassengers(this.TimeToPassengersMap.get(time) as Passenger[]);
-        if (journeyPassengers[0] > 0 || journeyPassengers[1] > 0) {
-          if (journeyPassengers[1] !== 0) {
-            htmlResult += `<p>Boat Cruise + Journey - <strong>${journeyPassengers[0]} ${journeyPassengers[0] !== 1 ? "Adults" : "Adult"}, ${journeyPassengers[1]} ${journeyPassengers[1] !== 1 ? "Children" : "Child"}</strong></p>`
-          } else {
-            htmlResult += `<p>Boat Cruise + Journey  - <strong>${journeyPassengers[0]} ${journeyPassengers[0] !== 1 ? "Adults" : "Adult"}</strong></p>`
-          }
-          this.passengerService.getJourneyPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).forEach(passenger => {
-            const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
-            if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
-            } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
-            }
-          });
+          })
         }
         htmlResult += '<hr style="background-color: grey; height: 1px"/>'
       }

@@ -72,6 +72,27 @@ export class PassengersService {
     return passengers.filter(passenger => passenger.hasBoat && !passenger.hasJourney);
   }
 
+  getOptionsToPassengers(passengers: Passenger[]) {
+    const optionsMap = new Map<string, Passenger[]>();
+    for (const passenger of passengers) {
+      if (!optionsMap.has(passenger.option)) {
+        optionsMap.set(passenger.option, [passenger]);
+      } else {
+        let passengerList = optionsMap.get(passenger.option) as Passenger[]
+        passengerList.push(passenger)
+        optionsMap.set(passenger.option, passengerList);
+      }
+    }
+    return optionsMap
+  }
+
+  getNumOfPassengersForOption(option: string, passengers: Passenger[]) {
+    const passengerList = this.getOptionsToPassengers(passengers).get(option) || [];
+    const adults = passengerList.reduce((total, passenger) => total + (passenger.numOfPassengers - passenger.numOfChildren), 0);
+    const children = passengerList.reduce((total, passenger) => total + passenger.numOfChildren, 0);
+    return [adults, children];
+  }
+
   getJourneyPassengers(passengers: Passenger[]): Passenger[] {
     return passengers.filter(passenger => passenger.hasJourney);
   }
