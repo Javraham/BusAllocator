@@ -107,9 +107,9 @@
         [checked]="isChecked(bus.busId)"
         [disabled]="isDisabled(bus.busId)"
         style="transform: scale(1.3)"
-        [id] = bus.busId
+        [id] = "time + '-' + bus.busId"
       />
-      <label style="font-size: 1.1em" class="form-check-label">{{ bus.busId }}</label>
+      <label [for] = "time + '-' + bus.busId" style="font-size: 1.1em" class="form-check-label">{{ bus.busId }}</label>
     </div>
 
   </div>
