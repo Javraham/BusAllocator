@@ -6,7 +6,7 @@ export interface IBookingOptions {
 export const options: IBookingOptions[] = [
   // 8:00 Tour
   {
-    option: "or journey behind the falls",
+    option: " or ",
     abbrev: "Boat Cruise"
   },
   {

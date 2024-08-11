@@ -91,7 +91,7 @@ export class ApiService {
           const hasJourney = productBooking?.rateTitle.includes("AND");
           const startTime = productBooking?.fields?.startTimeStr;
           const option = options.find(option => productBooking?.rateTitle.toLowerCase().includes(option.option.toLowerCase()))?.abbrev || "Missing Option"
-
+          console.log(productBooking?.rateTitle)
           const numOfChildren = productBooking?.fields?.priceCategoryBookings.reduce((total: number, val: any) => {
             return val?.pricingCategory.ticketCategory === "CHILD" ? total + 1 : total
           }, 0)
