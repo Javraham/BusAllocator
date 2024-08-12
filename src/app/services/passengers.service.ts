@@ -73,6 +73,22 @@ export class PassengersService {
   }
 
   getOptionsToPassengers(passengers: Passenger[]) {
+    function sortKeys(map: Map<string, Passenger[]>) {
+      const sortOrder = ["No boat", "Boat Cruise", "Boat Cruise + Journey"];
+
+      // Get the map's keys and sort them according to the sortOrder array
+      const sortedKeys = Array.from(map.keys()).sort((a: string, b: string) => {
+        return sortOrder.indexOf(a) - sortOrder.indexOf(b);
+      });
+
+      // Create a new sorted map
+      const sortedMap = new Map();
+      for (const key of sortedKeys) {
+        sortedMap.set(key, map.get(key));
+      }
+
+      return sortedMap;
+    }
     const optionsMap = new Map<string, Passenger[]>();
     for (const passenger of passengers) {
       if (!optionsMap.has(passenger.option)) {
@@ -83,13 +99,13 @@ export class PassengersService {
         optionsMap.set(passenger.option, passengerList);
       }
     }
-    return optionsMap
+    return sortKeys(optionsMap)
   }
 
   getNumOfPassengersForOption(option: string, passengers: Passenger[]) {
     const passengerList = this.getOptionsToPassengers(passengers).get(option) || [];
-    const adults = passengerList.reduce((total, passenger) => total + (passenger.numOfPassengers - passenger.numOfChildren), 0);
-    const children = passengerList.reduce((total, passenger) => total + passenger.numOfChildren, 0);
+    const adults = passengerList.reduce((total: number, passenger: Passenger) => total + (passenger.numOfPassengers - passenger.numOfChildren), 0);
+    const children = passengerList.reduce((total: number, passenger: Passenger) => total + passenger.numOfChildren, 0);
     return [adults, children];
   }
 

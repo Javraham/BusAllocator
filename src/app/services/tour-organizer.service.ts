@@ -73,7 +73,7 @@ export class TourOrganizerService {
           htmlResult += "<br/>"
           const [numOfAdults, numOfChildren] = this.passengerService.getNumOfPassengersForOption(option, bus.passengers)
           htmlResult += `<p>${option} - <strong>${numOfAdults} ${numOfAdults !== 1 ? "Adults" : "Adult"}${numOfChildren > 0 ? ', ' + numOfChildren + ' ' + (numOfChildren !== 1 ? "Children" : "Child") : ""}</strong></p>`
-          this.passengerService.getOptionsToPassengers(bus.getPassengers()).get(option)?.forEach(passenger => {
+          this.passengerService.getOptionsToPassengers(bus.getPassengers()).get(option)?.forEach((passenger: Passenger) => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
               htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
@@ -103,7 +103,7 @@ export class TourOrganizerService {
           htmlResult += "<br/>"
           const [numOfAdults, numOfChildren] = this.passengerService.getNumOfPassengersForOption(option, this.TimeToPassengersMap.get(time) as Passenger[])
           htmlResult += `<p>${option} - <strong>${numOfAdults} ${numOfAdults !== 1 ? "Adults" : "Adult"}${numOfChildren > 0 ? ', ' + numOfChildren + ' ' + (numOfChildren !== 1 ? "Children" : "Child") : ""}</strong></p>`
-          this.passengerService.getOptionsToPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).get(option)?.forEach(passenger => {
+          this.passengerService.getOptionsToPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).get(option)?.forEach((passenger: Passenger) => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
               htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
