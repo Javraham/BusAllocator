@@ -8,7 +8,7 @@ To change the booking options, navigate to the `src/typings` folder. There you w
 
 ## Add, Remove, or Change Buses
 
-Navigate to `src/typings` folder and select the `BusSelection.ts` file. You will see a variable called `export const buses`. This variable stores all the buses with fields including the bus name, the capacity, and the color (which is just the color thats used when we sort the passengers). To add a bus, simply add a new set of brackets and put in those three fields. You can just copy and paste one set of curly brackets, and just up the values of the fields. You can also change the capacity of buses by changing the number shown in each bus. Likewise for deleting a bus. 
+Navigate to `src/typings` folder and select the `BusSelection.ts` file. You will see a variable called `export const buses`. This variable stores all the buses with fields including the bus name, the capacity, and the color (which is just the color thats used when we sort the passengers). To add a bus, simply add a new set of brackets and put in those three fields. You can just copy and paste one set of curly brackets, and just put the values of the fields. You can also change the capacity of buses by changing the number shown in each bus. Likewise for deleting a bus. 
 
 ## Development server
 
