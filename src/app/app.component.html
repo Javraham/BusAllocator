@@ -133,7 +133,8 @@
           <input id="date" type="date" class="form-control" [value]="date" (change)="onDateChange($event)" />
         </div>
       </div>
-      <div class="col-md-2 col-sm-4">
+      <div class="col" style="margin-bottom: 10px;">
+        <button class="btn btn-primary" style="background-color: #4169E0; color: white; margin-right: 10px" (click)="getPrevDayPassengers()">Previous day</button>
         <button class="btn btn-primary" style="background-color: #4169E0; color: white" (click)="getNextDayPassengers()">Next day</button>
       </div>
     </div>

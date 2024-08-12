@@ -225,4 +225,22 @@ export class AppComponent {
     this.isAuthorized = !this.isAuthorized;
   }
 
+  getPrevDayPassengers() {
+    const [year, month, day] = this.date.split('-').map(Number);
+
+    // Create a new Date object using the provided date
+    const date = new Date(year, month - 1, day); // month is zero-indexed
+
+    // Add one day to the date
+    date.setDate(date.getDate() - 1);
+
+    // Extract the components of the next day
+    const nextYear = date.getFullYear();
+    const nextMonth = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const nextDay = String(date.getDate()).padStart(2, '0');
+
+    this.date = `${nextYear}-${nextMonth}-${nextDay}`;
+    console.log(this.date)
+    this.loadPassengers()
+  }
 }
