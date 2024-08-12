@@ -80,6 +80,7 @@ export class AppComponent {
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
     const day = String(today.getDate()).padStart(2, '0');
     this.date = `${year}-${month}-${day}`;
+    this.loadPassengers()
     if(this.isAuthorized){
       this.form.get('accessKey')?.disable();
       this.form.get('secretKey')?.disable();
@@ -94,6 +95,7 @@ export class AppComponent {
 
   onDateChange(event: any){
     this.date = event.target.value;
+    this.loadPassengers()
   }
 
   getBusesByTime(time: string){
@@ -168,6 +170,25 @@ export class AppComponent {
     console.log(this.excludedPassengersMap)
   }
 
+  getNextDayPassengers() {
+    const [year, month, day] = this.date.split('-').map(Number);
+
+    // Create a new Date object using the provided date
+    const date = new Date(year, month - 1, day); // month is zero-indexed
+
+    // Add one day to the date
+    date.setDate(date.getDate() + 1);
+
+    // Extract the components of the next day
+    const nextYear = date.getFullYear();
+    const nextMonth = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const nextDay = String(date.getDate()).padStart(2, '0');
+
+    this.date = `${nextYear}-${nextMonth}-${nextDay}`;
+    console.log(this.date)
+    this.loadPassengers()
+  }
+
   async loadPassengers() {
     try{
       const passengers = await this.apiService.getPassengers(this.date, this.fetchOptions)
@@ -193,6 +214,7 @@ export class AppComponent {
       this.form.reset();
       this.form.get('accessKey')?.disable();
       this.form.get('secretKey')?.disable();
+      this.loadPassengers()
     }
 
     else{
