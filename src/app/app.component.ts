@@ -80,8 +80,8 @@ export class AppComponent {
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
     const day = String(today.getDate()).padStart(2, '0');
     this.date = `${year}-${month}-${day}`;
-    this.loadPassengers()
     if(this.isAuthorized){
+      this.loadPassengers()
       this.form.get('accessKey')?.disable();
       this.form.get('secretKey')?.disable();
     }

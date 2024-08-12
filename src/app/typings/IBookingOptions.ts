@@ -35,6 +35,13 @@ export const options: IBookingOptions[] = [
   {
     option: "all inclusive tour",
     abbrev: "Tour with dinner and illumination tower"
-  }
+  },
+
+  /*{
+      option: "newOption",
+      abbrev: "what you want to output to show"
+    }
+   */
+
 ]
 
