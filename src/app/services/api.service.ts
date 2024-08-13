@@ -158,7 +158,7 @@ export class ApiService {
       ...fetchOptions,
       body: {
         ...fetchOptions.body,
-        "bookingStatuses": ["ARRIVED"],
+        "bookingStatuses": ["ARRIVED", "NO_SHOW"],
         "startDateRange": {
           "from": date,
           "includeLower": true,
