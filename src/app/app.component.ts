@@ -197,7 +197,7 @@ export class AppComponent {
       const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.fetchOptions)
       this.loading = false
       this.loadContent = true;
-      this.passengers = passengers.filter(val => val.pickup != null)
+      this.passengers = passengers
       this.usedBuses = new Map<string, string[]>();
       this.successMap = new Map<string, [boolean, boolean]>();
       this.resetBusSelection()

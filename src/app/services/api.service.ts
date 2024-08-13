@@ -200,7 +200,7 @@ export class ApiService {
             lastName: val.customer.lastName,
             email: val.customer.email,
             numOfPassengers,
-            pickup,
+            pickup: pickup == null ? "NO PICKUP LOCATION ADDED" : pickup,
             hasBoat,
             numOfChildren,
             hasJourney,
