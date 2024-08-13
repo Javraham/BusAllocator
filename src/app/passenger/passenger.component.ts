@@ -61,8 +61,7 @@ export class PassengerComponent {
   }
 
   getPickupAbbrev(passenger: Passenger): string {
-    const pickupAbbrev = pickups.find(pickup => passenger.pickup.includes(pickup.name))?.abbreviation;
+    const pickupAbbrev = pickups.find(pickup => passenger.pickup?.includes(pickup.name))?.abbreviation;
     return pickupAbbrev ? ` (${pickupAbbrev}) ` : 'No Location';
   }
-
 }

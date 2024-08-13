@@ -44,6 +44,7 @@ export class AppComponent {
   loadContent: boolean = false;
   isAuthorized: boolean = localStorage.getItem('access') != null && localStorage.getItem('secret') != null;
   errorMsg: string = "";
+  loading:boolean = false;
 
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
@@ -68,7 +69,7 @@ export class AppComponent {
 
   constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private passengerService: PassengersService) {
     this.fetchOptions = {
-      endpoint: '/booking.json/booking-search',  // Replace with your actual endpoint
+      endpoint: '/booking.json/product-booking-search',  // Replace with your actual endpoint
       date: new Date().toISOString().replace('T', ' ').substring(0, 19),
       httpMethod: "POST",
     };
@@ -191,8 +192,10 @@ export class AppComponent {
 
   async loadPassengers() {
     try{
-      const passengers = await this.apiService.getPassengers(this.date, this.fetchOptions)
       this.errorMsg = "";
+      this.loading = true;
+      const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.fetchOptions)
+      this.loading = false
       this.loadContent = true;
       this.passengers = passengers.filter(val => val.pickup != null)
       this.usedBuses = new Map<string, string[]>();
@@ -202,6 +205,7 @@ export class AppComponent {
       this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
     }
     catch (e: any){
+      this.loading = false
       this.errorMsg = e.message;
       this.loadContent = false
     }
