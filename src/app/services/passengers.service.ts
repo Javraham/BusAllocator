@@ -57,9 +57,14 @@ export class PassengersService {
         return 0;
       }
 
+      const getNumber = (str: string) => {
+        const match = str.match(/[\[(](\d+(\.\d+)?)[\])]/);
+        return match ? parseFloat(match[1]) : -1;
+      };
+
       return new Map(
         Array.from(pickupLocations.keys())
-          .sort((a, b) => extractTime(a) - extractTime(b))
+          .sort((a, b) => getNumber(a) - getNumber(b))
           .map(key => [key, pickupLocations.get(key) as number])
       );
 
