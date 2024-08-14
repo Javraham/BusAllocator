@@ -6,16 +6,16 @@ export interface IBookingOptions {
 export const options: IBookingOptions[] = [
   // 8:00 Tour
   {
-    option: " or ",
+    option: "boat cruise and journey",
+    abbrev: "Boat Cruise + Journey"
+  },
+  {
+    option: "boat cruise",
     abbrev: "Boat Cruise"
   },
   {
     option: "Standard Tour",
     abbrev: "No boat"
-  },
-  {
-    option: "boat cruise and journey",
-    abbrev: "Boat Cruise + Journey"
   },
 
   // Niagara on the lake Tour - 7:00
