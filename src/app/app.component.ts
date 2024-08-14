@@ -46,7 +46,7 @@ export class AppComponent {
   errorMsg: string = "";
   loading:boolean = false;
   canEdit: boolean = false;
-  protected readonly buses= buses;
+  allBuses= buses.map(bus => ({...bus}));
 
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
@@ -62,7 +62,7 @@ export class AppComponent {
     this.usedBuses.set(event[1], event[0]);
     this.excludedPassengersMap.set(event[1], this.excludedPassengers.filter(val => val.startTime == event[1]));
     const filteredPassengers = this.getPassengersByTime(event[1]).filter(val => this.excludedPassengers.filter(passenger => passenger.confirmationCode == val.confirmationCode).length == 0)
-    const filteredBuses = buses.filter(val => event[0].includes(val.busId))
+    const filteredBuses = this.allBuses.filter(val => event[0].includes(val.busId))
     console.log(filteredBuses, filteredPassengers)
     console.log(this.usedBuses)
     this.organizePassengers(filteredBuses, filteredPassengers)
@@ -197,6 +197,7 @@ export class AppComponent {
       this.errorMsg = "";
       this.loading = true;
       const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.fetchOptions)
+      this.allBuses= buses.map(bus => ({...bus}));
       this.loading = false
       this.loadContent = true;
       this.passengers = passengers
@@ -257,7 +258,7 @@ export class AppComponent {
 
   editCapacity(busId: string, event: any) {
     console.log(event)
-    buses.forEach(bus => {
+    this.allBuses.forEach(bus => {
       if(bus.busId === busId){
         bus.capacity = parseInt(event.target.value)
       }

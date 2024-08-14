@@ -196,7 +196,7 @@
    <div *ngIf="loadContent && !loading">
      <button class="edit-button btn" (click)="toggleEditCapacities()">Edit Bus Capacities</button>
      <div class="row" *ngIf="canEdit">
-       <div *ngFor="let bus of buses" class="form-group col-lg-1 col-md-2 col-sm-4">
+       <div *ngFor="let bus of allBuses" class="form-group col-lg-1 col-md-2 col-sm-4">
          <label [for] = "'input' + '-' + bus.busId" style="font-size: 1.1em" class="">{{ bus.busId }}</label>
          <input
            role="switch"
