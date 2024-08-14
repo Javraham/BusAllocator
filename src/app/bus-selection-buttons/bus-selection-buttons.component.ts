@@ -22,6 +22,7 @@ export class BusSelectionButtonsComponent {
   @Input() usedBuses !: Map<string, string[]>;
   @Input() time!: string;
   @Input() successMap!: Map<string, [boolean, boolean]>;
+  canEdit: boolean = false;
 
   isChecked(value: string): boolean {
     const optionsForTime = this.selectedOptions.get(this.time);
@@ -70,4 +71,6 @@ export class BusSelectionButtonsComponent {
   selectAll() {
     this.updateCheckList.emit([buses.map(val => val.busId) || [], this.time]);
   }
+
+
 }

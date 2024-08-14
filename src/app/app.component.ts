@@ -45,13 +45,14 @@ export class AppComponent {
   isAuthorized: boolean = localStorage.getItem('access') != null && localStorage.getItem('secret') != null;
   errorMsg: string = "";
   loading:boolean = false;
+  canEdit: boolean = false;
+  protected readonly buses= buses;
 
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
     secretKey: new FormControl('', [Validators.required, Validators.email])
   });
 
-  protected readonly buses = buses;
 
   updateBusSelections(event: [string[], string]) {
     this.busSelections.set(event[1], event[0])
@@ -192,12 +193,14 @@ export class AppComponent {
 
   async loadPassengers() {
     try{
+      console.log(buses)
       this.errorMsg = "";
       this.loading = true;
       const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.fetchOptions)
       this.loading = false
       this.loadContent = true;
       this.passengers = passengers
+      this.canEdit = false
       this.usedBuses = new Map<string, string[]>();
       this.successMap = new Map<string, [boolean, boolean]>();
       this.resetBusSelection()
@@ -246,5 +249,18 @@ export class AppComponent {
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
     console.log(this.date)
     this.loadPassengers()
+  }
+
+  toggleEditCapacities() {
+    this.canEdit = !this.canEdit
+  }
+
+  editCapacity(busId: string, event: any) {
+    console.log(event)
+    buses.forEach(bus => {
+      if(bus.busId === busId){
+        bus.capacity = parseInt(event.target.value)
+      }
+    })
   }
 }

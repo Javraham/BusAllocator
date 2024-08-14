@@ -134,6 +134,14 @@
     }
   }
 
+  .edit-button {
+    background: #FC5923FF; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
 </style>
 <main>
   <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
@@ -186,7 +194,21 @@
       <div class="loading-line"></div>
     </div>
    <div *ngIf="loadContent && !loading">
-      <h4>Passenger List</h4>
+     <button class="edit-button btn" (click)="toggleEditCapacities()">Edit Bus Capacities</button>
+     <div class="row" *ngIf="canEdit">
+       <div *ngFor="let bus of buses" class="form-group col-lg-1 col-md-2 col-sm-4">
+         <label [for] = "'input' + '-' + bus.busId" style="font-size: 1.1em" class="">{{ bus.busId }}</label>
+         <input
+           role="switch"
+           type="number"
+           class="form-control"
+           [value]="bus.capacity"
+           [id] = "'input' + '-' + bus.busId"
+           (change)="editCapacity(bus.busId, $event)"
+         />
+       </div>
+     </div>
+     <h4>Passenger List</h4>
       <div *ngFor="let time of getNumOfPassengersByTime()">
         <h5>{{time[0][0] === "0" ? time[0].slice(1) : time[0]}} - {{time[1]}} Passengers</h5>
         <app-bus-selection-buttons

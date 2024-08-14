@@ -84,7 +84,7 @@ export class TourOrganizer {
     return result.sort((a, b) => b[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0) - a[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0))
   }
 
-  allocatePassengers(sortedLocations = this.getSortedLocation(), numOfTries: number = 1, isSplit: boolean = false): [boolean, boolean] {
+  allocatePassengers(sortedLocations = this.getSortedLocation(), numOfTries: number = 0, isSplit: boolean = false): [boolean, boolean] {
     try {
       const totalCapacities = this.buses.reduce((bus, currentBus) => bus + currentBus.capacity, 0)
       const totalPassengers = sortedLocations.reduce((val, current) => {
@@ -128,21 +128,10 @@ export class TourOrganizer {
       }
 
       const success = allocate(0);
-      let split = false;
-      if (!success) {
-        const busN1 = this.buses.find(val => val.busId === 'N1');
 
-        if (busN1 && busN1.capacity === 13) {
-          busN1.capacity = 14;
-          console.log(this.buses)
-          return this.allocatePassengers()
-        }
-        else{
-          console.error("Unable to allocate all passengers.");
-          split = true
-          return this.allocatePassengers(this.getSplitSortedLocation(numOfTries), numOfTries+1, true)
-        }
-        // return this.allocatePassengersBackup()
+      if (!success) {
+        console.error("Unable to allocate all passengers.");
+        return this.allocatePassengers(this.getSplitSortedLocation(numOfTries), numOfTries+1, true)
       }
 
       return [success, isSplit];
