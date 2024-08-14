@@ -90,9 +90,9 @@ export class TourOrganizer {
       const totalPassengers = sortedLocations.reduce((val, current) => {
         return val + current[1].reduce((passenger, currentPassenger) => passenger + currentPassenger.numOfPassengers, 0)
       }, 0)
-      console.log(sortedLocations, sortedLocations[0][1].length-1)
+      console.log(totalPassengers, totalCapacities)
 
-      if(totalCapacities + 1 < totalPassengers || numOfTries == this.getSortedLocation()[0][1].length){
+      if(totalCapacities < totalPassengers || numOfTries == this.getSortedLocation()[0][1].length){
         return [false, false]
       }
 
