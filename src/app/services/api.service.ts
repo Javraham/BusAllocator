@@ -158,7 +158,21 @@ export class ApiService {
       ...fetchOptions,
       body: {
         ...fetchOptions.body,
-        "bookingStatuses": ["ARRIVED", "NO_SHOW"],
+        "bookingStatuses": ["ARRIVED"],
+        "startDateRange": {
+          "from": date,
+          "includeLower": true,
+          "includeUpper": true,
+          "to": date
+        }
+      }
+    };
+
+    const noShowFetchOptions = {
+      ...fetchOptions,
+      body: {
+        ...fetchOptions.body,
+        "bookingStatuses": ["NO_SHOW"],
         "startDateRange": {
           "from": date,
           "includeLower": true,
@@ -170,12 +184,13 @@ export class ApiService {
 
     try {
       // Execute both fetch calls in parallel
-      const [jsonConfirmedData, jsonArrivedData] = await Promise.all([
+      const [jsonConfirmedData, jsonArrivedData, jsonNoShowData] = await Promise.all([
         this.fetchBokunData(confirmedFetchOptions),
-        this.fetchBokunData(arrivedFetchOptions)
+        this.fetchBokunData(arrivedFetchOptions),
+        this.fetchBokunData(noShowFetchOptions)
       ]);
 
-      const combinedResults = [...jsonArrivedData.results, ...jsonConfirmedData.results];
+      const combinedResults = [...jsonArrivedData.results, ...jsonConfirmedData.results, ...jsonNoShowData.results];
 
       console.log("new arrived", combinedResults.map((val: any) => val.customer.firstName + " " + val.totalParticipants));
 
