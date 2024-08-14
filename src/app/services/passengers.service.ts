@@ -78,6 +78,10 @@ export class PassengersService {
   }
 
   getOptionsToPassengers(passengers: Passenger[]) {
+    function getNumber (str: string){
+      const match = str.match(/[\[(](\d+(\.\d+)?)[\])]/);
+      return match ? parseFloat(match[1]) : -1;
+    }
     function sortKeys(map: Map<string, Passenger[]>) {
       const sortOrder = ["No boat", "Boat Cruise", "Boat Cruise + Journey"];
 
@@ -103,6 +107,15 @@ export class PassengersService {
         passengerList.push(passenger)
         optionsMap.set(passenger.option, passengerList);
       }
+    }
+
+    for (const key of optionsMap.keys()) {
+      const passengers = optionsMap.get(key) as Passenger[] || [];
+
+      passengers.sort((a, b) => getNumber(a.pickup) - getNumber(b.pickup));
+
+      // Update the map with the sorted array
+      optionsMap.set(key, passengers);
     }
     return sortKeys(optionsMap)
   }
