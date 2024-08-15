@@ -139,14 +139,14 @@ export class AppComponent {
   getNumOfPassengersByTime() {
     const passengers = this.passengers.filter(passenger => this.excludedPassengers.filter(val => passenger.confirmationCode == val.confirmationCode).length == 0)
     const map: Map<string, number> = new Map<string, number>();
-    for(const passenger of passengers){
+    for(const passenger of this.passengers){
       if(map.has(passenger.startTime)){
         let passengers = map.get(passenger.startTime) as number
-        passengers += passenger.numOfPassengers;
+        passengers += this.excludedPassengers.find(val => val.confirmationCode == passenger.confirmationCode) == undefined ? passenger.numOfPassengers : 0;
         map.set(passenger.startTime, passengers)
       }
       else{
-        map.set(passenger.startTime, passenger.numOfPassengers)
+        map.set(passenger.startTime, this.excludedPassengers.find(val => val.confirmationCode == passenger.confirmationCode) == undefined ? passenger.numOfPassengers : 0)
       }
     }
 
