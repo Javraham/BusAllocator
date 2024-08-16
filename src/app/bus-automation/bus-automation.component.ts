@@ -1,37 +1,33 @@
-import {Component, ElementRef, model, OnInit, ViewChild} from '@angular/core';
-import {RouterLink, RouterOutlet} from '@angular/router';
-import {ApiService} from "./services/api.service";
-import {FetchBookingDataOptions} from "./typings/fetch-data-booking-options";
-import {Passenger} from "./typings/passenger";
-import {TourOrganizerService} from "./services/tour-organizer.service";
-import {buses, IBus} from "./typings/BusSelection";
-import {BusService} from "./services/bus.service";
-import {TourOrganizer} from "./services/organizer";
-import {PassengerComponent} from "./passenger/passenger.component";
-import {CommonModule, NgOptimizedImage} from '@angular/common';
-import {Bus} from "./services/bus"; // Import CommonModule
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import {BusSelectionButtonsComponent} from "./bus-selection-buttons/bus-selection-buttons.component";
-import {PassengersService} from "./services/passengers.service";
+import { Component } from '@angular/core';
+import {BusSelectionButtonsComponent} from "../bus-selection-buttons/bus-selection-buttons.component";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {BusAutomationComponent} from "./bus-automation/bus-automation.component";
+import {NgForOf, NgIf} from "@angular/common";
+import {PassengerComponent} from "../passenger/passenger.component";
+import {FetchBookingDataOptions} from "../typings/fetch-data-booking-options";
+import {Passenger} from "../typings/passenger";
+import {Bus} from "../services/bus";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {buses, IBus} from "../typings/BusSelection";
+import {ApiService} from "../services/api.service";
+import {TourOrganizerService} from "../services/tour-organizer.service";
+import {PassengersService} from "../services/passengers.service";
+import {TourOrganizer} from "../services/organizer";
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-bus-automation',
   standalone: true,
-  imports: [RouterOutlet, PassengerComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule, BusAutomationComponent, RouterLink],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [
+    BusSelectionButtonsComponent,
+    FormsModule,
+    NgForOf,
+    NgIf,
+    PassengerComponent,
+    ReactiveFormsModule
+  ],
+  templateUrl: './bus-automation.component.html',
+  styleUrl: './bus-automation.component.css'
 })
-export class AppComponent {
-  @ViewChild('navbar') navbar!: ElementRef;
-  @ViewChild('content') content!: ElementRef;
-
-  ngAfterViewInit() {
-    const navbarHeight = this.navbar.nativeElement.offsetHeight;
-    this.content.nativeElement.style.marginTop = `${navbarHeight}px`;
-  }
-  title = 'Bus Allocator';
+export class BusAutomationComponent {
   fetchOptions: FetchBookingDataOptions;
   passengers: Passenger[] = [];
   date: string = '';
