@@ -63,7 +63,7 @@ export class TourOrganizerService {
       for (const bus of busList) {
         htmlResult += `<p style="font-weight: 700">Bus (${bus.busId})</p>
                      <p style="font-weight: 700">Pickups: ${bus.getCurrentLoad()} TOTAL PAX</p>`
-        const pickupLocations = this.passengerService.getPassengersByPickupLocations(bus.getPassengers());
+        const pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(bus.getPassengers());
 
         Array.from(pickupLocations.entries()).forEach(val => {
           htmlResult += `<p>${val[0]} - ${val[1]} PAX</p>`
@@ -93,7 +93,7 @@ export class TourOrganizerService {
     for(const time of sortedTimeMap.keys()){
       if(!this.buses.has(time)){
         htmlResult += `<p style="font-weight: 700; font-size: 1.2em">${parseInt(time[0]) == 0 ? time.slice(1) : time} - ${this.passengerService.getTotalPassengers(this.TimeToPassengersMap.get(time))} TOTAL PAX</p>`
-        const pickupLocations = this.passengerService.getPassengersByPickupLocations(this.TimeToPassengersMap.get(time) as Passenger[]);
+        const pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.TimeToPassengersMap.get(time) as Passenger[]);
 
         Array.from(pickupLocations.entries()).forEach(val => {
           htmlResult += `<p>${val[0]} - ${val[1]} PAX</p>`

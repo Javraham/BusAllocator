@@ -28,7 +28,6 @@ import {TourOrganizer} from "../services/organizer";
   styleUrl: './bus-automation.component.css'
 })
 export class BusAutomationComponent {
-  fetchOptions: FetchBookingDataOptions;
   passengers: Passenger[] = [];
   date: string = '';
   busList: Bus[] = [];
@@ -66,11 +65,6 @@ export class BusAutomationComponent {
   }
 
   constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private passengerService: PassengersService) {
-    this.fetchOptions = {
-      endpoint: '/booking.json/product-booking-search',  // Replace with your actual endpoint
-      date: new Date().toISOString().replace('T', ' ').substring(0, 19),
-      httpMethod: "POST",
-    };
   }
 
   ngOnInit() {
@@ -193,7 +187,7 @@ export class BusAutomationComponent {
       console.log(buses)
       this.errorMsg = "";
       this.loading = true;
-      const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.fetchOptions)
+      const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
       this.allBuses= buses.map(bus => ({...bus}));
       this.loading = false
       this.loadContent = true;

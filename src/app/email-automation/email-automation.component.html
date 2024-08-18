@@ -1,1 +1,76 @@
-<p>email-automation works!</p>
+<style>
+  .select{
+    padding: 10px;
+  }
+
+
+  .loading-placeholder {
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    gap: 10px; /* Space between loading lines */
+    width: 50%;
+    margin: 20px auto; /* Center the placeholder */
+  }
+
+  .loading-title,
+  .loading-line {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 5px;
+  }
+
+  .loading-title {
+    width: 60%; /* Adjust width for title */
+    height: 20px;
+  }
+
+  .loading-line {
+    width: 100%; /* Full width for content lines */
+    height: 15px;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+</style>
+
+<section>
+  <div class="row date">
+    <div class="col-md-3 col-sm-6" style="margin-bottom: 10px; padding-right: 0">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+        <input id="date" type="date" class="form-control" [value]="date" (change)="onDateChange($event)" />
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+      <button class="btn btn-primary" style="background-color: #4169E0; color: white; margin-right: 10px" (click)="getPrevDayPassengers()">Previous day</button>
+      <button class="btn btn-primary" style="background-color: #4169E0; color: white" (click)="getNextDayPassengers()">Next day</button>
+    </div>
+  </div>
+  <div *ngIf="!loadContent" class="loading-placeholder">
+    <div class="loading-title"></div>
+    <div class="loading-line"></div>
+    <div class="loading-line"></div>
+    <div class="loading-line"></div>
+  </div>
+  <div class="content" *ngIf="loadContent">
+    <h3>Pickup Location List</h3>
+    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <label for="passengers">Passenger List</label>
+        <select id="passengers" class="form-select col-md-3 col-sm-6 select">
+          <option>Select Passenger</option>
+          <option *ngFor="let passenger of getPassengersByLocation(pickup.name)" [value]="passenger.email">{{passenger.firstName + ' | ' + passenger.email}}</option>
+        </select>
+      </div>
+    </app-expandable-section>
+  </div>
+</section>
+

@@ -30,7 +30,11 @@ export class PassengersService {
     return 0
   }
 
-  getPassengersByPickupLocations(passengers: Passenger[]): Map<string, number> {
+  getPassengersByPickupLocation(location: string, passengers: Passenger[]): Passenger[]{
+    return passengers.filter(passenger => passenger.pickup === location)
+  }
+
+  getTotalPassengersByPickupLocations(passengers: Passenger[]): Map<string, number> {
     const pickupLocations: Map<string, number> = new Map<string, number>();
     for (const passenger of passengers) {
       if (!pickupLocations.has(passenger.pickup)) {

@@ -9,6 +9,12 @@ import {options} from "../typings/IBookingOptions";
 })
 export class ApiService {
   url: string = "https://api.bokun.io";
+  fetchOptions: FetchBookingDataOptions = {
+    endpoint: '/booking.json/product-booking-search',  // Replace with your actual endpoint
+    date: new Date().toISOString().replace('T', ' ').substring(0, 19),
+    httpMethod: "POST",
+  };
+
   constructor() { }
 
   generateBokunSignature(date: string, accessKey: string, httpMethod: string, path: string, secretKey: string): string {
