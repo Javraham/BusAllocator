@@ -34,6 +34,7 @@ async function sendEmail(to, subject, body){
     console.log('Email sent: ' + info.response);
   } catch (error) {
     console.error('Error sending email:', error);
+    throw error
   }
 }
 
@@ -49,6 +50,7 @@ app.post('/send-email', async (req, res) => {
    }
     res.json({ message: 'Email sent successfully' });
   } catch (error) {
+    console.error('Error in /send-email:', error);
     res.status(500).json({ message: 'Failed to send email', details: error.message });
   }
 });
