@@ -21,10 +21,10 @@ app.post('/send-email', async (req, res) => {
 
   // Create a transporter object
   let transporter = nodemailer.createTransport({
-    service: 'outlook', // You can use other services like 'smtp', 'hotmail', etc.
+    service: 'gmail', // You can use other services like 'smtp', 'hotmail', etc.
     auth: {
-      user: 'avrahamj@mcmaster.ca', // Replace with your email
-      pass: 'Ja08072002',  // Replace with your email password
+      user: 'book@urstoniagarafalls.com', // Replace with your email
+      pass: 'helloworld',  // Replace with your email password
     },
   });
 
