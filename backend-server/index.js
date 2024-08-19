@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -12,35 +13,43 @@ app.get('/', (req, res) => {
   res.send('Welcome to the email sender app!');
 })
 
-app.post('/send-email', async (req, res) => {
-  const { to, subject, text } = req.body;
-
-  if (!to || !subject || !text) {
-    return res.status(400).json({ error: 'Missing to, subject, or text' });
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // You can use other services like 'smtp', 'hotmail', etc.
+  auth: {
+    user: process.env.EMAIL, // Replace with your email
+    pass: process.env.PASSWORD,  // Replace with your email password
   }
+})
 
-  // Create a transporter object
-  let transporter = nodemailer.createTransport({
-    service: 'gmail', // You can use other services like 'smtp', 'hotmail', etc.
-    auth: {
-      user: 'book@urstoniagarafalls.com', // Replace with your email
-      pass: 'helloworld',  // Replace with your email password
-    },
-  });
-
-  // Set up email data
+async function sendEmail(to, subject, body){
   let mailOptions = {
-    from: 'avrahamjonathan@gmail.com', // Replace with your email
+    from: 'book@tourstoniagarafalls.com', // Replace with your email
     to: to,
     subject: subject,
-    text: text,
+    text: body,
   };
 
   try {
-    let info = await transporter.sendMail(mailOptions);
-    res.json({ message: 'Email sent', info });
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent: ' + info.response);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to send email', details: error.message });
+    console.error('Error sending email:', error);
+  }
+}
+
+app.post('/send-email', async (req, res) => {
+  const { passengerEmailAddresses, subject, text } = req.body;
+  if (!passengerEmailAddresses || !subject || !text) {
+    return res.status(400).json({ error: 'Missing to, subject, or text' });
+  }
+
+  try {
+   for(let email of passengerEmailAddresses){
+     await sendEmail(email, subject, text)
+   }
+    res.json({ message: 'Email sent successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to send email', details: error.message });
   }
 });
 

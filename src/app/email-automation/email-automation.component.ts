@@ -6,6 +6,7 @@ import {IPickup, pickups} from "../typings/ipickup";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {ExpandableSectionComponent} from "../expandable-section/expandable-section.component";
+import {EmailContainerComponent} from "../email-container/email-container.component";
 
 @Component({
   selector: 'app-email-automation',
@@ -14,7 +15,8 @@ import {ExpandableSectionComponent} from "../expandable-section/expandable-secti
     NgForOf,
     FormsModule,
     NgIf,
-    ExpandableSectionComponent
+    ExpandableSectionComponent,
+    EmailContainerComponent
   ],
   templateUrl: './email-automation.component.html',
   styleUrl: './email-automation.component.css'

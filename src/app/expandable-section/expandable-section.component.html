@@ -24,6 +24,17 @@
     cursor: pointer;
   }
 
+  @keyframes expand {
+    from {
+      max-height: 0;
+      opacity: 0;
+    }
+    to {
+      max-height: 500px; /* Adjust based on expected max content height */
+      opacity: 1;
+    }
+  }
+
 </style>
 
 <div class="collapsible-container">
