@@ -1,12 +1,14 @@
 import {Component, Input} from '@angular/core';
 import {IEmail} from "../typings/IEmail";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {EmailService} from "../services/email.service";
+import {HttpClientModule} from "@angular/common/http";
 
 @Component({
   selector: 'app-email-container',
   standalone: true,
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './email-container.component.html',
   styleUrl: './email-container.component.css'
@@ -19,7 +21,14 @@ export class EmailContainerComponent {
     body: new FormControl('', [Validators.required])
   });
 
+  constructor(private emailService: EmailService) {
+  }
+
+
   sendEmail() {
-    console.log(this.form.value)
+    this.emailService.sendEmail({passengerEmailAddresses: ['avrahamjonathan@gmail.com'], body: this.form.value.body, subject: this.form.value.subject}).subscribe({
+      next: (response) => console.log(response),
+      error: (error) => console.log(error),
+    })
   }
 }

@@ -1,5 +1,5 @@
 export interface IEmail {
-  to: string,
+  passengerEmailAddresses: string[],
   subject: string,
   body: string,
   bodyHTML ?: HTMLElement
