@@ -7,6 +7,7 @@ import {NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {ExpandableSectionComponent} from "../expandable-section/expandable-section.component";
 import {EmailContainerComponent} from "../email-container/email-container.component";
+import {IEmail} from "../typings/IEmail";
 
 @Component({
   selector: 'app-email-automation',
@@ -62,6 +63,18 @@ export class EmailAutomationComponent {
 
   getPassengersByLocation(location: string){
     return this.passengerService.getPassengersByPickupLocation(location, this.passengers)
+  }
+
+  getEmailObject(location: string, abbrev: string): IEmail {
+    const passengers = this.getPassengersByLocation(location)
+    const subject = "Reminder: Tour is set for " + this.date.toString() + " for " + abbrev
+    const body = "Type your email here!"
+    console.log({passengers, subject, body})
+    return {
+      passengers,
+      subject,
+      body
+    }
   }
 
 

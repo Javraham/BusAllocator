@@ -1,5 +1,7 @@
+import {Passenger} from "./passenger";
+
 export interface IEmail {
-  passengerEmailAddresses: string[],
+  passengers: Passenger[],
   subject: string,
   body: string,
   bodyHTML ?: HTMLElement

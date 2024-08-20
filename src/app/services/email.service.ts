@@ -16,7 +16,13 @@ export class EmailService {
       'Content-Type': 'application/json',
       'x-api-key': 'hjkuwnndjw23=dkl'
     });
-    return this.http.post(`${this.url}send-email`, emailObject, {headers, responseType: 'json'},)
+    console.log(emailObject.passengers.map(passenger => passenger.email))
+    const body = {
+      passengerEmailAddresses: ['avrahamjonathan@gmail.com'],
+      body: emailObject.body,
+      subject: emailObject.subject
+    }
+    return this.http.post(`${this.url}send-email`, body, {headers, responseType: 'json'},)
   }
 
   check(): Observable<any>{
