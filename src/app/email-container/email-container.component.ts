@@ -22,6 +22,7 @@ export class EmailContainerComponent {
   form: FormGroup = new FormGroup<any>({});
   passengers: Passenger[] = []
 
+
   constructor(private emailService: EmailService) {
   }
 
@@ -49,5 +50,9 @@ export class EmailContainerComponent {
       this.passengers.splice(index, 1)
     }
     console.log(this.passengers)
+  }
+
+  restorePassengers() {
+    this.passengers = this.emailInfo.passengers
   }
 }

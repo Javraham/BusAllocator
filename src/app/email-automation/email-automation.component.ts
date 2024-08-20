@@ -115,4 +115,5 @@ export class EmailAutomationComponent {
     this.date = event.target.value;
     this.loadPassengers()
   }
+
 }

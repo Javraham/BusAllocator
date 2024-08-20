@@ -94,6 +94,14 @@
     background: none;
     padding: 0;
   }
+
+  .restore-btn{
+    background: none;
+    border: 1px solid #4B7FCC;
+    border-radius: 10px;
+    color: #4B7FCC;
+    padding: 5px;
+  }
 </style>
 
 <div class="email-container">
@@ -113,6 +121,7 @@
               <button type="button" (click)="removePassenger(passenger)"><i class="bi bi-x-circle"></i></button>
               <p>{{passenger.firstName}} {{passenger.lastName}}</p>
             </div>
+            <button type="button" (click)="restorePassengers()" class="restore-btn">Restore Passengers</button>
           </div>
         </div>
         <div style="margin-bottom: 10px">
