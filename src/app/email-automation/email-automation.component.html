@@ -75,8 +75,7 @@
           <option *ngFor="let passenger of getPassengersByLocation(pickup.name)" [value]="passenger.email">{{passenger.firstName + ' | ' + passenger.email}}</option>
         </select>
       </div>
-      <app-email-container>
-      </app-email-container>
+      <app-email-container></app-email-container>
     </app-expandable-section>
   </div>
 </section>

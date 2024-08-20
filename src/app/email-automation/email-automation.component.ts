@@ -28,7 +28,6 @@ export class EmailAutomationComponent {
   pickupLocations: Map<string, number> = new Map<string, number>();
   loadContent: boolean = false;
   passengerListByLocation: Passenger[] = [];
-  selectedValue: string = '';
 
   constructor(private apiService: ApiService, private passengerService: PassengersService) {
   }
