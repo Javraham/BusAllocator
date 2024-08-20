@@ -53,7 +53,7 @@ async function sendEmail(to, subject, body){
 app.post('/send-email', checkApiKey, async (req, res) => {
   const { passengerEmailAddresses, subject, body } = req.body;
   console.log(passengerEmailAddresses, ' ' + subject, ' ' + body)
-  if (!passengerEmailAddresses || !subject || !body) {
+  if (passengerEmailAddresses.length === 0 || !subject || !body) {
     return res.status(400).json({ error: 'Missing to, subject, or text' });
   }
 

@@ -18,24 +18,10 @@ export class EmailService {
     });
     console.log(emailObject.passengers.map(passenger => passenger.email))
     const body = {
-      passengerEmailAddresses: ['avrahamjonathan@gmail.com'],
+      passengerEmailAddresses: [],
       body: emailObject.body,
       subject: emailObject.subject
     }
     return this.http.post(`${this.url}send-email`, body, {headers, responseType: 'json'},)
-  }
-
-  check(): Observable<any>{
-    return this.http.get(this.url, { responseType: 'text' })
-  }
-
-  check2(){
-    const headers = {
-      'Content-Type': 'application/json',
-      'x-api-key': 'hjkuwnndjw23=dkl'
-    };
-    return fetch(this.url, {
-      mode: "cors",
-    })
   }
 }

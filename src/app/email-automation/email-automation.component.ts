@@ -69,7 +69,6 @@ export class EmailAutomationComponent {
     const passengers = this.getPassengersByLocation(location)
     const subject = "Reminder: Tour is set for " + this.date.toString() + " for " + abbrev
     const body = "Type your email here!"
-    console.log({passengers, subject, body})
     return {
       passengers,
       subject,

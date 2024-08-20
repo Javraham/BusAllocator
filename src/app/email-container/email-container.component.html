@@ -17,7 +17,7 @@
     align-items: center;
   }
 
-  button{
+  .header button{
     background: white;
     border-radius: 10px;
     color: rgba(65, 105, 224, 0.65);
@@ -74,6 +74,26 @@
   label{
     color: #808080
   }
+
+  .pax-container{
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .pax-container p{
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .pax-container button{
+    border: none;
+    background: none;
+    padding: 0;
+  }
 </style>
 
 <div class="email-container">
@@ -86,9 +106,14 @@
       <button type="submit"> <i class="bi bi-send"></i> <span>Send</span></button>
     </div>
     <div class="body">
-        <div style="margin-bottom: 10px">
-          <label for="To">To</label>
-          <input class="" id="To" formControlName = "to"/>
+        <div style="margin-bottom: 10px; border-bottom: 1px solid #e5e5e5; padding: 5px">
+          <label>To</label>
+          <div style="display: flex; gap: 5px; overflow: auto; white-space: nowrap; flex-wrap: wrap">
+            <div class="pax-container" *ngFor="let passenger of passengers">
+              <button type="button" (click)="removePassenger(passenger)"><i class="bi bi-x-circle"></i></button>
+              <p>{{passenger.firstName}} {{passenger.lastName}}</p>
+            </div>
+          </div>
         </div>
         <div style="margin-bottom: 10px">
           <label for="subject">Subject</label>
