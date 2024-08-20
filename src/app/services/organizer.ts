@@ -84,6 +84,19 @@ export class TourOrganizer {
     return result.sort((a, b) => b[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0) - a[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0))
   }
 
+  assignPassengersToBus(map: Map<string, Passenger[]>){
+    if(map.entries())
+      for(const [busId, passengers] of map.entries()){
+        const bus = this.buses.find(bus => bus.busId = busId)
+        if(bus){
+          passengers.forEach(passenger => {
+            bus.addPassenger(passenger)
+          })
+        }
+    }
+    console.log(this.buses)
+  }
+
   allocatePassengers(sortedLocations = this.getSortedLocation(), numOfTries: number = 0, isSplit: boolean = false): [boolean, boolean] {
     try {
       const totalCapacities = this.buses.reduce((bus, currentBus) => bus + currentBus.capacity, 0)

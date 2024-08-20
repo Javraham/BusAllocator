@@ -38,6 +38,12 @@
     border-radius: 5px;
   }
 
+  .select{
+    padding: 1.1rem 0 1.1rem 0.5rem;
+    font-size: 1.2rem;
+    border-radius: 5px;
+  }
+
   /* Active button styling */
   button.active {
     padding: 50px;
@@ -59,5 +65,13 @@
     <p style="font-weight: 400">{{passengerInfo.numOfPassengers}} {{passengerInfo.numOfPassengers === 1 ? "Passenger" : "Passengers"}}</p>
     <p style="font-weight: 400" *ngIf="passengerInfo.numOfChildren !== 0">{{passengerInfo.numOfChildren}} {{passengerInfo.numOfChildren === 1 ? "Child" : "Children"}}</p>
   </div>
-  <button [ngClass]="{'active': isActive}" [ngStyle]="getButtonStyles()" (click)="toggleButton()">Exclude</button>
+  <div style="display: flex; align-items: center; gap: 2px">
+    <form [formGroup]="form">
+      <select class="select" formControlName="selectControl" (change)="setPassengerToBus($event)">
+        <option selected value="None">Select Bus</option>
+        <option *ngFor="let bus of buses" [value]="bus.busId">{{bus.busId}}</option>
+      </select>
+    </form>
+    <button [ngClass]="{'active': isActive}" [ngStyle]="getButtonStyles()" (click)="toggleButton()">Exclude</button>
+  </div>
 </div>

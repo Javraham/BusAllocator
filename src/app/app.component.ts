@@ -40,6 +40,7 @@ export class AppComponent {
   usedBuses: Map<string, string[]> = new Map<string, string[]>;
   successMap: Map<string, [boolean, boolean]> = new Map<string, [boolean, boolean]>();
   excludedPassengersMap: Map<string, Passenger[]> = new Map<string, Passenger[]>();
+  assignedPassengersMap: Map<string, Passenger[]> = new Map<string, Passenger[]>();
   excludedPassengers: Passenger[] = [];
   loadContent: boolean = false;
   isAuthorized: boolean = localStorage.getItem('access') != null && localStorage.getItem('secret') != null;
@@ -56,6 +57,36 @@ export class AppComponent {
 
   updateBusSelections(event: [string[], string]) {
     this.busSelections.set(event[1], event[0])
+  }
+
+  updateAssignedPassengers(event: [string, Passenger]){
+    console.log(event)
+    if(this.assignedPassengersMap.has(event[0])){
+      const passengers = this.assignedPassengersMap.get(event[0]) as Passenger[]
+      passengers.push(event[1])
+      this.assignedPassengersMap.set(event[0], passengers)
+    }
+    else{
+      if(buses.some(bus => bus.busId == event[0])){
+        this.assignedPassengersMap.set(event[0], [event[1]])
+      }
+      else{
+        for (const [key, passengers] of this.assignedPassengersMap.entries()) {
+          const index = passengers.findIndex(passenger => passenger.confirmationCode === event[1].confirmationCode);
+          if (index !== -1) {
+            passengers.splice(index, 1);
+            // If the bus has no more passengers, remove the entry from the map
+            if (passengers.length === 0) {
+              this.assignedPassengersMap.delete(key);
+            } else {
+              this.assignedPassengersMap.set(key, passengers); // Update with removed passenger
+            }
+            break;
+          }
+        }
+      }
+    }
+    console.log(this.assignedPassengersMap)
   }
 
   updateUsedBuses(event: [string[], string]) {
@@ -118,7 +149,21 @@ export class AppComponent {
 
   organizePassengers(busInfoList: IBus[], passengers: Passenger[]) {
     const organizer = new TourOrganizer(busInfoList)
-    organizer.loadData(passengers)
+    // organizer.loadData(passengers)
+    if(this.assignedPassengersMap.size !== 0){
+      organizer.assignPassengersToBus(this.assignedPassengersMap)
+      organizer.loadData(passengers.filter(passenger => {
+        for(const [busId, passengers] of this.assignedPassengersMap.entries()){
+          if(passengers.some(OGPassenger => OGPassenger.confirmationCode == passenger.confirmationCode)){
+            return false
+          }
+        }
+        return true
+      }))
+    }
+    else{
+      organizer.loadData(passengers)
+    }
     const isAllocated = organizer.allocatePassengers()
     if(isAllocated[0]){
       console.log(isAllocated)
@@ -203,6 +248,7 @@ export class AppComponent {
       this.passengers = passengers
       this.canEdit = false
       this.usedBuses = new Map<string, string[]>();
+      this.assignedPassengersMap = new Map<string, Passenger[]>
       this.successMap = new Map<string, [boolean, boolean]>();
       this.resetBusSelection()
       this.tourBusOrganizer.resetBuses();

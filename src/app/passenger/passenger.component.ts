@@ -3,8 +3,10 @@ import {TourOrganizerService} from "../services/tour-organizer.service";
 import {TourOrganizer} from "../services/organizer";
 import {Passenger} from "../typings/passenger";
 import {Input} from "@angular/core";
-import {NgClass, NgIf, NgStyle} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {pickups} from "../typings/ipickup";
+import {buses} from "../typings/BusSelection";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 
 @Component({
@@ -13,7 +15,10 @@ import {pickups} from "../typings/ipickup";
   imports: [
     NgIf,
     NgStyle,
-    NgClass
+    NgClass,
+    NgForOf,
+    FormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: './passenger.component.html',
   styleUrl: './passenger.component.css'
@@ -21,11 +26,21 @@ import {pickups} from "../typings/ipickup";
 export class PassengerComponent {
   @Input() passengerInfo !: Passenger;
   @Input() excludedPassengers !: Passenger[];
+  @Input() assignedPassengersMap !: Map<string, Passenger[]>;
   @Input() busColor !: string;
   isActive: boolean = false;
   @Output() updatePassengerExclusionList = new EventEmitter<Passenger>()
+  @Output() updateAssignedPassengersMap = new EventEmitter<[string, Passenger]>()
+  selected: string = "N1"
+  form: any = new FormGroup({
+    selectControl: new FormControl("")
+  });
 
   constructor(private tourOrganizer: TourOrganizerService) {
+  }
+
+  ngOnInit(){
+    this.form.get('selectControl').setValue(this.getAssignedBus());
   }
 
   toggleButton() {
@@ -54,14 +69,28 @@ export class PassengerComponent {
     return {
       'border-left': "10px solid " + this.busColor,
       'background-color': "white",
-      // 'border-right': "1px solid " + this.busColor,
-      // 'border-top': "1px solid " + this.busColor,
-      // 'border-bottom': "1px solid " + this.busColor
     }
   }
 
   getPickupAbbrev(passenger: Passenger): string {
     const pickupAbbrev = pickups.find(pickup => passenger.pickup?.includes(pickup.name))?.abbreviation;
     return pickupAbbrev ? ` (${pickupAbbrev}) ` : 'No Location';
+  }
+
+  protected readonly buses = buses;
+
+  getAssignedBus() {
+    if(this.assignedPassengersMap && this.assignedPassengersMap.entries)
+      for(const [busId, passengers] of this.assignedPassengersMap.entries()){
+        if(passengers.some(passenger => passenger.confirmationCode === this.passengerInfo.confirmationCode)){
+          return busId
+        }
+      }
+    return "None"
+  }
+
+  setPassengerToBus(event: any) {
+    const busId: string = event.target.value
+    this.updateAssignedPassengersMap.emit([busId, this.passengerInfo])
   }
 }
