@@ -79,7 +79,7 @@ export class BusSelectionButtonsComponent {
   }
 
   selectAll() {
-    const usedBuses = Array.from(this.usedBuses).map(val => val[1]).flat()
+    const usedBuses = Array.from(this.usedBuses).filter(val => val[0] !== this.time).map(val => val[1]).flat()
     console.log(usedBuses)
     this.updateCheckList.emit([buses.map(val => val.busId).filter(busId=> !usedBuses.includes(busId)) || [], this.time]);
   }
