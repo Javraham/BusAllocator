@@ -18,7 +18,7 @@ export class EmailService {
     });
     console.log(emailObject.passengers.map(passenger => passenger.email))
     const body = {
-      passengerEmailAddresses: [],
+      passengerEmailAddresses: ["avrahamjonathan@gmail.com"],
       body: emailObject.body,
       subject: emailObject.subject
     }

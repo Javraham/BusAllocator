@@ -35,7 +35,7 @@
   }
 
   @media screen and (max-width: 600px) {
-    button span {
+    button .btn-text {
       display: none;
     }
   }
@@ -102,6 +102,48 @@
     color: #4B7FCC;
     padding: 5px;
   }
+
+  .error-message{
+    color: #b63f3f;
+    display: flex;
+    gap: 3px;
+  }
+
+  .success-msg{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #d1ffbd;
+    color: #0ab937;
+    display: flex;
+    gap: 5px;
+  }
+
+  .error-msg{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fda5a5;
+    color: #b63f3f;
+    display: flex;
+    gap: 5px;
+  }
+
+  .spinner {
+    width: 1em;
+    height: 1em;
+    border: 2px solid rgba(0, 0, 0, 0.1);  /* Light gray border */
+    border-left-color: rgba(65, 105, 224, 0.65);  /* Darker left-side for the spinner effect */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;  /* Smooth rotation */
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);  /* Start at 0 degrees */
+    }
+    100% {
+      transform: rotate(360deg);  /* Complete rotation */
+    }
+  }
 </style>
 
 <div class="email-container">
@@ -111,10 +153,21 @@
         <i class="bi bi-envelope"></i>
         <p>Create Email</p>
       </div>
-      <button type="submit"> <i class="bi bi-send"></i> <span>Send</span></button>
+      <button *ngIf="!loading" type="submit"> <i class="bi bi-send"></i> <span class="btn-text">Send</span></button>
+      <button *ngIf="loading" type="button"><span class="spinner"></span><span class="btn-text">Sending</span></button>
     </div>
     <div class="body">
-        <div style="margin-bottom: 10px; border-bottom: 1px solid #e5e5e5; padding: 5px">
+      <div style="margin-bottom: 10px">
+        <div *ngIf="successMsg" class="success-msg">
+          <i class="bi bi-check-circle"></i>
+          <p>{{successMsg}}</p>
+        </div>
+        <div *ngIf="errorMsg" class="error-msg">
+          <i class="bi bi-x-circle-fill"></i>
+          <p>{{errorMsg}}</p>
+
+        </div>
+        <div style="border-bottom: 1px solid #e5e5e5; padding: 5px">
           <label>To</label>
           <div style="display: flex; gap: 5px; overflow: auto; white-space: nowrap; flex-wrap: wrap">
             <div class="pax-container" *ngFor="let passenger of passengers">
@@ -124,11 +177,24 @@
             <button type="button" (click)="restorePassengers()" class="restore-btn">Restore Passengers</button>
           </div>
         </div>
+        <div *ngIf="passengers.length === 0" class="error-message">
+          <i class="bi bi-exclamation-circle"></i>
+          At least one person needed.
+        </div>
+      </div>
         <div style="margin-bottom: 10px">
           <label for="subject">Subject</label>
           <input class="" id="subject" formControlName="subject" />
+          <div *ngIf="form.get('subject')?.invalid && form.get('subject')?.touched" class="error-message">
+            <i class="bi bi-exclamation-circle"></i>
+            Subject is required.
+          </div>
         </div>
         <textarea formControlName="body">Hello World!</textarea>
+      <div *ngIf="form.get('body')?.invalid && form.get('body')?.touched" class="error-message">
+        <i class="bi bi-exclamation-circle"></i>
+        Body text is required.
+      </div>
     </div>
   </form>
 </div>

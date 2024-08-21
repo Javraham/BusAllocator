@@ -54,13 +54,11 @@ app.post('/send-email', checkApiKey, async (req, res) => {
   const { passengerEmailAddresses, subject, body } = req.body;
   console.log(passengerEmailAddresses, ' ' + subject, ' ' + body)
   if (passengerEmailAddresses.length === 0 || !subject || !body) {
-    return res.status(400).json({ error: 'Missing to, subject, or text' });
+    return res.status(400).json({ errorMsg: 'Missing to, subject, or text' });
   }
 
   try {
-   for(let email of passengerEmailAddresses){
-     await sendEmail(email, subject, body)
-   }
+    await Promise.all(passengerEmailAddresses.map(email => sendEmail(email, subject, body)))
     res.json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Error in /send-email:', error);

@@ -1,10 +1,8 @@
-import {Component, Input, SimpleChanges} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {IEmail} from "../typings/IEmail";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {EmailService} from "../services/email.service";
-import {HttpClientModule} from "@angular/common/http";
-import {NgForOf} from "@angular/common";
-import {first} from "rxjs";
+import {NgForOf, NgIf} from "@angular/common";
 import {Passenger} from "../typings/passenger";
 
 @Component({
@@ -13,6 +11,7 @@ import {Passenger} from "../typings/passenger";
   imports: [
     ReactiveFormsModule,
     NgForOf,
+    NgIf,
   ],
   templateUrl: './email-container.component.html',
   styleUrl: './email-container.component.css'
@@ -21,7 +20,9 @@ export class EmailContainerComponent {
   @Input() emailInfo !: IEmail;
   form: FormGroup = new FormGroup<any>({});
   passengers: Passenger[] = []
-
+  successMsg: string = '';
+  errorMsg: string = '';
+  loading = false;
 
   constructor(private emailService: EmailService) {
   }
@@ -37,9 +38,20 @@ export class EmailContainerComponent {
 
 
   sendEmail() {
+    if (this.form.invalid || this.passengers.length === 0) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.loading = true;
     this.emailService.sendEmail({passengers: this.passengers, body: this.form.value.body, subject: this.form.value.subject}).subscribe({
-      next: (response) => console.log(response),
-      error: (error) => console.log(error),
+      next: (response) => {
+        this.successMsg = response.message
+        this.loading = false
+      },
+      error: (error) => {
+        this.errorMsg = error.error.errorMsg;
+        this.loading = false;
+      },
     })
   }
 
