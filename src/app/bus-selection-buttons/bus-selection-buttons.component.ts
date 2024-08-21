@@ -27,13 +27,22 @@ export class BusSelectionButtonsComponent {
   isChecked(value: string): boolean {
     const optionsForTime = this.selectedOptions.get(this.time);
     if (!optionsForTime || optionsForTime.length === 0) return false;
-    return optionsForTime.includes(value);
+    return optionsForTime.includes(value) && !this.isDisabled(value);
   }
 
   constructor() {
   }
 
   isDisabled(busId: string){
+    console.log(this.usedBuses.entries())
+    for(const entry of this.selectedOptions.entries()){
+      if(entry[0] == this.time) continue
+      for(const bus of entry[1]){
+        if(busId == bus){
+          return true
+        }
+      }
+    }
     for(const entry of this.usedBuses.entries()){
       if(entry[0] == this.time) continue
       for(const bus of entry[1]){
@@ -42,6 +51,7 @@ export class BusSelectionButtonsComponent {
         }
       }
     }
+
     return false
   }
 
@@ -69,7 +79,9 @@ export class BusSelectionButtonsComponent {
   }
 
   selectAll() {
-    this.updateCheckList.emit([buses.map(val => val.busId) || [], this.time]);
+    const usedBuses = Array.from(this.usedBuses).filter(val => val[0] !== this.time).map(val => val[1]).flat()
+    console.log(usedBuses)
+    this.updateCheckList.emit([buses.map(val => val.busId).filter(busId=> !usedBuses.includes(busId)) || [], this.time]);
   }
 
 
