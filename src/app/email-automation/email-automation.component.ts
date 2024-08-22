@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, QueryList, ViewChildren} from '@angular/core';
 import {Passenger} from "../typings/passenger";
 import {ApiService} from "../services/api.service";
 import {PassengersService} from "../services/passengers.service";
@@ -8,6 +8,7 @@ import {FormsModule} from "@angular/forms";
 import {ExpandableSectionComponent} from "../expandable-section/expandable-section.component";
 import {EmailContainerComponent} from "../email-container/email-container.component";
 import {IEmail} from "../typings/IEmail";
+import {EmailService} from "../services/email.service";
 
 @Component({
   selector: 'app-email-automation',
@@ -23,14 +24,17 @@ import {IEmail} from "../typings/IEmail";
   styleUrl: './email-automation.component.css'
 })
 export class EmailAutomationComponent {
+  @ViewChildren(EmailContainerComponent) emailContainers!: QueryList<EmailContainerComponent>;
   date: string = "";
   isAuthorized: boolean = localStorage.getItem('access') != null && localStorage.getItem('secret') != null;
   passengers: Passenger[] = [];
   pickupLocations: Map<string, number> = new Map<string, number>();
   loadContent: boolean = false;
   passengerListByLocation: Passenger[] = [];
+  loading: boolean = false;
 
-  constructor(private apiService: ApiService, private passengerService: PassengersService) {
+  constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: EmailService) {
+
   }
 
   trackByPickup(index: number, pickup: IPickup): string {
@@ -124,6 +128,12 @@ export class EmailAutomationComponent {
   }
 
   sendEmailToAll() {
-
+    this.loading = true
+    const emailPromises = this.emailContainers.map(child => child.sendEmail())
+    Promise.all(emailPromises).then(() => {
+      this.loading = false;
+    }).catch(() => {
+      this.loading = false;
+    });
   }
 }

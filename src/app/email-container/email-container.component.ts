@@ -4,6 +4,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {EmailService} from "../services/email.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {Passenger} from "../typings/passenger";
+import {resolve} from "@angular/compiler-cli";
 
 @Component({
   selector: 'app-email-container',
@@ -36,22 +37,31 @@ export class EmailContainerComponent {
     this.passengers = this.emailInfo.passengers
   }
 
+  run() {
+    console.log(this.passengers)
+  }
 
-  sendEmail() {
-    if (this.form.invalid || this.passengers.length === 0) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    this.loading = true;
-    this.emailService.sendEmail({passengers: this.passengers, body: this.form.value.body, subject: this.form.value.subject}).subscribe({
-      next: (response) => {
-        this.successMsg = response.message
-        this.loading = false
-      },
-      error: (error) => {
-        this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
-        this.loading = false;
-      },
+
+  sendEmail(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.form.invalid || this.passengers.length === 0) {
+        this.form.markAllAsTouched();
+        reject(undefined)
+        return;
+      }
+      this.loading = true;
+      this.emailService.sendEmail({passengers: this.passengers, body: this.form.value.body, subject: this.form.value.subject}).subscribe({
+        next: (response) => {
+          this.successMsg = response.message
+          this.loading = false
+          resolve(undefined)
+        },
+        error: (error) => {
+          this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
+          this.loading = false;
+          reject(undefined)
+        },
+      })
     })
   }
 
