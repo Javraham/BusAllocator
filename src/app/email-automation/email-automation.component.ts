@@ -55,9 +55,16 @@ export class EmailAutomationComponent {
     this.loadContent = true
   }
 
-  getPickupLocations(): IPickup[]{
+  getPickupLocations(): IPickup[] {
     return Array.from(this.pickupLocations).map(val => {
-      return {name: val[0], abbreviation: pickups.find(pickup => val[0].includes(pickup.name))?.abbreviation || val[0]}
+      return {
+        name: val[0],
+        abbreviation: pickups.find(pickup => val[0].includes(pickup.name))?.abbreviation || val[0],
+        emailTemplate: {
+          subject: pickups.find(pickup => val[0].includes(pickup.name))?.emailTemplate.subject || "Write Subject Here.",
+          body: pickups.find(pickup => val[0].includes(pickup.name))?.emailTemplate.body || "Write Email Here."
+        }
+      }
     })
   }
 
@@ -65,10 +72,10 @@ export class EmailAutomationComponent {
     return this.passengerService.getPassengersByPickupLocation(location, this.passengers)
   }
 
-  getEmailObject(location: string, abbrev: string): IEmail {
-    const passengers = this.getPassengersByLocation(location)
-    const subject = "Reminder: Tour is set for " + this.date.toString() + " for " + abbrev
-    const body = "Type your email here!"
+  getEmailObject(location: IPickup): IEmail {
+    const passengers = this.getPassengersByLocation(location.name)
+    const subject = location.emailTemplate.subject
+    const body = location.emailTemplate.body
     return {
       passengers,
       subject,
@@ -116,4 +123,7 @@ export class EmailAutomationComponent {
     this.loadPassengers()
   }
 
+  sendEmailToAll() {
+
+  }
 }

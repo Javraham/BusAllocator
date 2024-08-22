@@ -49,7 +49,7 @@ export class EmailContainerComponent {
         this.loading = false
       },
       error: (error) => {
-        this.errorMsg = error.error.errorMsg;
+        this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
         this.loading = false;
       },
     })

@@ -44,6 +44,10 @@
     font-size: 18px;
     font-weight: 600;
   }
+
+  .btn-primary{
+    margin-bottom: 10px;
+  }
 </style>
 
 <section>
@@ -66,9 +70,16 @@
     <div class="loading-line"></div>
   </div>
   <div class="content" *ngIf="loadContent">
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-primary" style="background-color: #FC5923; color: white; margin-right: 10px; border: none" (click)="sendEmailToAll()">Send Email To All</button>
+        <button class="btn btn-primary" style="background-color: #3eace8; color: white; margin-right: 10px; border: none">Send SMS To All</button>
+        <button class="btn btn-primary" style="background-color: #a3a3d3; color: white; margin-right: 10px; border: none">Send WhatsApp To All</button>
+      </div>
+    </div>
     <h3>Pickup Location List</h3>
     <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
-      <app-email-container [emailInfo]="getEmailObject(pickup.name, pickup.abbreviation)"></app-email-container>
+      <app-email-container [emailInfo]="getEmailObject(pickup)"></app-email-container>
     </app-expandable-section>
   </div>
 </section>

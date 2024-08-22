@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {IEmail} from "../typings/IEmail";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {catchError, Observable, throwError} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,11 @@ export class EmailService {
       body: emailObject.body,
       subject: emailObject.subject
     }
-    return this.http.post(`${this.url}send-email`, body, {headers, responseType: 'json'},)
+    return this.http.post(`${this.url}send-email`, body, {headers, responseType: 'json'}).pipe(
+      catchError(error => {
+        console.error('Error occurred:', error);
+        return throwError(() => new Error('Failed to send email. Please check your connection.'));
+      })
+    );
   }
 }
