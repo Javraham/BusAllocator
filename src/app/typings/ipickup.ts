@@ -14,7 +14,7 @@ export const pickups: IPickup[] = [
     name: "Royal Ontario Museum",
     abbreviation: "ROM",
     emailTemplate: {
-      subject: "ROM",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick-up details for your Niagara tour! \n" +
         "\n" +
         "Location: 100 Queens Park, in front of the Royal Ontario Museum’s main entrance on the Queens Park side\n" +
@@ -34,7 +34,7 @@ export const pickups: IPickup[] = [
     name: "Courtyard",
     abbreviation: "Courtyard",
     emailTemplate: {
-      subject: "Courtyard",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick-up details for your Niagara tour! \n" +
         "\n" +
         "Location: 475 Yonge Street, the Courtyard by Marriott hotel. Wait for us outside of the hotel’s rear exit, on Wood Street.\n" +
@@ -54,7 +54,7 @@ export const pickups: IPickup[] = [
     name: "Doubletree",
     abbreviation: "Doubletree",
     emailTemplate: {
-      subject: "Doubletree",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick-up details for your Niagara tour! \n" +
         "\n" +
         "Location: 108 Chestnut Street, at the DoubleTree by Hilton Toronto Downtown\n" +
@@ -74,7 +74,7 @@ export const pickups: IPickup[] = [
     name: "Chelsea",
     abbreviation: "Chelsea",
     emailTemplate: {
-      subject: "Chelsea",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick-up details for your Niagara tour! \n" +
         "\n" +
         "Location: 33 Gerrard Street West, the Chelsea hotel, in front of the Gerrard St doors. \n" +
@@ -95,7 +95,7 @@ export const pickups: IPickup[] = [
     name: "Dundas",
     abbreviation: "Dundas",
     emailTemplate: {
-      subject: "Dundas",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick-up details for your Niagara tour! \n" +
         "\n" +
         "Location: 279 Yonge Street, wait for us across the street from the ‘Shoppers Drug Mart’ store (wait where you will see the Samsung store logo)\n" +
@@ -115,7 +115,7 @@ export const pickups: IPickup[] = [
     name: "Queen Station",
     abbreviation: "Queen",
     emailTemplate: {
-      subject: "Queen",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick-up details for your Niagara tour! \n" +
         "\n" +
         "Location: 140 Yonge Street, in front of the \"Dineen Coffee Co\" cafe  \n" +
@@ -135,7 +135,7 @@ export const pickups: IPickup[] = [
     name: "Hockey",
     abbreviation: "Hockey",
     emailTemplate: {
-      subject: "Hockey",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick up details for your Niagara tour! \n" +
         "\n" +
         "Location: 30 Yonge Street, in front of the Hockey Hall of Fame. Please wait for us on the Yonge Street side of the building\n" +
@@ -155,7 +155,7 @@ export const pickups: IPickup[] = [
     name: "Fairmont",
     abbreviation: "Fairmont",
     emailTemplate: {
-      subject: "Fairmont",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick up details for your Niagara tour! \n" +
         "\n" +
         "Location: 100 Front Street West, the Fairmont Royal York hotel, outside of the Front Street doors where the flags are (make sure to be ready early because we aren't allowed to park there)\n" +
@@ -175,7 +175,7 @@ export const pickups: IPickup[] = [
     name: "Inter",
     abbreviation: "Intercontinental",
     emailTemplate: {
-      subject: "Intercontinental",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick up details for your Niagara tour! \n" +
         "\n" +
         "Location: 225 Front Street West, across the street from the Intercontinental hotel’s front doors - you will see a restaurant called \"Scadabush\" that we will stop in front of\n" +
@@ -195,7 +195,7 @@ export const pickups: IPickup[] = [
     name: "300 Front",
     abbreviation: "300 Front",
     emailTemplate: {
-      subject: "300 Front",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick up details for your Niagara tour! \n" +
         "\n" +
         "Location: 300 Front Street West, in front of the ‘Starbucks’ cafe\n" +
@@ -215,7 +215,7 @@ export const pickups: IPickup[] = [
     name: "352 Front",
     abbreviation: "352 Front",
     emailTemplate: {
-      subject: "352 Front",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick up details for your Niagara tour! \n" +
         "\n" +
         "Location: 352 Front Street West, in front of the building entrance\n" +
@@ -236,7 +236,7 @@ export const pickups: IPickup[] = [
     name: "MISSISSAUGA",
     abbreviation: "Mississauga",
     emailTemplate: {
-      subject: "Mississauga",
+      subject: "Niagara Tour Confirmation for",
       body: "Hi there! We are just confirming your pick up details for your Niagara tour! \n" +
         "\n" +
         "Location: 2125 North Sheridan Way, at the Holiday Inn Express in Mississauga\n" +

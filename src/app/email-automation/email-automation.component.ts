@@ -65,7 +65,7 @@ export class EmailAutomationComponent {
         name: val[0],
         abbreviation: pickups.find(pickup => val[0].includes(pickup.name))?.abbreviation || val[0],
         emailTemplate: {
-          subject: pickups.find(pickup => val[0].includes(pickup.name))?.emailTemplate.subject || "Write Subject Here.",
+          subject: pickups.find(pickup => val[0].includes(pickup.name))?.emailTemplate.subject || "Niagara Tour Confirmation for",
           body: pickups.find(pickup => val[0].includes(pickup.name))?.emailTemplate.body || "Write Email Here."
         }
       }
@@ -77,8 +77,19 @@ export class EmailAutomationComponent {
   }
 
   getEmailObject(location: IPickup): IEmail {
+    const dateObject = new Date(this.date)
+    const day = dateObject.getDate();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const dayOfWeekNames = [
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    ];
+
+    const formattedDate = `${dayOfWeekNames[dateObject.getDay()]}, ${monthNames[dateObject.getMonth()]} ${day}`;
     const passengers = this.getPassengersByLocation(location.name)
-    const subject = location.emailTemplate.subject
+    const subject = location.emailTemplate.subject + ' ' + formattedDate
     const body = location.emailTemplate.body
     return {
       passengers,
@@ -86,7 +97,6 @@ export class EmailAutomationComponent {
       body
     }
   }
-
 
   getPrevDayPassengers() {
     const [year, month, day] = this.date.split('-').map(Number);
