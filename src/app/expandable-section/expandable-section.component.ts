@@ -15,6 +15,7 @@ export class ExpandableSectionComponent{
   @Input() title!: string;
   isExpanded: boolean = false
   @Input() numOfPassengers !: number;
+  @Input() isEmailSent !: boolean
 
   constructor(private cdr: ChangeDetectorRef) {
   }

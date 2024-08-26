@@ -32,9 +32,14 @@ export class EmailAutomationComponent {
   loadContent: boolean = false;
   passengerListByLocation: Passenger[] = [];
   loading: boolean = false;
+  sentEmailLocations: any;
 
   constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: EmailService) {
 
+  }
+
+  hasEmailSent(pickup: string){
+    return this.sentEmailLocations?.location.some((location: any) => location.PickupName === pickup) ?? false
   }
 
   trackByPickup(index: number, pickup: IPickup): string {
@@ -50,9 +55,25 @@ export class EmailAutomationComponent {
     if(this.isAuthorized){
       this.loadPassengers()
     }
+    this.getSentEmails()
+  }
+
+  updateSentEmailLocations(event: any) {
+    this.sentEmailLocations = event
+  }
+
+  getSentEmails(){
+    this.emailService.getSentEmails(this.date).subscribe({
+      next: response => {
+        this.sentEmailLocations = response;
+        this.sentEmailLocations?.location.forEach((location: any) => console.log(location.PickupName))
+      },
+      error: err => console.log(err)
+    })
   }
 
   async loadPassengers() {
+    this.getSentEmails()
     this.loadContent = false
     this.passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
     this.pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.passengers)
@@ -94,7 +115,9 @@ export class EmailAutomationComponent {
     return {
       passengers,
       subject,
-      body
+      body,
+      date: this.date,
+      location: location.abbreviation
     }
   }
 
@@ -137,13 +160,21 @@ export class EmailAutomationComponent {
     this.loadPassengers()
   }
 
-  sendEmailToAll() {
-    this.loading = true
-    const emailPromises = this.emailContainers.map(child => child.sendEmail())
-    Promise.all(emailPromises).then(() => {
-      this.loading = false;
-    }).catch(() => {
-      this.loading = false;
-    });
+  sendAll(){
+    const emailBody: IEmail[] = this.emailContainers.map(child => child.getEmailBodyFromChild())
+    this.emailService.sendAllEmails(emailBody).subscribe({
+      next: response => console.log(response),
+      error: err => console.log(err)
+    })
+  }
+
+  async sendEmailToAll() {
+    this.loading = true;
+
+    for (const child of this.emailContainers.toArray()) {
+      await child.sendEmail();  // Wait for each email to complete
+    }
+
+    this.loading = false;
   }
 }

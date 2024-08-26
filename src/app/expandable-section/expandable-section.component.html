@@ -24,6 +24,24 @@
     cursor: pointer;
   }
 
+  .sent-message{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .sent-email{
+    background-color: #FC5923;
+  }
+
+  .sent-sms{
+    background-color: #3eace8;
+  }
+
+  .sent-whatsapp{
+    background-color: #0ab937;
+  }
+
   @keyframes expand {
     from {
       max-height: 0;
@@ -39,7 +57,12 @@
 
 <div class="collapsible-container">
   <div class="header" (click)="toggle()" [ngStyle]="{'border-bottom': isExpanded ? '1px solid #c8d0e0' : 'none'}">
-    <h4>{{ title }} | {{ numOfPassengers }} Passengers</h4>
+    <div style="display: flex; align-items: center; gap: 5px">
+      <h4>{{ title }} | {{ numOfPassengers }} Passengers </h4>
+      <div *ngIf="isEmailSent" class="sent-message sent-email"></div>
+<!--      <div class="sent-message sent-sms"></div>-->
+<!--      <div class="sent-message sent-whatsapp"></div>-->
+    </div>
     <button><i class="bi bi-chevron-down" *ngIf="!isExpanded"></i><i class="bi bi-chevron-up" *ngIf="isExpanded"></i></button>
   </div>
   <div class="content" *ngIf="isExpanded">

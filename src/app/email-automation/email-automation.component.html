@@ -3,6 +3,32 @@
     padding: 10px;
   }
 
+  .btn-send{
+    background: white;
+    border-radius: 10px;
+    color: rgba(65, 105, 224, 0.65);
+    padding: 5px 10px 5px 10px;
+    border: 1px solid rgba(65, 105, 224, 0.65);
+    font-weight: bold;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .email{
+    color: #FC5923;
+    border: 1px solid #FC5923;
+  }
+
+  .sms{
+    color: #3eace8;
+    border: 1px solid #3eace8;
+  }
+
+  .whatsapp{
+    color: #57dc7a;
+    border: 1px solid #57dc7a;
+
+  }
 
   .loading-placeholder {
     display: flex;
@@ -72,15 +98,14 @@
   <div class="content" *ngIf="loadContent">
     <div class="row">
       <div class="col-md-12">
-        <button class="btn btn-primary" style="background-color: #FC5923; color: white; margin-right: 10px; border: none" (click)="sendEmailToAll()">{{loading ? "Sending..." : "Send Email To All"}}</button>
-        <button class="btn btn-primary" style="background-color: #3eace8; color: white; margin-right: 10px; border: none">Send SMS To All</button>
-        <button class="btn btn-primary" style="background-color: #57dc7a; color: white; margin-right: 10px; border: none">Send WhatsApp To All</button>
+        <button class="btn-send email" (click)="sendEmailToAll()">{{loading ? "Sending..." : "Send Email To All"}}</button>
+        <button class="btn-send sms">Send SMS To All</button>
+        <button class="btn-send whatsapp">Send WhatsApp To All</button>
       </div>
     </div>
     <h3>Pickup Location List</h3>
-    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
-      <app-email-container [emailInfo]="getEmailObject(pickup)"></app-email-container>
+    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [isEmailSent] = hasEmailSent(pickup.abbreviation) [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
+      <app-email-container (updateSentEmails)="updateSentEmailLocations($event)" [emailInfo]="getEmailObject(pickup)"></app-email-container>
     </app-expandable-section>
   </div>
 </section>
-

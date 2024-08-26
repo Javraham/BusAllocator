@@ -19,20 +19,18 @@ app.use(cors())
 
 function checkApiKey(req, res, next) {
   const apiKey = req.header('x-api-key'); // API key sent in the request header
-  console.log(apiKey, " ", process.env.API_KEY)
   if (!apiKey || apiKey !== process.env.API_KEY) {
-    console.log(apiKey)
     return res.status(403).json({ message: 'Forbidden: Invalid API Key' });
   }
   next();
 }
 
 
-app.get('/emails', async (req, res) => {
+app.get('/getEmails', async (req, res) => {
   const date = req.query.date
-  const emailRef = db.collection('Dates').doc(date);
-  const email = await emailRef.get()
-  res.json(email.data())
+  const locationRef = db.collection('Dates').doc(date);
+  const locations = await locationRef.get()
+  res.json(locations.data())
 })
 
 async function updateOrSetDoc(documentId, pickupName, newEmails) {
@@ -65,7 +63,7 @@ async function updateOrSetDoc(documentId, pickupName, newEmails) {
 
     // Update the document with the new location array
     await docRef.set({ location: locationArray });
-    return pickupName
+    return {location: locationArray}
 
   } catch (error) {
     console.error('Error updating emails:', error);
@@ -74,8 +72,8 @@ async function updateOrSetDoc(documentId, pickupName, newEmails) {
 
 app.post('/add-emails', async (req, res) => {
   const { emails, date, location } = req.body
-  const pickupName = await updateOrSetDoc(date, location, emails)
-  res.json(pickupName)
+  const data = await updateOrSetDoc(date, location, emails)
+  res.json({message: "Email Sent Successfully", data})
 })
 
 app.get('/', (req, res) => {
@@ -107,16 +105,40 @@ async function sendEmail(to, subject, body){
   }
 }
 
+app.post('/send-emails-to-all', checkApiKey, async (req, res) => {
+  const { locations } = req.body;
+  console.log(locations)
+
+  if (!locations || locations.length === 0) {
+    return res.status(400).json({errorMsg: 'Missing to, subject, or text'});
+  }
+
+
+  try{
+    locations.map(async (location) => {
+      await Promise.all(location.passengerEmailAddresses.map(email => sendEmail(email, location.subject, location.body)))
+        .then(() => updateOrSetDoc(location.date, location.location, location.passengerEmailAddresses))
+    })
+
+    res.json({message: "Email Sent Successfully"})
+  }
+  catch (error) {
+    console.error('Error in /send-email:', error);
+    res.status(500).json({ message: 'Failed to send email', details: error.message });
+  }
+})
+
 app.post('/send-email', checkApiKey, async (req, res) => {
-  const { passengerEmailAddresses, subject, body } = req.body;
-  console.log(passengerEmailAddresses, ' ' + subject, ' ' + body)
+  const { passengerEmailAddresses, subject, body, location, date } = req.body;
   if (passengerEmailAddresses.length === 0 || !subject || !body) {
     return res.status(400).json({ errorMsg: 'Missing to, subject, or text' });
   }
 
   try {
     await Promise.all(passengerEmailAddresses.map(email => sendEmail(email, subject, body)))
-    res.json({ message: 'Email sent successfully' });
+      .then(() => updateOrSetDoc(date, location, passengerEmailAddresses))
+      .then((data) => res.json({ message: 'Email sent successfully', data}))
+
   } catch (error) {
     console.error('Error in /send-email:', error);
     res.status(500).json({ message: 'Failed to send email', details: error.message });

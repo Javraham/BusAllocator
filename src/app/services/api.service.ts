@@ -198,7 +198,6 @@ export class ApiService {
 
       const combinedResults = [...jsonArrivedData.results, ...jsonConfirmedData.results, ...jsonNoShowData.results];
 
-      console.log("new arrived", combinedResults.map((val: any) => val.customer.firstName + " " + val.totalParticipants));
 
       const data: Passenger[] = combinedResults
         .filter((val: any) => val.status !== "CANCELLED")
@@ -236,8 +235,6 @@ export class ApiService {
         map.set(data_set.startTime, passengers + data_set.numOfPassengers);
       });
 
-      console.log(data);
-      console.log(data.reduce((total, val) => total + val.numOfPassengers, 0));
       return data;
     } catch (e) {
       throw new Error("Problem with authentication: Please double check your access and secret keys");
