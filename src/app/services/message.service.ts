@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {IEmail} from "../typings/IEmail";
+import {ISMS} from "../typings/ISMS";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {catchError, Observable, throwError} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class EmailService {
+export class MessageService {
   url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
@@ -56,6 +57,27 @@ export class EmailService {
       catchError(error => {
         console.error('Error occurred:', error);
         return throwError(() => new Error('Failed to send email. Please check your connection.'));
+      })
+    );
+  }
+
+  sendSMS(SMSObject: ISMS): Observable<any>{
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'x-api-key': 'hjkuwnndjw23=dkl'
+    });
+    console.log(SMSObject.passengers.map(passenger => passenger.email))
+    const body = {
+      passengerPhoneNumbers: ["6478987430", "902892"],
+      message: SMSObject.message,
+      location: SMSObject.location,
+      date: SMSObject.date
+    }
+
+    return this.http.post(`${this.url}send-sms`, body, {headers, responseType: 'json'}).pipe(
+      catchError(error => {
+        console.error('Error occurred:', error.error);
+        return throwError(() => new Error(error.error.message));
       })
     );
   }

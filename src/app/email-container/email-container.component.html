@@ -147,7 +147,7 @@
     width: 1em;
     height: 1em;
     border: 2px solid rgba(0, 0, 0, 0.1);  /* Light gray border */
-    border-left-color: #FC5923;  /* Darker left-side for the spinner effect */
+    border-left-color: #4B7FCC;  /* Darker left-side for the spinner effect */
     border-radius: 50%;
     animation: spin 1s linear infinite;  /* Smooth rotation */
   }
@@ -163,12 +163,12 @@
 </style>
 
 <div class="email-container">
-  <form [formGroup]="form" (ngSubmit)="sendEmail()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div style="display: flex; gap: 5px; margin-bottom: 10px">
-      <button *ngIf="!loading" class="btn-send email" type="submit"> <i class="bi bi-envelope"></i> <span class="btn-text">Send Email</span></button>
-      <button *ngIf="!loading" class="btn-send sms" type="submit"> <i class="bi bi-chat-dots"></i> <span class="btn-text">Send SMS</span></button>
+      <button *ngIf="!loading" class="btn-send email" type="submit" (click)="sendEmail($event)"> <i class="bi bi-envelope"></i> <span class="btn-text">Send Email</span></button>
+      <button *ngIf="!loading" class="btn-send sms" type="submit" (click)="sendSMS($event)"> <i class="bi bi-chat-dots"></i> <span class="btn-text">Send SMS</span></button>
       <button *ngIf="!loading" class="btn-send whatsapp" type="submit"> <i class="bi bi-whatsapp"></i> <span class="btn-text">Send WhatsApp</span></button>
-      <button *ngIf="loading" class="btn-send email" type="button"><span class="spinner"></span><span class="btn-text">Sending</span></button>
+      <button *ngIf="loading" class="btn-send" type="button"><span class="spinner"></span><span class="btn-text">Sending</span></button>
     </div>
     <div class="form-container">
       <div class="header">

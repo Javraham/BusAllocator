@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {IEmail} from "../typings/IEmail";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {EmailService} from "../services/email.service";
+import {MessageService} from "../services/message.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {Passenger} from "../typings/passenger";
 import {resolve} from "@angular/compiler-cli";
@@ -26,7 +26,7 @@ export class EmailContainerComponent {
   loading = false;
   @Output() updateSentEmails = new EventEmitter<any>();
 
-  constructor(private emailService: EmailService) {
+  constructor(private emailService: MessageService) {
   }
 
   ngOnInit() {
@@ -66,8 +66,46 @@ export class EmailContainerComponent {
     }
   }
 
+  sendSMS(event?: any): Promise<any> {
+      if(event) event.preventDefault(); // Prevent form submission
+      return new Promise((resolve, reject) => {
+        if (this.form.invalid || this.passengers.length === 0) {
+          this.form.markAllAsTouched();
+          reject(undefined)
+          return;
+        }
+        this.loading = true;
+        this.emailService.sendSMS({
+          passengers: this.passengers,
+          message: this.form.value.body,
+          date: this.emailInfo.date,
+          location: this.emailInfo.location
+        }).subscribe({
+          next: (response) => {
+            this.successMsg = response.message
+            this.loading = false
+            console.log(response.failed)
+            resolve(undefined)
+          },
+          error: (error) => {
+            console.log(error)
+            this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
+            this.loading = false;
+            reject(undefined)
+          },
+        })
+      })
+    }
 
-  sendEmail(): Promise<any> {
+
+    onSubmit() {
+    // This will handle the generic form submission if needed
+    console.log('Form Submitted');
+  }
+
+
+  sendEmail(event?: any): Promise<any> {
+    if(event) event.preventDefault(); // Prevent form submission
     return new Promise((resolve, reject) => {
       if (this.form.invalid || this.passengers.length === 0) {
         this.form.markAllAsTouched();
@@ -85,7 +123,7 @@ export class EmailContainerComponent {
         next: (response) => {
           this.successMsg = response.message
           this.loading = false
-          console.log(response.data)
+          console.log(response)
           this.updateSentEmails.emit(response.data)
           resolve(undefined)
         },

@@ -8,7 +8,7 @@ import {FormsModule} from "@angular/forms";
 import {ExpandableSectionComponent} from "../expandable-section/expandable-section.component";
 import {EmailContainerComponent} from "../email-container/email-container.component";
 import {IEmail} from "../typings/IEmail";
-import {EmailService} from "../services/email.service";
+import {MessageService} from "../services/message.service";
 
 @Component({
   selector: 'app-email-automation',
@@ -34,12 +34,12 @@ export class EmailAutomationComponent {
   loading: boolean = false;
   sentEmailLocations: any;
 
-  constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: EmailService) {
+  constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
 
   }
 
   EmailSentLocation(pickup: string): any[]{
-    return this.sentEmailLocations?.location.filter((location: any) => location.PickupName === pickup) ?? []
+    return this.sentEmailLocations?.location.find((location: any) => location.PickupName === pickup)?.emails || []
   }
 
   trackByPickup(index: number, pickup: IPickup): string {

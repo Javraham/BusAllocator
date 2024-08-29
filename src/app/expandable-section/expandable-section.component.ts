@@ -27,8 +27,6 @@ export class ExpandableSectionComponent{
     return filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName)
   }
 
-
-
   toggle() {
     this.isExpanded = !this.isExpanded
     console.log(this.EmailSentLocations)
