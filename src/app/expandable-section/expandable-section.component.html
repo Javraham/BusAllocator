@@ -57,14 +57,25 @@
 
 <div class="collapsible-container">
   <div class="header" (click)="toggle()" [ngStyle]="{'border-bottom': isExpanded ? '1px solid #c8d0e0' : 'none'}">
-    <div style="display: flex; align-items: center; gap: 5px">
-      <h4>{{ title }} | {{ numOfPassengers }} Passengers </h4>
-      <div *ngIf="isEmailSent" class="sent-message sent-email"></div>
-<!--      <div class="sent-message sent-sms"></div>-->
-<!--      <div class="sent-message sent-whatsapp"></div>-->
+    <div>
+      <div style="display: flex; align-items: center; gap: 5px">
+        <h4>{{ title }} | {{ numOfPassengers }} Passengers </h4>
+        <div *ngIf="EmailSentLocations.length > 0" class="sent-message sent-email"></div>
+        <!--      <div class="sent-message sent-sms"></div>-->
+        <!--      <div class="sent-message sent-whatsapp"></div>-->
+      </div>
+      <div>
+        <div *ngIf="getUnsentEmailsPassengerNames().length > 0 && EmailSentLocations.length" style="color: #FC5923; font-weight: bold" >Email Not Sent To:
+          <strong>{{getUnsentEmailsPassengerNames().join(", ")}}</strong>
+        </div>
+<!--        <p style="color: #3eace8;font-weight: bold">SMS Not Sent To: Jonathan Avraham, Daniel Akselrod</p>-->
+<!--        <p style="color: #0ab937;font-weight: bold">WhatsApp Not Sent To: Jonathan Avraham, Daniel Akselrod</p>-->
+      </div>
     </div>
     <button><i class="bi bi-chevron-down" *ngIf="!isExpanded"></i><i class="bi bi-chevron-up" *ngIf="isExpanded"></i></button>
   </div>
+
+
   <div class="content" *ngIf="isExpanded">
     <ng-content></ng-content>
   </div>

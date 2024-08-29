@@ -104,7 +104,7 @@
       </div>
     </div>
     <h3>Pickup Location List</h3>
-    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [isEmailSent] = hasEmailSent(pickup.abbreviation) [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
+    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [EmailSentLocations] = EmailSentLocation(pickup.abbreviation) [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
       <app-email-container (updateSentEmails)="updateSentEmailLocations($event)" [emailInfo]="getEmailObject(pickup)"></app-email-container>
     </app-expandable-section>
   </div>

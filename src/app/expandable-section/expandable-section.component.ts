@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, Component, Input} from '@angular/core';
 import {NgIf, NgStyle} from "@angular/common";
+import {Passenger} from "../typings/passenger";
 
 @Component({
   selector: 'app-expandable-section',
@@ -15,12 +16,21 @@ export class ExpandableSectionComponent{
   @Input() title!: string;
   isExpanded: boolean = false
   @Input() numOfPassengers !: number;
-  @Input() isEmailSent !: boolean
+  @Input() EmailSentLocations !: any[]
+  @Input() passengers!: Passenger[]
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor() {
   }
+
+  getUnsentEmailsPassengerNames() {
+    const filteredPassengers = this.passengers.filter(passenger => !this.EmailSentLocations.includes(passenger.email))
+    return filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName)
+  }
+
+
 
   toggle() {
     this.isExpanded = !this.isExpanded
+    console.log(this.EmailSentLocations)
   }
 }

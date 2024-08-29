@@ -38,8 +38,8 @@ export class EmailAutomationComponent {
 
   }
 
-  hasEmailSent(pickup: string){
-    return this.sentEmailLocations?.location.some((location: any) => location.PickupName === pickup) ?? false
+  EmailSentLocation(pickup: string): any[]{
+    return this.sentEmailLocations?.location.filter((location: any) => location.PickupName === pickup) ?? []
   }
 
   trackByPickup(index: number, pickup: IPickup): string {
@@ -65,6 +65,7 @@ export class EmailAutomationComponent {
   getSentEmails(){
     this.emailService.getSentEmails(this.date).subscribe({
       next: response => {
+        console.log(response)
         this.sentEmailLocations = response;
         this.sentEmailLocations?.location.forEach((location: any) => console.log(location.PickupName))
       },
