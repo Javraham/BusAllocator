@@ -32,14 +32,18 @@ export class EmailAutomationComponent {
   loadContent: boolean = false;
   passengerListByLocation: Passenger[] = [];
   loading: boolean = false;
-  sentEmailLocations: any;
+  sentMessageLocations: any;
 
   constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
 
   }
 
   EmailSentLocation(pickup: string): any[]{
-    return this.sentEmailLocations?.location.find((location: any) => location.PickupName === pickup)?.emails || []
+    return this.sentMessageLocations?.location.find((location: any) => location.PickupName === pickup)?.emails || []
+  }
+
+  SMSSentLocation(pickup: string): any[]{
+    return this.sentMessageLocations?.location.find((location: any) => location.PickupName === pickup)?.sms || []
   }
 
   trackByPickup(index: number, pickup: IPickup): string {
@@ -55,26 +59,26 @@ export class EmailAutomationComponent {
     if(this.isAuthorized){
       this.loadPassengers()
     }
-    this.getSentEmails()
+    this.getSentMessages()
   }
 
-  updateSentEmailLocations(event: any) {
-    this.sentEmailLocations = event
+  updateSentMessageLocations(event: any) {
+    this.sentMessageLocations = event
   }
 
-  getSentEmails(){
-    this.emailService.getSentEmails(this.date).subscribe({
+  getSentMessages(){
+    this.emailService.getSentMessages(this.date).subscribe({
       next: response => {
         console.log(response)
-        this.sentEmailLocations = response;
-        this.sentEmailLocations?.location.forEach((location: any) => console.log(location.PickupName))
+        this.sentMessageLocations = response;
+        this.sentMessageLocations?.location.forEach((location: any) => console.log(location.PickupName))
       },
       error: err => console.log(err)
     })
   }
 
   async loadPassengers() {
-    this.getSentEmails()
+    this.getSentMessages()
     this.loadContent = false
     this.passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
     this.pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.passengers)

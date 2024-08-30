@@ -4,8 +4,6 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {MessageService} from "../services/message.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {Passenger} from "../typings/passenger";
-import {resolve} from "@angular/compiler-cli";
-
 @Component({
   selector: 'app-email-container',
   standalone: true,
@@ -24,7 +22,7 @@ export class EmailContainerComponent {
   successMsg: string = '';
   errorMsg: string = '';
   loading = false;
-  @Output() updateSentEmails = new EventEmitter<any>();
+  @Output() updateSentMessages = new EventEmitter<any>();
 
   constructor(private emailService: MessageService) {
   }
@@ -47,7 +45,7 @@ export class EmailContainerComponent {
       next: (response) => {
         this.successMsg = response.message
         this.loading = false
-        this.updateSentEmails.emit(response.data)
+        this.updateSentMessages.emit(response.data)
       },
       error: (error) => {
         this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
@@ -84,6 +82,7 @@ export class EmailContainerComponent {
           next: (response) => {
             this.successMsg = response.message
             this.loading = false
+            this.updateSentMessages.emit(response.data)
             console.log(response.failed)
             resolve(undefined)
           },
@@ -124,7 +123,7 @@ export class EmailContainerComponent {
           this.successMsg = response.message
           this.loading = false
           console.log(response)
-          this.updateSentEmails.emit(response.data)
+          this.updateSentMessages.emit(response.data)
           resolve(undefined)
         },
         error: (error) => {

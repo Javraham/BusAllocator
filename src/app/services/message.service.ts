@@ -11,7 +11,7 @@ export class MessageService {
   url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
-  getSentEmails(date: string): Observable<any>{
+  getSentMessages(date: string): Observable<any>{
     console.log(date)
     let params = new HttpParams().set('date', date);
     const headers = new HttpHeaders({

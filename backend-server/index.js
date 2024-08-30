@@ -63,7 +63,7 @@ app.post('/send-sms', async (req, res) => {
 
     // Filter out successful results
     const successfulResults = results.filter(result => result !== null);
-    await updateOrSetDoc({documentId: date, location, newSMS: successNumbers})
+    const data = await updateOrSetDoc({documentId: date, location, newSMS: successNumbers})
 
     if(successfulResults.length === 0){
       return res.status(404).json({
@@ -77,12 +77,14 @@ app.post('/send-sms', async (req, res) => {
         message: 'Some SMS were sent successfully, but some failed',
         successful: successfulResults,
         failed: failedNumbers,
+        data
       });
     } else {
       // Send a response if all messages were successful
       return res.status(200).json({
         message: 'All SMS sent successfully',
         successful: successfulResults,
+        data
       });
     }
   } catch (error) {

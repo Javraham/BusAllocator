@@ -16,7 +16,8 @@ export class ExpandableSectionComponent{
   @Input() title!: string;
   isExpanded: boolean = false
   @Input() numOfPassengers !: number;
-  @Input() EmailSentLocations !: any[]
+  @Input() EmailSentLocations !: string[]
+  @Input() SMSSentLocations !: string[]
   @Input() passengers!: Passenger[]
 
   constructor() {
@@ -24,6 +25,11 @@ export class ExpandableSectionComponent{
 
   getUnsentEmailsPassengerNames() {
     const filteredPassengers = this.passengers.filter(passenger => !this.EmailSentLocations.includes(passenger.email))
+    return filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName)
+  }
+
+  getUnsentSMSPassengerNames() {
+    const filteredPassengers = this.passengers.filter(passenger => !this.SMSSentLocations.includes(passenger.phoneNumber))
     return filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName)
   }
 
