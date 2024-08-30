@@ -61,20 +61,20 @@ export class MessageService {
     );
   }
 
-  sendSMS(SMSObject: ISMS): Observable<any>{
+  sendSMS(SMSObject: ISMS, endpoint: string): Observable<any>{
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'x-api-key': 'hjkuwnndjw23=dkl'
     });
     console.log(SMSObject.passengers.map(passenger => passenger.email))
     const body = {
-      passengerPhoneNumbers: ["6478987430", "902892"],
+      passengerPhoneNumbers: ["6478987430"],
       message: SMSObject.message,
       location: SMSObject.location,
       date: SMSObject.date
     }
 
-    return this.http.post(`${this.url}send-sms`, body, {headers, responseType: 'json'}).pipe(
+    return this.http.post(`${this.url}${endpoint}`, body, {headers, responseType: 'json'}).pipe(
       catchError(error => {
         console.error('Error occurred:', error.error);
         return throwError(() => new Error(error.error.message));

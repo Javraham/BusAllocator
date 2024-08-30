@@ -69,6 +69,7 @@ app.post('/send-sms', async (req, res) => {
       return res.status(404).json({
         message: 'All phone numbers are invalid',
         failed: failedNumbers,
+        data
       });
     }
     else if (failedNumbers.length > 0) {
@@ -93,6 +94,70 @@ app.post('/send-sms', async (req, res) => {
   }
 });
 
+app.post('/send-whatsapp', async (req, res) => {
+  const { passengerPhoneNumbers, message, date, location } = req.body;
+
+  // Check for missing parameters
+  if (!passengerPhoneNumbers || passengerPhoneNumbers.length === 0 || !message) {
+    return res.status(400).json({ error: 'Missing "to" or "message" field' });
+  }
+
+  const failedNumbers = [];
+  const successNumbers = [];
+
+  try {
+    // Map each number to a promise
+    const messagePromises = passengerPhoneNumbers.map(async (number) => {
+      try {
+        const messageResult = await client.messages.create({
+          body: message,
+          from: 'whatsapp:+14155238886',
+          to: 'whatsapp:' + number
+        });
+        successNumbers.push(number)
+        return { sid: messageResult.sid, number }; // Return success with sid and number
+      } catch (error) {
+        failedNumbers.push({ number, error: error.message }); // Capture failed numbers and error
+        return null; // Return null or some indication of failure
+      }
+    });
+
+    // Wait for all messages to be processed
+    const results = await Promise.all(messagePromises);
+
+    // Filter out successful results
+    const successfulResults = results.filter(result => result !== null);
+    const data = await updateOrSetDoc({documentId: date, location, newWhatsAppMessages: successNumbers})
+
+    if(successfulResults.length === 0){
+      return res.status(404).json({
+        message: 'All phone numbers are invalid',
+        failed: failedNumbers,
+        data
+      });
+    }
+    else if (failedNumbers.length > 0) {
+      // Send a response including both successful and failed results
+      return res.status(207).json({
+        message: 'Some WhatsApp messages were sent successfully, but some failed',
+        successful: successfulResults,
+        failed: failedNumbers,
+        data
+      });
+    } else {
+      // Send a response if all messages were successful
+      return res.status(200).json({
+        message: 'All WhatsApp messages sent successfully',
+        successful: successfulResults,
+        data
+      });
+    }
+  } catch (error) {
+    // Handle any unexpected errors
+    res.status(500).json({ error: 'Failed to send WhatsApp message', details: error.message });
+  }
+});
+
 
 app.get('/getEmails', async (req, res) => {
   const date = req.query.date
@@ -103,6 +168,7 @@ app.get('/getEmails', async (req, res) => {
 
 async function updateOrSetDoc(obj) {
   try {
+    console.log(obj)
     const docRef = db.collection('Dates').doc(obj.documentId);
     const doc = await docRef.get();
 
@@ -134,6 +200,14 @@ async function updateOrSetDoc(obj) {
           locationArray[locationIndex].sms = obj.newSMS
         }
       }
+      if(obj.hasOwnProperty("newWhatsAppMessages")){
+        if(locationArray[locationIndex].whatsapp){
+          locationArray[locationIndex].whatsapp = [...new Set([...locationArray[locationIndex].whatsapp, ...obj.newWhatsAppMessages])];
+        }
+        else{
+          locationArray[locationIndex].whatsapp = obj.newWhatsAppMessages
+        }
+      }
     } else {
       if(obj.hasOwnProperty("newEmails")) {
         locationArray.push({
@@ -147,6 +221,12 @@ async function updateOrSetDoc(obj) {
           sms: obj.newSMS
         });
       }
+      if(obj.hasOwnProperty("newWhatsAppMessages")) {
+        locationArray.push({
+          PickupName: obj.location,
+          whatsapp: obj.newWhatsAppMessages
+        });
+      }
     }
 
 
@@ -158,12 +238,6 @@ async function updateOrSetDoc(obj) {
     console.error('Error updating emails:', error);
   }
 }
-
-app.post('/add-emails', async (req, res) => {
-  const { emails, date, location } = req.body
-  const data = await updateOrSetDoc(date, location, emails)
-  res.json({message: "Email Sent Successfully", data})
-})
 
 app.get('/', (req, res) => {
   res.send('Welcome to the email sender app!');
@@ -193,29 +267,6 @@ async function sendEmail(to, subject, body){
     throw error
   }
 }
-
-app.post('/send-emails-to-all', checkApiKey, async (req, res) => {
-  const { locations } = req.body;
-  console.log(locations)
-
-  if (!locations || locations.length === 0) {
-    return res.status(400).json({errorMsg: 'Missing to, subject, or text'});
-  }
-
-
-  try{
-    locations.map(async (location) => {
-      await Promise.all(location.passengerEmailAddresses.map(email => sendEmail(email, location.subject, location.body)))
-        .then(() => updateOrSetDoc(location.date, location.location, location.passengerEmailAddresses))
-    })
-
-    res.json({message: "Email Sent Successfully"})
-  }
-  catch (error) {
-    console.error('Error in /send-email:', error);
-    res.status(500).json({ message: 'Failed to send email', details: error.message });
-  }
-})
 
 app.post('/send-email', checkApiKey, async (req, res) => {
   const { passengerEmailAddresses, subject, body, location, date } = req.body;

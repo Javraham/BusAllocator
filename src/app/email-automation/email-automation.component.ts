@@ -31,8 +31,10 @@ export class EmailAutomationComponent {
   pickupLocations: Map<string, number> = new Map<string, number>();
   loadContent: boolean = false;
   passengerListByLocation: Passenger[] = [];
-  loading: boolean = false;
+  loadingSentMails: boolean = false;
   sentMessageLocations: any;
+  loadingSentSMS: boolean = false;
+  loadingSentWhatsApp: boolean = false;
 
   constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
 
@@ -44,6 +46,10 @@ export class EmailAutomationComponent {
 
   SMSSentLocation(pickup: string): any[]{
     return this.sentMessageLocations?.location.find((location: any) => location.PickupName === pickup)?.sms || []
+  }
+
+  WhatsAppSentLocation(pickup: string): any[]{
+    return this.sentMessageLocations?.location.find((location: any) => location.PickupName === pickup)?.whatsapp || []
   }
 
   trackByPickup(index: number, pickup: IPickup): string {
@@ -173,13 +179,45 @@ export class EmailAutomationComponent {
     })
   }
 
-  async sendEmailToAll() {
-    this.loading = true;
+  async sendSMSToAll(){
+    this.loadingSentSMS = true;
 
     for (const child of this.emailContainers.toArray()) {
-      await child.sendEmail();  // Wait for each email to complete
+      try {
+        await child.sendSMS('send-sms');  // Wait for each SMS to complete
+      } catch (error) {
+        console.error('Error sending SMS:', error);  // Handle the error and continue
+      }
     }
 
-    this.loading = false;
+    this.loadingSentSMS = false;
+  }
+
+  async sendWhatsAppToAll(){
+    this.loadingSentWhatsApp = true;
+
+    for (const child of this.emailContainers.toArray()) {
+      try {
+        await child.sendSMS('send-whatsapp');  // Wait for each SMS to complete
+      } catch (error) {
+        console.error('Error sending SMS:', error);  // Handle the error and continue
+      }
+    }
+
+    this.loadingSentWhatsApp = false;
+  }
+
+  async sendEmailToAll() {
+    this.loadingSentMails = true;
+
+    for (const child of this.emailContainers.toArray()) {
+      try {
+        await child.sendEmail();  // Wait for each SMS to complete
+      } catch (error) {
+        console.error('Error sending Email:', error);  // Handle the error and continue
+      }
+    }
+
+    this.loadingSentMails = false;
   }
 }

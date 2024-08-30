@@ -48,6 +48,7 @@ export class EmailContainerComponent {
         this.updateSentMessages.emit(response.data)
       },
       error: (error) => {
+        this.successMsg = ""
         this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
         this.loading = false;
       },
@@ -64,7 +65,7 @@ export class EmailContainerComponent {
     }
   }
 
-  sendSMS(event?: any): Promise<any> {
+  sendSMS(endpoint: string, event?: any): Promise<any> {
       if(event) event.preventDefault(); // Prevent form submission
       return new Promise((resolve, reject) => {
         if (this.form.invalid || this.passengers.length === 0) {
@@ -78,8 +79,9 @@ export class EmailContainerComponent {
           message: this.form.value.body,
           date: this.emailInfo.date,
           location: this.emailInfo.location
-        }).subscribe({
+        },endpoint).subscribe({
           next: (response) => {
+            this.errorMsg = ""
             this.successMsg = response.message
             this.loading = false
             this.updateSentMessages.emit(response.data)
@@ -87,6 +89,7 @@ export class EmailContainerComponent {
             resolve(undefined)
           },
           error: (error) => {
+            this.successMsg = ""
             console.log(error)
             this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
             this.loading = false;
@@ -120,6 +123,7 @@ export class EmailContainerComponent {
         location: this.emailInfo.location
       }).subscribe({
         next: (response) => {
+          this.errorMsg = ""
           this.successMsg = response.message
           this.loading = false
           console.log(response)
@@ -127,6 +131,7 @@ export class EmailContainerComponent {
           resolve(undefined)
         },
         error: (error) => {
+          this.successMsg = ""
           this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
           this.loading = false;
           reject(undefined)

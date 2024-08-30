@@ -98,13 +98,13 @@
   <div class="content" *ngIf="loadContent">
     <div class="row">
       <div class="col-md-12">
-        <button class="btn-send email" (click)="sendEmailToAll()">{{loading ? "Sending..." : "Send Email To All"}}</button>
-        <button class="btn-send sms">Send SMS To All</button>
-        <button class="btn-send whatsapp">Send WhatsApp To All</button>
+        <button class="btn-send email" (click)="sendEmailToAll()">{{loadingSentMails ? "Sending..." : "Send Email To All"}}</button>
+        <button class="btn-send sms" (click)="sendSMSToAll()">{{loadingSentSMS ? "Sending..." : "Send SMS To All"}}</button>
+        <button class="btn-send whatsapp" (click)="sendWhatsAppToAll()">{{loadingSentWhatsApp ? "Sending..." : "Send WhatsApp To All"}}</button>
       </div>
     </div>
     <h3>Pickup Location List</h3>
-    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [SMSSentLocations]=SMSSentLocation(pickup.abbreviation) [EmailSentLocations] = EmailSentLocation(pickup.abbreviation) [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
+    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [WhatsAppSentLocations]=WhatsAppSentLocation(pickup.abbreviation) [SMSSentLocations]=SMSSentLocation(pickup.abbreviation) [EmailSentLocations] = EmailSentLocation(pickup.abbreviation) [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
       <app-email-container (updateSentMessages)="updateSentMessageLocations($event)" [emailInfo]="getEmailObject(pickup)"></app-email-container>
     </app-expandable-section>
   </div>
