@@ -142,13 +142,34 @@
     margin-bottom: 10px;
   }
 
+  ul{
+    list-style: none;
+    display: flex;
+    margin-bottom: 0;
+    height: 100%;
+  }
+
+  li:first-child a{
+    border-right: 1px solid blue
+  }
+
+  a{
+    padding: 10px;
+  }
+
 </style>
 <main>
   <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
-    <a routerLink="/">
-      <img src="assets/logo.png" alt="Logo" width="231" height="49" />
-    </a>
-    <a routerLink="/email-automation">Email Automation</a>
+    <img src="assets/logo.png" alt="Logo" width="231" height="49" />
+    <ul>
+      <li>
+        <a routerLink="/">Bus</a>
+      </li>
+      <li>
+        <a routerLink="/email-automation">Email</a>
+      </li>
+    </ul>
+
   </nav>
   <div class="container-fluid" id="content" #content>
     <router-outlet />

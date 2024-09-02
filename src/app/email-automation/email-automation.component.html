@@ -3,6 +3,15 @@
     padding: 10px;
   }
 
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);  /* Start at 0 degrees */
+    }
+    100% {
+      transform: rotate(360deg);  /* Complete rotation */
+    }
+  }
+
   .btn-send{
     background: white;
     border-radius: 10px;
@@ -12,6 +21,21 @@
     font-weight: bold;
     margin-right: 10px;
     margin-bottom: 10px;
+  }
+
+  .flex{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .spinner {
+    width: 10px;
+    height: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.1);  /* Light gray border */
+    border-left-color: #4B7FCC;  /* Darker left-side for the spinner effect */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;  /* Smooth rotation */
   }
 
   .email{
@@ -27,16 +51,28 @@
   .whatsapp{
     color: #57dc7a;
     border: 1px solid #57dc7a;
+  }
 
+  .error-msg {
+    background-color: #fda5a5;
+    display: flex;
+    /*align-items: center;*/
+    gap: 5px;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .error-text{
+    color: #b63f3f;
+    margin: 0;
+    font-weight: 600;
   }
 
   .loading-placeholder {
     display: flex;
-    position: absolute;
     flex-direction: column;
     gap: 10px; /* Space between loading lines */
-    width: 50%;
-    margin: 20px auto; /* Center the placeholder */
+    width: 100%;
   }
 
   .loading-title,
@@ -54,7 +90,8 @@
 
   .loading-line {
     width: 100%; /* Full width for content lines */
-    height: 15px;
+    padding: 1.5em 3em 1.5em 3em;
+    height: 70px;
   }
 
   @keyframes shimmer {
@@ -89,20 +126,33 @@
       <button class="btn btn-primary" style="background-color: #4169E0; color: white" (click)="getNextDayPassengers()">Next day</button>
     </div>
   </div>
-  <div *ngIf="!loadContent" class="loading-placeholder">
+  <div *ngIf="errorMsg.length > 0" class="error-msg col-md-6">
+    <i class="bi bi-exclamation-circle" style="color: #b63f3f"></i>
+    <p class="error-text">{{errorMsg}}</p>
+  </div>
+  <div *ngIf="loadingContent" class="loading-placeholder">
+    <div class="loading-title" style="margin-bottom: 20px"></div>
     <div class="loading-title"></div>
     <div class="loading-line"></div>
     <div class="loading-line"></div>
     <div class="loading-line"></div>
+    <div class="loading-line"></div>
+    <div class="loading-line"></div>
+    <div class="loading-line"></div>
+    <div class="loading-line"></div>
+    <div class="loading-line"></div>
   </div>
-  <div class="content" *ngIf="loadContent">
-    <div class="row">
-      <div class="col-md-12">
-        <button class="btn-send email" (click)="sendEmailToAll()">{{loadingSentMails ? "Sending..." : "Send Email To All"}}</button>
-        <button class="btn-send sms" (click)="sendSMSToAll()">{{loadingSentSMS ? "Sending..." : "Send SMS To All"}}</button>
-        <button class="btn-send whatsapp" (click)="sendWhatsAppToAll()">{{loadingSentWhatsApp ? "Sending..." : "Send WhatsApp To All"}}</button>
+  <div *ngIf="loadContent && !loadingContent">
+      <div>
+        <button class="btn-send" *ngIf="!loadingAll" (click)="sentAll()">Send All Messages</button>
+        <button *ngIf="loadingAll" class="btn-send" [disabled]="true">Sending...</button>
+        <button *ngIf="!loadingSentMails" class="btn-send email" [disabled]="areButtonsDisabled" (click)="sendEmailToAll()">Send Email To All</button>
+        <button *ngIf="loadingSentMails" class="btn-send email">Sending...</button>
+        <button *ngIf="!loadingSentSMS" class="btn-send sms" [disabled]="areButtonsDisabled" (click)="sendSMSToAll()">Send SMS To All</button>
+        <button *ngIf="loadingSentSMS" class="btn-send sms">Sending...</button>
+        <button *ngIf="!loadingSentWhatsApp" class="btn-send whatsapp" [disabled]="areButtonsDisabled" (click)="sendWhatsAppToAll()">Send WhatsApp To All</button>
+        <button *ngIf="loadingSentWhatsApp" class="btn-send whatsapp">Sending...</button>
       </div>
-    </div>
     <h3>Pickup Location List</h3>
     <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [WhatsAppSentLocations]=WhatsAppSentLocation(pickup.abbreviation) [SMSSentLocations]=SMSSentLocation(pickup.abbreviation) [EmailSentLocations] = EmailSentLocation(pickup.abbreviation) [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
       <app-email-container (updateSentMessages)="updateSentMessageLocations($event)" [emailInfo]="getEmailObject(pickup)"></app-email-container>

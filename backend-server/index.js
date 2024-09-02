@@ -63,29 +63,32 @@ app.post('/send-sms', async (req, res) => {
 
     // Filter out successful results
     const successfulResults = results.filter(result => result !== null);
-    const data = await updateOrSetDoc({documentId: date, location, newSMS: successNumbers})
+
+    const locationRef = db.collection('Dates').doc(date).collection('sms').doc(location);
+    await locationRef.set({
+      sentTo: admin.firestore.FieldValue.arrayUnion(...successNumbers),
+      timestamp: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
 
     if(successfulResults.length === 0){
       return res.status(404).json({
         message: 'All phone numbers are invalid',
         failed: failedNumbers,
-        data
       });
     }
     else if (failedNumbers.length > 0) {
       // Send a response including both successful and failed results
       return res.status(207).json({
         message: 'Some SMS were sent successfully, but some failed',
-        successful: successfulResults,
+        data: {sentTo: successNumbers, location},
         failed: failedNumbers,
-        data
       });
     } else {
       // Send a response if all messages were successful
       return res.status(200).json({
         message: 'All SMS sent successfully',
         successful: successfulResults,
-        data
+        data: {sentTo: successNumbers, location}
       });
     }
   } catch (error) {
@@ -97,147 +100,114 @@ app.post('/send-sms', async (req, res) => {
 app.post('/send-whatsapp', async (req, res) => {
   const { passengerPhoneNumbers, message, date, location } = req.body;
 
-  // Check for missing parameters
+  // Validate input
   if (!passengerPhoneNumbers || passengerPhoneNumbers.length === 0 || !message) {
-    return res.status(400).json({ error: 'Missing "to" or "message" field' });
+    return res.status(400).json({ error: 'Missing "passengerPhoneNumbers" or "message" field' });
   }
 
   const failedNumbers = [];
   const successNumbers = [];
 
   try {
-    // Map each number to a promise
+    // Create an array of promises to send WhatsApp messages
     const messagePromises = passengerPhoneNumbers.map(async (number) => {
       try {
         const messageResult = await client.messages.create({
           body: message,
-          from: 'whatsapp:+14155238886',
-          to: 'whatsapp:' + number
+          from: 'whatsapp:+14155238886', // Your WhatsApp Business Number
+          to: `whatsapp:${number}`,
         });
-        successNumbers.push(number)
-        return { sid: messageResult.sid, number }; // Return success with sid and number
+
+        successNumbers.push(number);
+        return { sid: messageResult.sid, number }; // Success object
       } catch (error) {
-        failedNumbers.push({ number, error: error.message }); // Capture failed numbers and error
-        return null; // Return null or some indication of failure
+        failedNumbers.push({ number, error: error.message }); // Capture failures
+        return null; // Returning null for failure
       }
     });
 
-    // Wait for all messages to be processed
+    // Await all promises concurrently
     const results = await Promise.all(messagePromises);
 
-    // Filter out successful results
-    const successfulResults = results.filter(result => result !== null);
-    const data = await updateOrSetDoc({documentId: date, location, newWhatsAppMessages: successNumbers})
+    console.log(successNumbers)
+    if (successNumbers.length > 0) {
+      const locationRef = db.collection('Dates').doc(date).collection('whatsapp').doc(location);
 
-    if(successfulResults.length === 0){
+      try {
+        await locationRef.set(
+          {
+            sentTo: admin.firestore.FieldValue.arrayUnion(...successNumbers),
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          },
+          { merge: true } // Merge to prevent overwriting existing data
+        );
+      } catch (error) {
+        // Log the Firestore error
+        console.error('Error updating Firestore:', error);
+        return res.status(500).json({ error: 'Failed to update Firestore', details: error.message });
+      }
+      console.log('Firestore update successful:', { date, location });
+    }
+
+    // Process and send appropriate response
+    const successfulResults = results.filter(result => result !== null);
+
+    if (successfulResults.length === 0) {
       return res.status(404).json({
         message: 'All phone numbers are invalid',
         failed: failedNumbers,
-        data
       });
     }
-    else if (failedNumbers.length > 0) {
-      // Send a response including both successful and failed results
+    // Handle partial successes
+    if (failedNumbers.length > 0) {
       return res.status(207).json({
         message: 'Some WhatsApp messages were sent successfully, but some failed',
         successful: successfulResults,
         failed: failedNumbers,
-        data
-      });
-    } else {
-      // Send a response if all messages were successful
-      return res.status(200).json({
-        message: 'All WhatsApp messages sent successfully',
-        successful: successfulResults,
-        data
+        data: {sentTo: successNumbers, location}
       });
     }
+
+    // All messages sent successfully
+    return res.status(200).json({
+      message: 'All WhatsApp messages sent successfully',
+      successful: successfulResults,
+      data: {sentTo: successNumbers, location}
+    });
+
   } catch (error) {
-    // Handle any unexpected errors
-    res.status(500).json({ error: 'Failed to send WhatsApp message', details: error.message });
+    // Global error handler for unexpected issues
+    console.error('Unexpected error during WhatsApp message sending:', error);
+    return res.status(500).json({ error: 'Failed to send WhatsApp messages', details: error.message });
   }
 });
 
 
-app.get('/getEmails', async (req, res) => {
-  const date = req.query.date
-  const locationRef = db.collection('Dates').doc(date);
-  const locations = await locationRef.get()
-  res.json(locations.data())
-})
-
-async function updateOrSetDoc(obj) {
-  try {
-    console.log(obj)
-    const docRef = db.collection('Dates').doc(obj.documentId);
-    const doc = await docRef.get();
-
-    let locationArray = [];
-
-    if (doc.exists) {
-      // If document exists, retrieve the existing data
-      const data = doc.data();
-      locationArray = data.location || [];
-    }
-
-    // Find index of the entry with the matching PickupName
-    const locationIndex = locationArray.findIndex(item => item.PickupName === obj.location);
-
-    if (locationIndex !== -1) {
-      if(obj.hasOwnProperty("newEmails")){
-        if(locationArray[locationIndex].emails){
-          locationArray[locationIndex].emails = [...new Set([...locationArray[locationIndex].emails, ...obj.newEmails])];
-        }
-        else{
-          locationArray[locationIndex].emails = obj.newEmails
-        }
-      }
-      if(obj.hasOwnProperty("newSMS")){
-        if(locationArray[locationIndex].sms){
-          locationArray[locationIndex].sms = [...new Set([...locationArray[locationIndex].sms, ...obj.newSMS])];
-        }
-        else{
-          locationArray[locationIndex].sms = obj.newSMS
-        }
-      }
-      if(obj.hasOwnProperty("newWhatsAppMessages")){
-        if(locationArray[locationIndex].whatsapp){
-          locationArray[locationIndex].whatsapp = [...new Set([...locationArray[locationIndex].whatsapp, ...obj.newWhatsAppMessages])];
-        }
-        else{
-          locationArray[locationIndex].whatsapp = obj.newWhatsAppMessages
-        }
-      }
-    } else {
-      if(obj.hasOwnProperty("newEmails")) {
-        locationArray.push({
-          PickupName: obj.location,
-          emails: obj.newEmails
-        });
-      }
-      if(obj.hasOwnProperty("newSMS")) {
-        locationArray.push({
-          PickupName: obj.location,
-          sms: obj.newSMS
-        });
-      }
-      if(obj.hasOwnProperty("newWhatsAppMessages")) {
-        locationArray.push({
-          PickupName: obj.location,
-          whatsapp: obj.newWhatsAppMessages
-        });
-      }
-    }
-
-
-    // Update the document with the new location array
-    await docRef.set({ location: locationArray });
-    return {location: locationArray}
-
-  } catch (error) {
-    console.error('Error updating emails:', error);
+app.get('/getMessagesByDate', async (req, res) => {
+  const {date, collection} = req.query
+  if (!date) {
+    return res.status(400).json({ error: 'Date parameter is required' });
   }
-}
+
+  try {
+    const messageRef = db.collection('Dates').doc(date).collection(collection);
+    const snapshot = await messageRef.get();
+
+    let messageData = [];
+    snapshot.forEach(doc => {
+      messageData.push({
+        location: doc.id, // The location name is the document ID
+        sentTo: doc.data().sentTo, // The list of emails sent to this location
+        timestamp: doc.data().timestamp
+      });
+    });
+
+    return res.status(200).json(messageData);
+  } catch (error) {
+    console.error('Error fetching emails:', error);
+    return res.status(500).json({ message: 'Error fetching emails', details: error.message });
+  }
+})
 
 app.get('/', (req, res) => {
   res.send('Welcome to the email sender app!');
@@ -275,17 +245,17 @@ app.post('/send-email', checkApiKey, async (req, res) => {
   }
 
   try {
-    await Promise.all(passengerEmailAddresses.map(email => sendEmail(email, subject, body)))
-      .then(() => {
-        const obj = {
-          documentId: date,
-          location,
-          newEmails: passengerEmailAddresses
-        }
-        return updateOrSetDoc(obj)
-      })
-      .then((data) => res.json({ message: 'Email sent successfully', data}))
 
+    await Promise.all(passengerEmailAddresses.map(email => sendEmail(email, subject, body)));
+
+    const locationRef = db.collection('Dates').doc(date).collection('emails').doc(location);
+    console.log(locationRef)
+    await locationRef.set({
+      sentTo: admin.firestore.FieldValue.arrayUnion(...passengerEmailAddresses),
+      timestamp: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }); // Merge in case the document exists
+
+    res.json({ message: 'Emails sent successfully', data: {sentTo: passengerEmailAddresses, location}});
   } catch (error) {
     console.error('Error in /send-email:', error);
     res.status(500).json({ message: 'Failed to send email', details: error.message });

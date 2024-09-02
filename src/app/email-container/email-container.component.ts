@@ -4,6 +4,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {MessageService} from "../services/message.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {Passenger} from "../typings/passenger";
+import {ISentMessageResponse} from "../typings/ISentEmailResonse";
 @Component({
   selector: 'app-email-container',
   standalone: true,
@@ -21,8 +22,11 @@ export class EmailContainerComponent {
   passengers: Passenger[] = []
   successMsg: string = '';
   errorMsg: string = '';
-  loading = false;
-  @Output() updateSentMessages = new EventEmitter<any>();
+  loadingSentEmail = false;
+  loadingSentSMS = false;
+  loadingSentWhatsapp = false;
+  loadingAll = false;
+  @Output() updateSentMessages = new EventEmitter<[any, string]>();
 
   constructor(private emailService: MessageService) {
   }
@@ -40,17 +44,17 @@ export class EmailContainerComponent {
   }
 
   addEmail() {
-    this.loading = true
+    this.loadingSentEmail = true
     this.emailService.addEmails(this.emailInfo.date, this.emailInfo.location).subscribe({
       next: (response) => {
         this.successMsg = response.message
-        this.loading = false
+        this.loadingSentEmail = false
         this.updateSentMessages.emit(response.data)
       },
       error: (error) => {
         this.successMsg = ""
         this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
-        this.loading = false;
+        this.loadingSentEmail = false;
       },
     })
   }
@@ -73,7 +77,7 @@ export class EmailContainerComponent {
           reject(undefined)
           return;
         }
-        this.loading = true;
+        endpoint === "send-sms" ? this.loadingSentSMS = true : this.loadingSentWhatsapp = true;
         this.emailService.sendSMS({
           passengers: this.passengers,
           message: this.form.value.body,
@@ -83,16 +87,15 @@ export class EmailContainerComponent {
           next: (response) => {
             this.errorMsg = ""
             this.successMsg = response.message
-            this.loading = false
-            this.updateSentMessages.emit(response.data)
-            console.log(response.failed)
+            endpoint === "send-sms" ? this.loadingSentSMS = false : this.loadingSentWhatsapp = false;
+            this.updateSentMessages.emit([response.data, endpoint == "send-sms" ? "sms" : "whatsapp"])
             resolve(undefined)
           },
           error: (error) => {
             this.successMsg = ""
             console.log(error)
             this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
-            this.loading = false;
+            endpoint === "send-sms" ? this.loadingSentSMS = false : this.loadingSentWhatsapp = false;
             reject(undefined)
           },
         })
@@ -114,7 +117,7 @@ export class EmailContainerComponent {
         reject(undefined)
         return;
       }
-      this.loading = true;
+      this.loadingSentEmail = true;
       this.emailService.sendEmail({
         passengers: this.passengers,
         body: this.form.value.body,
@@ -125,15 +128,15 @@ export class EmailContainerComponent {
         next: (response) => {
           this.errorMsg = ""
           this.successMsg = response.message
-          this.loading = false
+          this.loadingSentEmail = false
           console.log(response)
-          this.updateSentMessages.emit(response.data)
+          this.updateSentMessages.emit([response.data, "email"])
           resolve(undefined)
         },
         error: (error) => {
           this.successMsg = ""
           this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
-          this.loading = false;
+          this.loadingSentEmail = false;
           reject(undefined)
         },
       })
@@ -151,5 +154,26 @@ export class EmailContainerComponent {
 
   restorePassengers() {
     this.passengers = this.emailInfo.passengers
+  }
+
+  async sendAll(event?: any) {
+    if(event) event.preventDefault();
+    this.loadingAll = true
+    try{
+      await Promise.all([
+        this.sendEmail(),
+        this.sendSMS('send-sms'),
+        this.sendSMS('send-whatsapp')
+      ])
+      this.errorMsg = ""
+      this.successMsg = "All Messages Sent Successfully"
+    }
+    catch (err: any){
+      this.successMsg = "";
+      this.errorMsg = err.message
+    }
+    finally {
+      this.loadingAll = false
+    }
   }
 }

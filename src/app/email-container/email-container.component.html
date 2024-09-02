@@ -165,10 +165,14 @@
 <div class="email-container">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div style="display: flex; gap: 5px; margin-bottom: 10px">
-      <button *ngIf="!loading" class="btn-send email" type="submit" (click)="sendEmail($event)"> <i class="bi bi-envelope"></i> <span class="btn-text">Send Email</span></button>
-      <button *ngIf="!loading" class="btn-send sms" type="submit" (click)="sendSMS('send-sms', $event)"> <i class="bi bi-chat-dots"></i> <span class="btn-text">Send SMS</span></button>
-      <button *ngIf="!loading" class="btn-send whatsapp" type="submit" (click)="sendSMS('send-whatsapp', $event)"> <i class="bi bi-whatsapp"></i> <span class="btn-text">Send WhatsApp</span></button>
-      <button *ngIf="loading" class="btn-send" type="button"><span class="spinner"></span><span class="btn-text">Sending</span></button>
+      <button *ngIf="!loadingAll" class="btn-send" type="submit" (click)="sendAll($event)"> <i class="bi bi-send"></i> <span class="btn-text">Send All</span></button>
+      <div *ngIf="loadingAll" class="btn-send"> <span style="border-left-color: #4B7FCC;" class="spinner"></span><span class="btn-text">Sending</span></div>
+      <button *ngIf="!loadingSentEmail" class="btn-send email" type="submit" (click)="sendEmail($event)"> <i class="bi bi-envelope"></i> <span class="btn-text">Send Email</span></button>
+      <div *ngIf="loadingSentEmail" class="btn-send email"><span style="border-left-color: #FC5923;" class="spinner"></span><span class="btn-text">Sending</span></div>
+      <button *ngIf="!loadingSentSMS" class="btn-send sms" type="submit" (click)="sendSMS('send-sms', $event)"> <i class="bi bi-chat-dots"></i> <span class="btn-text">Send SMS</span></button>
+      <div *ngIf="loadingSentSMS" class="btn-send sms"><span style="border-left-color: #3eace8;" class="spinner"></span><span class="btn-text">Sending</span></div>
+      <button *ngIf="!loadingSentWhatsapp" class="btn-send whatsapp" type="submit" (click)="sendSMS('send-whatsapp', $event)"> <i class="bi bi-whatsapp"></i> <span class="btn-text">Send WhatsApp</span></button>
+      <div *ngIf="loadingSentWhatsapp" class="btn-send whatsapp"><span style="border-left-color: #0ab937;" class="spinner"></span><span class="btn-text">Sending</span></div>
     </div>
     <div class="form-container">
       <div class="header">

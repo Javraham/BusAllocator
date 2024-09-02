@@ -9,6 +9,8 @@ import {ExpandableSectionComponent} from "../expandable-section/expandable-secti
 import {EmailContainerComponent} from "../email-container/email-container.component";
 import {IEmail} from "../typings/IEmail";
 import {MessageService} from "../services/message.service";
+import {ISentMessageResponse} from "../typings/ISentEmailResonse";
+import {PRIMARY_OUTLET} from "@angular/router";
 
 @Component({
   selector: 'app-email-automation',
@@ -30,26 +32,31 @@ export class EmailAutomationComponent {
   passengers: Passenger[] = [];
   pickupLocations: Map<string, number> = new Map<string, number>();
   loadContent: boolean = false;
-  passengerListByLocation: Passenger[] = [];
+  loadingContent = false;
   loadingSentMails: boolean = false;
-  sentMessageLocations: any;
+  sentEmailLocations!: ISentMessageResponse[];
+  sentSMSLocations!: ISentMessageResponse[];
+  sentWhatsAppLocations!: ISentMessageResponse[];
   loadingSentSMS: boolean = false;
   loadingSentWhatsApp: boolean = false;
+  loadingAll = false;
+  areButtonsDisabled = false;
+  errorMsg: string = "";
 
   constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
 
   }
 
-  EmailSentLocation(pickup: string): any[]{
-    return this.sentMessageLocations?.location.find((location: any) => location.PickupName === pickup)?.emails || []
+  EmailSentLocation(pickup: string): string[]{
+    return this.sentEmailLocations?.find((obj: ISentMessageResponse) => obj.location === pickup)?.sentTo || []
   }
 
   SMSSentLocation(pickup: string): any[]{
-    return this.sentMessageLocations?.location.find((location: any) => location.PickupName === pickup)?.sms || []
+    return this.sentSMSLocations?.find((obj: ISentMessageResponse) => obj.location === pickup)?.sentTo || []
   }
 
   WhatsAppSentLocation(pickup: string): any[]{
-    return this.sentMessageLocations?.location.find((location: any) => location.PickupName === pickup)?.whatsapp || []
+    return this.sentWhatsAppLocations?.find((obj: ISentMessageResponse) => obj.location === pickup)?.sentTo || []
   }
 
   trackByPickup(index: number, pickup: IPickup): string {
@@ -65,30 +72,70 @@ export class EmailAutomationComponent {
     if(this.isAuthorized){
       this.loadPassengers()
     }
-    this.getSentMessages()
   }
 
-  updateSentMessageLocations(event: any) {
-    this.sentMessageLocations = event
+  updateSentMessageLocations(event: [any, string]) {
+    const messageType = event[1] === "email" ? this.sentEmailLocations : event[1] === "sms" ? this.sentSMSLocations : this.sentWhatsAppLocations
+    const locationFound = messageType.find(location => location.location === event[0].location)
+    if(locationFound){
+      locationFound.sentTo = event[0].sentTo;
+    }
+    else{
+      messageType.push(event[0])
+    }
   }
 
-  getSentMessages(){
-    this.emailService.getSentMessages(this.date).subscribe({
+  getSentEmails(){
+    this.emailService.getSentMessages(this.date, 'emails').subscribe({
       next: response => {
         console.log(response)
-        this.sentMessageLocations = response;
-        this.sentMessageLocations?.location.forEach((location: any) => console.log(location.PickupName))
+        this.sentEmailLocations = response;
+        this.sentEmailLocations.forEach((obj: ISentMessageResponse) => console.log(obj.location))
+      },
+      error: err => console.log(err)
+    })
+  }
+
+  getSentWhatsApp(){
+    this.emailService.getSentMessages(this.date, 'whatsapp').subscribe({
+      next: response => {
+        console.log(response)
+        this.sentWhatsAppLocations = response;
+        this.sentWhatsAppLocations.forEach((obj: ISentMessageResponse) => console.log(obj.location))
+      },
+      error: err => console.log(err)
+    })
+  }
+
+  getSentSMS(){
+    this.emailService.getSentMessages(this.date, 'sms').subscribe({
+      next: response => {
+        console.log(response)
+        this.sentSMSLocations = response;
+        this.sentSMSLocations.forEach((obj: ISentMessageResponse) => console.log(obj.location))
       },
       error: err => console.log(err)
     })
   }
 
   async loadPassengers() {
-    this.getSentMessages()
-    this.loadContent = false
-    this.passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
-    this.pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.passengers)
-    this.loadContent = true
+    try{
+      this.errorMsg = ""
+      this.getSentEmails()
+      this.getSentWhatsApp()
+      this.getSentSMS()
+      this.loadingContent = true;
+      this.loadContent = false;
+      this.passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
+      this.pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.passengers)
+      this.loadContent = true
+    }
+    catch (err: any){
+      this.errorMsg = err.message;
+    }
+    finally {
+      this.loadingContent = false;
+    }
   }
 
   getPickupLocations(): IPickup[] {
@@ -193,31 +240,72 @@ export class EmailAutomationComponent {
     this.loadingSentSMS = false;
   }
 
-  async sendWhatsAppToAll(){
+  delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async sendWhatsAppToAll() {
     this.loadingSentWhatsApp = true;
 
-    for (const child of this.emailContainers.toArray()) {
+    for (const [index, child] of this.emailContainers.toArray().entries()) {
       try {
         await child.sendSMS('send-whatsapp');  // Wait for each SMS to complete
+        console.log(`SMS sent successfully for child ${index + 1}`);
       } catch (error) {
         console.error('Error sending SMS:', error);  // Handle the error and continue
+      }
+
+      // Add a delay between each SMS sending to prevent hitting Twilio rate limits
+      if (index < this.emailContainers.length - 1) {
+        await this.delay(1000);
       }
     }
 
     this.loadingSentWhatsApp = false;
   }
 
+
   async sendEmailToAll() {
     this.loadingSentMails = true;
-
-    for (const child of this.emailContainers.toArray()) {
-      try {
-        await child.sendEmail();  // Wait for each SMS to complete
-      } catch (error) {
-        console.error('Error sending Email:', error);  // Handle the error and continue
-      }
+    const responses = this.emailContainers.toArray().map(container => container.sendEmail().catch(err => {
+      console.error(err)
+      return null
+    }))
+    try{
+      await Promise.all(responses)
+    }
+    catch (error){
+      console.error('Error in concurrent email sending:', error);    }
+    finally {
+      this.loadingSentMails = false;
     }
 
-    this.loadingSentMails = false;
+    // for (const child of this.emailContainers.toArray()) {
+    //   try {
+    //     await child.sendEmail();  // Wait for each SMS to complete
+    //   } catch (error) {
+    //     console.error('Error sending Email:', error);  // Handle the error and continue
+    //   }
+    // }
+
+    // this.loadingSentMails = false;
+  }
+
+  async sentAll() {
+    this.loadingAll = true
+    this.areButtonsDisabled = true
+    const responses = this.emailContainers.toArray().map(container => container.sendAll().catch(err => {
+      console.error(err)
+      return null
+    }))
+    try{
+      await Promise.all(responses)
+    }
+    catch (error){
+      console.error('Error in concurrent email sending:', error);    }
+    finally {
+      this.loadingAll = false;
+      this.areButtonsDisabled = false
+    }
   }
 }

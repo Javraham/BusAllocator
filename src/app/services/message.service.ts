@@ -11,14 +11,14 @@ export class MessageService {
   url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
-  getSentMessages(date: string): Observable<any>{
+  getSentMessages(date: string, collection: string): Observable<any>{
     console.log(date)
-    let params = new HttpParams().set('date', date);
+    let params = new HttpParams().set('date', date).set('collection', collection);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
 
-    return this.http.get(`${this.url}getEmails`, {params, headers})
+    return this.http.get(`${this.url}getMessagesByDate`, {params, headers})
   }
 
   addEmails(date: string, location: string): Observable<any>{
@@ -68,7 +68,7 @@ export class MessageService {
     });
     console.log(SMSObject.passengers.map(passenger => passenger.email))
     const body = {
-      passengerPhoneNumbers: ["6478987430"],
+      passengerPhoneNumbers: ["+16478987430"],
       message: SMSObject.message,
       location: SMSObject.location,
       date: SMSObject.date
