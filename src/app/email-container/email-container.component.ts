@@ -70,37 +70,43 @@ export class EmailContainerComponent {
   }
 
   sendSMS(endpoint: string, event?: any): Promise<any> {
-      if(event) event.preventDefault(); // Prevent form submission
-      return new Promise((resolve, reject) => {
-        if (this.form.invalid || this.passengers.length === 0) {
-          this.form.markAllAsTouched();
+    // const confirmation = window.confirm('Are you sure you want to proceed?');
+    // if(!confirmation){
+    //   return new Promise((resolve, reject) => {
+    //     reject(undefined)
+    //   })
+    // }
+    if(event) event.preventDefault(); // Prevent form submission
+    return new Promise((resolve, reject) => {
+      if (this.form.invalid || this.passengers.length === 0) {
+        this.form.markAllAsTouched();
+        reject(undefined)
+        return;
+      }
+      endpoint === "send-sms" ? this.loadingSentSMS = true : this.loadingSentWhatsapp = true;
+      this.emailService.sendSMS({
+        passengers: this.passengers,
+        message: this.form.value.body,
+        date: this.emailInfo.date,
+        location: this.emailInfo.location
+      },endpoint).subscribe({
+        next: (response) => {
+          this.errorMsg = ""
+          this.successMsg = response.message
+          endpoint === "send-sms" ? this.loadingSentSMS = false : this.loadingSentWhatsapp = false;
+          this.updateSentMessages.emit([response.data, endpoint == "send-sms" ? "sms" : "whatsapp"])
+          resolve(undefined)
+        },
+        error: (error) => {
+          this.successMsg = ""
+          console.log(error)
+          this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
+          endpoint === "send-sms" ? this.loadingSentSMS = false : this.loadingSentWhatsapp = false;
           reject(undefined)
-          return;
-        }
-        endpoint === "send-sms" ? this.loadingSentSMS = true : this.loadingSentWhatsapp = true;
-        this.emailService.sendSMS({
-          passengers: this.passengers,
-          message: this.form.value.body,
-          date: this.emailInfo.date,
-          location: this.emailInfo.location
-        },endpoint).subscribe({
-          next: (response) => {
-            this.errorMsg = ""
-            this.successMsg = response.message
-            endpoint === "send-sms" ? this.loadingSentSMS = false : this.loadingSentWhatsapp = false;
-            this.updateSentMessages.emit([response.data, endpoint == "send-sms" ? "sms" : "whatsapp"])
-            resolve(undefined)
-          },
-          error: (error) => {
-            this.successMsg = ""
-            console.log(error)
-            this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
-            endpoint === "send-sms" ? this.loadingSentSMS = false : this.loadingSentWhatsapp = false;
-            reject(undefined)
-          },
-        })
+        },
       })
-    }
+    })
+  }
 
 
     onSubmit() {

@@ -4,7 +4,7 @@ import {ApiService} from "./services/api.service";
 import {FetchBookingDataOptions} from "./typings/fetch-data-booking-options";
 import {Passenger} from "./typings/passenger";
 import {TourOrganizerService} from "./services/tour-organizer.service";
-import {buses, IBus} from "./typings/BusSelection";
+import { IBus} from "./typings/BusSelection";
 import {BusService} from "./services/bus.service";
 import {TourOrganizer} from "./services/organizer";
 import {PassengerComponent} from "./passenger/passenger.component";

@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {buses} from "../typings/BusSelection";
+import {buses, IBus} from "../typings/BusSelection";
+import {BusService} from "../services/bus.service";
 
 @Component({
   selector: 'app-bus-selection-buttons',
@@ -13,7 +14,7 @@ import {buses} from "../typings/BusSelection";
   templateUrl: './bus-selection-buttons.component.html',
   styleUrl: './bus-selection-buttons.component.css'
 })
-export class BusSelectionButtonsComponent {
+export class BusSelectionButtonsComponent implements OnInit{
   @Input() selectedOptions !: Map<string, string[]>;
   @Output() updateCheckList = new EventEmitter<[string[], string]>
   @Output() updatedUsedBuses = new EventEmitter<[string[], string]>
@@ -22,15 +23,20 @@ export class BusSelectionButtonsComponent {
   @Input() usedBuses !: Map<string, string[]>;
   @Input() time!: string;
   @Input() successMap!: Map<string, [boolean, boolean]>;
+  @Input() availBuses !: IBus[]
   canEdit: boolean = false;
+  buses: IBus[] = []
 
+  ngOnInit(){
+    this.buses = this.busService.buses
+  }
   isChecked(value: string): boolean {
     const optionsForTime = this.selectedOptions.get(this.time);
     if (!optionsForTime || optionsForTime.length === 0) return false;
     return optionsForTime.includes(value) && !this.isDisabled(value);
   }
 
-  constructor() {
+  constructor(private busService: BusService) {
   }
 
   isDisabled(busId: string){
@@ -72,7 +78,6 @@ export class BusSelectionButtonsComponent {
     this.updatedUsedBuses.emit([this.selectedOptions.get(this.time) || [], this.time]);
   }
 
-  protected readonly buses = buses;
 
   resetBuses() {
     this.removeBuses.emit([this.time, this.index])
@@ -83,6 +88,5 @@ export class BusSelectionButtonsComponent {
     console.log(usedBuses)
     this.updateCheckList.emit([buses.map(val => val.busId).filter(busId=> !usedBuses.includes(busId)) || [], this.time]);
   }
-
 
 }

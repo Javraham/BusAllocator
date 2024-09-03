@@ -1,9 +1,10 @@
+import { BusService } from "../services/bus.service";
+
 export interface IBus {
   busId: string,
   capacity: number,
   color: string
 }
-
 export const buses: IBus[] = [
   {
     busId: 'N1',

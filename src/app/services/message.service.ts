@@ -8,7 +8,7 @@ import {catchError, Observable, throwError} from "rxjs";
   providedIn: 'root'
 })
 export class MessageService {
-  url: string = 'http://localhost:3000/'
+  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
   constructor(private http: HttpClient) { }
 
   getSentMessages(date: string, collection: string): Observable<any>{
@@ -66,9 +66,11 @@ export class MessageService {
       'Content-Type': 'application/json',
       'x-api-key': 'hjkuwnndjw23=dkl'
     });
-    console.log(SMSObject.passengers.map(passenger => passenger.email))
+
+    const phoneNumbers = SMSObject.passengers.map(passenger => passenger.phoneNumber)
+    console.log(phoneNumbers)
     const body = {
-      passengerPhoneNumbers: ["+16478987430"],
+      passengerPhoneNumbers: phoneNumbers,
       message: SMSObject.message,
       location: SMSObject.location,
       date: SMSObject.date
@@ -88,6 +90,7 @@ export class MessageService {
       'Content-Type': 'application/json',
       'x-api-key': 'hjkuwnndjw23=dkl'
     });
+    const emailAddresses = emailObject.passengers.map(passenger => passenger.email)
     console.log(emailObject.passengers.map(passenger => passenger.email))
     const body = {
       passengerEmailAddresses: ["avrahamjonathan@gmail.com"],

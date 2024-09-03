@@ -45,13 +45,14 @@ app.post('/send-sms', async (req, res) => {
     // Map each number to a promise
     const messagePromises = passengerPhoneNumbers.map(async (number) => {
       try {
-        const messageResult = await client.messages.create({
-          body: message,
-          from: '+12567403186',
-          to: number
-        });
+        // const messageResult = await client.messages.create({
+        //   body: message,
+        //   from: '+12567403186',
+        //   to: number
+        // });
         successNumbers.push(number)
-        return { sid: messageResult.sid, number }; // Return success with sid and number
+        return number
+        // return { sid: messageResult.sid, number }; // Return success with sid and number
       } catch (error) {
         failedNumbers.push({ number, error: error.message }); // Capture failed numbers and error
         return null; // Return null or some indication of failure
@@ -112,14 +113,15 @@ app.post('/send-whatsapp', async (req, res) => {
     // Create an array of promises to send WhatsApp messages
     const messagePromises = passengerPhoneNumbers.map(async (number) => {
       try {
-        const messageResult = await client.messages.create({
-          body: message,
-          from: 'whatsapp:+14155238886', // Your WhatsApp Business Number
-          to: `whatsapp:${number}`,
-        });
+        // const messageResult = await client.messages.create({
+        //   body: message,
+        //   from: 'whatsapp:+14155238886', // Your WhatsApp Business Number
+        //   to: `whatsapp:${number}`,
+        // });
 
         successNumbers.push(number);
-        return { sid: messageResult.sid, number }; // Success object
+        return number;
+        // return { sid: messageResult.sid, number }; // Success object
       } catch (error) {
         failedNumbers.push({ number, error: error.message }); // Capture failures
         return null; // Returning null for failure

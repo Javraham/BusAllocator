@@ -267,28 +267,28 @@ export class EmailAutomationComponent {
 
   async sendEmailToAll() {
     this.loadingSentMails = true;
-    const responses = this.emailContainers.toArray().map(container => container.sendEmail().catch(err => {
-      console.error(err)
-      return null
-    }))
-    try{
-      await Promise.all(responses)
-    }
-    catch (error){
-      console.error('Error in concurrent email sending:', error);    }
-    finally {
-      this.loadingSentMails = false;
-    }
-
-    // for (const child of this.emailContainers.toArray()) {
-    //   try {
-    //     await child.sendEmail();  // Wait for each SMS to complete
-    //   } catch (error) {
-    //     console.error('Error sending Email:', error);  // Handle the error and continue
-    //   }
+    // const responses = this.emailContainers.toArray().map(container => container.sendEmail().catch(err => {
+    //   console.error(err)
+    //   return null
+    // }))
+    // try{
+    //   await Promise.all(responses)
+    // }
+    // catch (error){
+    //   console.error('Error in concurrent email sending:', error);    }
+    // finally {
+    //   this.loadingSentMails = false;
     // }
 
-    // this.loadingSentMails = false;
+    for (const child of this.emailContainers.toArray()) {
+      try {
+        await child.sendEmail();  // Wait for each SMS to complete
+      } catch (error) {
+        console.error('Error sending Email:', error);  // Handle the error and continue
+      }
+    }
+
+    this.loadingSentMails = false;
   }
 
   async sentAll() {

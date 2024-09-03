@@ -7,11 +7,12 @@ import {FetchBookingDataOptions} from "../typings/fetch-data-booking-options";
 import {Passenger} from "../typings/passenger";
 import {Bus} from "../services/bus";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
-import {buses, IBus} from "../typings/BusSelection";
+import {IBus} from "../typings/BusSelection";
 import {ApiService} from "../services/api.service";
 import {TourOrganizerService} from "../services/tour-organizer.service";
 import {PassengersService} from "../services/passengers.service";
 import {TourOrganizer} from "../services/organizer";
+import {BusService} from "../services/bus.service";
 
 @Component({
   selector: 'app-bus-automation',
@@ -42,7 +43,7 @@ export class BusAutomationComponent {
   errorMsg: string = "";
   loading:boolean = false;
   canEdit: boolean = false;
-  allBuses= buses.map(bus => ({...bus}));
+  allBuses !: IBus[];
 
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
@@ -64,7 +65,7 @@ export class BusAutomationComponent {
     this.organizePassengers(filteredBuses, filteredPassengers)
   }
 
-  constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private passengerService: PassengersService) {
+  constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private passengerService: PassengersService, private busService: BusService) {
   }
 
   ngOnInit() {
@@ -80,6 +81,7 @@ export class BusAutomationComponent {
     }
     console.log(localStorage.getItem('access'))
     console.log(this.isAuthorized)
+    this.busService.setBuses()
   }
 
   getHTML() {
@@ -184,11 +186,10 @@ export class BusAutomationComponent {
 
   async loadPassengers() {
     try{
-      console.log(buses)
       this.errorMsg = "";
       this.loading = true;
       const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
-      this.allBuses= buses.map(bus => ({...bus}));
+      this.allBuses= this.busService.buses.map(bus => ({...bus}));
       this.loading = false
       this.loadContent = true;
       this.passengers = passengers
