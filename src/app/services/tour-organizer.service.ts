@@ -4,7 +4,7 @@ import {Passenger} from "../typings/passenger";
 import {IBus} from "../typings/BusSelection";
 import {BusService} from "./bus.service";
 import {PassengersService} from "./passengers.service";
-import {pickups} from "../typings/ipickup";
+import {PickupsService} from "./pickups.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ import {pickups} from "../typings/ipickup";
 export class TourOrganizerService {
   buses: Map<string, Bus[]>;
   TimeToPassengersMap: Map<string, Passenger[]>;
-  constructor(private passengerService: PassengersService) {
+  constructor(private passengerService: PassengersService, private pickupService: PickupsService) {
     this.buses = new Map<string, Bus[]>();
     this.TimeToPassengersMap = new Map<string, Passenger[]>();
   }
@@ -44,8 +44,9 @@ export class TourOrganizerService {
 
   printResult() {
 
-    function getPickupAbbrev(passenger: Passenger): string {
-      const pickupAbbrev = pickups.find(pickup => passenger.pickup.includes(pickup.name))?.abbreviation;
+
+    const getPickupAbbrev = (passenger: Passenger): string => {
+      const pickupAbbrev = this.pickupService.pickupLocations.find(pickup => passenger.pickup.includes(pickup.name))?.abbreviation;
       return pickupAbbrev ? ` (${pickupAbbrev}) ` : '';
     }
 

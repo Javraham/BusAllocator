@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from "@angular/common";
-import {buses, IBus} from "../typings/BusSelection";
+import {IBus} from "../typings/BusSelection";
 import {BusService} from "../services/bus.service";
 
 @Component({
@@ -86,7 +86,7 @@ export class BusSelectionButtonsComponent implements OnInit{
   selectAll() {
     const usedBuses = Array.from(this.usedBuses).filter(val => val[0] !== this.time).map(val => val[1]).flat()
     console.log(usedBuses)
-    this.updateCheckList.emit([buses.map(val => val.busId).filter(busId=> !usedBuses.includes(busId)) || [], this.time]);
+    this.updateCheckList.emit([this.buses.map(val => val.busId).filter(busId=> !usedBuses.includes(busId)) || [], this.time]);
   }
 
 }

@@ -15,6 +15,7 @@ import {BusSelectionButtonsComponent} from "./bus-selection-buttons/bus-selectio
 import {PassengersService} from "./services/passengers.service";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {BusAutomationComponent} from "./bus-automation/bus-automation.component";
+import {PickupsService} from "./services/pickups.service";
 
 @Component({
   selector: 'app-root',
@@ -23,12 +24,20 @@ import {BusAutomationComponent} from "./bus-automation/bus-automation.component"
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   @ViewChild('navbar') navbar!: ElementRef;
   @ViewChild('content') content!: ElementRef;
+
+  constructor(private pickupService: PickupsService, private busService: BusService) {
+  }
 
   ngAfterViewInit() {
     const navbarHeight = this.navbar.nativeElement.offsetHeight;
     this.content.nativeElement.style.marginTop = `${navbarHeight}px`;
+  }
+
+  ngOnInit() {
+    this.pickupService.setPickupLocations()
+    this.busService.setBuses()
   }
 }

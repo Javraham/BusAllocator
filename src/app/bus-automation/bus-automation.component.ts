@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {BusSelectionButtonsComponent} from "../bus-selection-buttons/bus-selection-buttons.component";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
@@ -13,6 +13,7 @@ import {TourOrganizerService} from "../services/tour-organizer.service";
 import {PassengersService} from "../services/passengers.service";
 import {TourOrganizer} from "../services/organizer";
 import {BusService} from "../services/bus.service";
+import {PickupsService} from "../services/pickups.service";
 
 @Component({
   selector: 'app-bus-automation',
@@ -28,7 +29,7 @@ import {BusService} from "../services/bus.service";
   templateUrl: './bus-automation.component.html',
   styleUrl: './bus-automation.component.css'
 })
-export class BusAutomationComponent {
+export class BusAutomationComponent implements OnInit{
   passengers: Passenger[] = [];
   date: string = '';
   busList: Bus[] = [];
@@ -65,8 +66,15 @@ export class BusAutomationComponent {
     this.organizePassengers(filteredBuses, filteredPassengers)
   }
 
-  constructor(private sanitizer: DomSanitizer, private apiService: ApiService, private tourBusOrganizer: TourOrganizerService, private passengerService: PassengersService, private busService: BusService) {
-  }
+  constructor(private sanitizer: DomSanitizer,
+              private apiService: ApiService,
+              private tourBusOrganizer: TourOrganizerService,
+              private passengerService: PassengersService,
+              private busService: BusService,
+              private pickupsService: PickupsService
+            )
+            {
+            }
 
   ngOnInit() {
     const today = new Date();
@@ -81,7 +89,6 @@ export class BusAutomationComponent {
     }
     console.log(localStorage.getItem('access'))
     console.log(this.isAuthorized)
-    this.busService.setBuses()
   }
 
   getHTML() {

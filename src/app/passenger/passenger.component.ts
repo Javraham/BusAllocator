@@ -4,7 +4,7 @@ import {TourOrganizer} from "../services/organizer";
 import {Passenger} from "../typings/passenger";
 import {Input} from "@angular/core";
 import {NgClass, NgIf, NgStyle} from "@angular/common";
-import {pickups} from "../typings/ipickup";
+import {PickupsService} from "../services/pickups.service";
 
 
 @Component({
@@ -25,7 +25,7 @@ export class PassengerComponent {
   isActive: boolean = false;
   @Output() updatePassengerExclusionList = new EventEmitter<Passenger>()
 
-  constructor(private tourOrganizer: TourOrganizerService) {
+  constructor(private pickupService: PickupsService) {
   }
 
   toggleButton() {
@@ -61,7 +61,7 @@ export class PassengerComponent {
   }
 
   getPickupAbbrev(passenger: Passenger): string {
-    const pickupAbbrev = pickups.find(pickup => passenger.pickup?.includes(pickup.name))?.abbreviation;
+    const pickupAbbrev = this.pickupService.pickupLocations.find(pickup => passenger.pickup?.includes(pickup.name))?.abbreviation;
     return pickupAbbrev ? ` (${pickupAbbrev}) ` : 'No Location';
   }
 }

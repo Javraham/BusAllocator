@@ -2,7 +2,7 @@ import {Component, QueryList, ViewChildren} from '@angular/core';
 import {Passenger} from "../typings/passenger";
 import {ApiService} from "../services/api.service";
 import {PassengersService} from "../services/passengers.service";
-import {IPickup, pickups} from "../typings/ipickup";
+import {IPickup} from "../typings/ipickup";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {ExpandableSectionComponent} from "../expandable-section/expandable-section.component";
@@ -11,6 +11,7 @@ import {IEmail} from "../typings/IEmail";
 import {MessageService} from "../services/message.service";
 import {ISentMessageResponse} from "../typings/ISentEmailResonse";
 import {PRIMARY_OUTLET} from "@angular/router";
+import {PickupsService} from "../services/pickups.service";
 
 @Component({
   selector: 'app-email-automation',
@@ -43,7 +44,7 @@ export class EmailAutomationComponent {
   areButtonsDisabled = false;
   errorMsg: string = "";
 
-  constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
+  constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService, private pickupService: PickupsService) {
 
   }
 
@@ -142,10 +143,10 @@ export class EmailAutomationComponent {
     return Array.from(this.pickupLocations).map(val => {
       return {
         name: val[0],
-        abbreviation: pickups.find(pickup => val[0].includes(pickup.name))?.abbreviation || val[0],
+        abbreviation: this.pickupService.pickupLocations.find(pickup => val[0].includes(pickup.name))?.abbreviation || val[0],
         emailTemplate: {
-          subject: pickups.find(pickup => val[0].includes(pickup.name))?.emailTemplate.subject || "Niagara Tour Confirmation for",
-          body: pickups.find(pickup => val[0].includes(pickup.name))?.emailTemplate.body || "Write Email Here."
+          subject: this.pickupService.pickupLocations.find(pickup => val[0].includes(pickup.name))?.emailTemplate.subject || "Niagara Tour Confirmation for",
+          body: this.pickupService.pickupLocations.find(pickup => val[0].includes(pickup.name))?.emailTemplate.body || "Write Email Here."
         }
       }
     })

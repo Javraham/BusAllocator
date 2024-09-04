@@ -18,10 +18,13 @@ export class BusService {
       'Content-Type': 'application/json',
     });
 
-    const busResponse = this.http.get<any>(`${this.url}getBuses`, {headers})
+    const busResponse = this.http.get<any>(`${this.url}buses/getBuses`, {headers})
     busResponse.subscribe({
       next: (response) => {
-        this.buses = response.data
+        this.buses = response.data.sort((a: any, b: any) => {
+          return parseInt(a.busId.substring(1)) - parseInt(b.busId.substring(1))
+        })
+        console.log(response.data)
       },
       error: err => console.log(err)
     })
