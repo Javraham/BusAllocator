@@ -149,7 +149,7 @@
     height: 100%;
   }
 
-  li:first-child a{
+  li:not(:last-child) a{
     border-right: 1px solid blue
   }
 
@@ -167,6 +167,9 @@
       </li>
       <li>
         <a routerLink="/email-automation">Email</a>
+      </li>
+      <li>
+        <a routerLink="/settings">Settings</a>
       </li>
     </ul>
 
