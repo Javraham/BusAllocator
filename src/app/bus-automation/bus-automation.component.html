@@ -200,6 +200,7 @@
       [selectedOptions]="busSelections"
       [successMap]="successMap"
       [availBuses]="allBuses"
+      [buses]="allBuses"
     >
     </app-bus-selection-buttons>
     <div *ngIf="getBusesByTime(time[0]); then isAllocated else isNotAllocated"></div>

@@ -25,10 +25,10 @@ export class BusSelectionButtonsComponent implements OnInit{
   @Input() successMap!: Map<string, [boolean, boolean]>;
   @Input() availBuses !: IBus[]
   canEdit: boolean = false;
-  buses: IBus[] = []
+  @Input() buses !: IBus[]
 
   ngOnInit(){
-    this.buses = this.busService.buses
+
   }
   isChecked(value: string): boolean {
     const optionsForTime = this.selectedOptions.get(this.time);

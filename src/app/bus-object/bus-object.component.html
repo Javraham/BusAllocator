@@ -1,0 +1,27 @@
+<style>
+  button{
+    border: none;
+    background: none;
+  }
+
+  .content{
+    padding: 1.1em;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-right: 10px solid;
+  }
+
+  p{
+    margin: 0;
+  }
+
+</style>
+
+<div class="content" [ngStyle]="{'border-color': busObject.color}">
+  <button><i class="bi bi-pencil"></i></button>
+  <p><strong>Bus ID:</strong> {{busObject.busId}}, <strong>Capacity:</strong> {{busObject.capacity}}, <strong>Color: </strong>{{busObject.color}}</p>
+</div>

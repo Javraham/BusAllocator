@@ -1,7 +1,12 @@
 <style>
   h3{
     margin: 0;
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 2em;
+  }
+
+  p{
+    font-size: 0.8em;
   }
 
   #container > * {
@@ -13,9 +18,64 @@
     font-weight: 500;
   }
 
+  .settings-nav {
+    flex-wrap: wrap; /* Allows items to wrap if they don't fit in one row */
+  }
+
+  .nav-item {
+    padding: 10px 15px;
+    text-align: center;
+    background-color: transparent;
+    border-radius: 5px;
+    border: none;
+    color: #808080;
+    font-size: 0.8em;
+  }
+
+  button.active{
+    background-color: white;
+  }
+
+  h4{
+    margin-top: 20px;
+    color: grey;
+  }
+
+  .add-button{
+    border: 1px solid #4B7FCC;
+    background: none;
+    border-radius: 5px;
+    color: #4B7FCC;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
 </style>
 
 <div id="container">
   <h3>Settings</h3>
   <p id="sub-header">Manage your settings and configurations here</p>
+  <div class="settings-nav">
+    <button class="nav-item" *ngFor="let option of navOptions" (click)="changeSelectedOption(option)" [ngClass]="{'active': selectOption == option}">
+      {{option}}
+    </button>
+  </div>
+  <hr style="width: 100%; height: 1px; background-color: black"/>
+  <div class="content">
+    <ng-container *ngIf="selectOption === 'Buses'">
+      <h4>Bus Management</h4>
+      <button class="add-button"><i class="bi bi-plus"></i> Add Bus</button>
+      <div class="row">
+        <app-bus-object class="col-lg-4 col-md-6 col-sm-12" *ngFor="let busObject of buses" [busObject]="busObject"></app-bus-object>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="selectOption === 'Pickups'">
+      <h4>Pickup Locations Management</h4>
+      <button class="add-button"><i class="bi bi-plus"></i> Add Pickup</button>
+    </ng-container>
+    <ng-container *ngIf="selectOption === 'Options'">
+      <p>This is options config</p>
+    </ng-container>
+
+  </div>
 </div>
