@@ -1,21 +1,13 @@
 import {Component, ElementRef, model, OnInit, ViewChild} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
-import {ApiService} from "./services/api.service";
-import {FetchBookingDataOptions} from "./typings/fetch-data-booking-options";
-import {Passenger} from "./typings/passenger";
-import {TourOrganizerService} from "./services/tour-organizer.service";
-import { IBus} from "./typings/BusSelection";
 import {BusService} from "./services/bus.service";
-import {TourOrganizer} from "./services/organizer";
 import {PassengerComponent} from "./passenger/passenger.component";
 import {CommonModule, NgOptimizedImage} from '@angular/common';
-import {Bus} from "./services/bus"; // Import CommonModule
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {BusSelectionButtonsComponent} from "./bus-selection-buttons/bus-selection-buttons.component";
-import {PassengersService} from "./services/passengers.service";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BusAutomationComponent} from "./bus-automation/bus-automation.component";
 import {PickupsService} from "./services/pickups.service";
+import {OptionsService} from "./services/options.service";
 
 @Component({
   selector: 'app-root',
@@ -28,7 +20,7 @@ export class AppComponent implements OnInit{
   @ViewChild('navbar') navbar!: ElementRef;
   @ViewChild('content') content!: ElementRef;
 
-  constructor(private pickupService: PickupsService, private busService: BusService) {
+  constructor(private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService) {
   }
 
   ngAfterViewInit() {
@@ -39,5 +31,6 @@ export class AppComponent implements OnInit{
   ngOnInit() {
     this.pickupService.setPickupLocations()
     this.busService.setBuses()
+    this.optionService.setOptions()
   }
 }

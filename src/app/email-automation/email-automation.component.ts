@@ -2,7 +2,7 @@ import {Component, QueryList, ViewChildren} from '@angular/core';
 import {Passenger} from "../typings/passenger";
 import {ApiService} from "../services/api.service";
 import {PassengersService} from "../services/passengers.service";
-import {IPickup} from "../typings/ipickup";
+import {IPickup, pickups} from "../typings/ipickup";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {ExpandableSectionComponent} from "../expandable-section/expandable-section.component";
@@ -158,7 +158,7 @@ export class EmailAutomationComponent {
 
   getEmailObject(location: IPickup): IEmail {
     const dateObject = new Date(this.date)
-    const day = dateObject.getDate();
+    const day = dateObject.getUTCDate();
     const monthNames = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
@@ -167,7 +167,7 @@ export class EmailAutomationComponent {
       "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ];
 
-    const formattedDate = `${dayOfWeekNames[dateObject.getDay()]}, ${monthNames[dateObject.getMonth()]} ${day}`;
+    const formattedDate = `${dayOfWeekNames[dateObject.getUTCDay()]}, ${monthNames[dateObject.getUTCMonth()]} ${day}`;
     const passengers = this.getPassengersByLocation(location.name)
     const subject = location.emailTemplate.subject + ' ' + formattedDate
     const body = location.emailTemplate.body
