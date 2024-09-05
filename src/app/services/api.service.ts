@@ -3,6 +3,7 @@ import CryptoJS from 'crypto-js';
 import {FetchBookingDataOptions} from "../typings/fetch-data-booking-options";
 import {Passenger} from "../typings/passenger";
 import {options} from "../typings/IBookingOptions";
+import {OptionsService} from "./options.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class ApiService {
     httpMethod: "POST",
   };
 
-  constructor() { }
+  constructor(private optionsService: OptionsService) { }
 
   generateBokunSignature(date: string, accessKey: string, httpMethod: string, path: string, secretKey: string): string {
     // Concatenate the required values
@@ -104,7 +105,7 @@ export class ApiService {
           const hasBoat = productBooking?.rateTitle.includes("Boat");
           const hasJourney = productBooking?.rateTitle.includes("AND");
           const startTime = productBooking?.fields?.startTimeStr;
-          const option = options.find(option => productBooking?.rateTitle.toLowerCase().includes(option.option.toLowerCase()))?.abbrev || "Missing Option"
+          const option = this.optionsService.options.find(option => productBooking?.rateTitle.toLowerCase().includes(option.option.toLowerCase()))?.abbrev || "Missing Option"
           const numOfChildren = productBooking?.fields?.priceCategoryBookings.reduce((total: number, val: any) => {
             return val?.pricingCategory.ticketCategory === "CHILD" ? total + 1 : total
           }, 0)
@@ -208,7 +209,7 @@ export class ApiService {
           const hasBoat = val.rateTitle.includes("Boat");
           const hasJourney = val.rateTitle.includes("AND");
           const startTime = productBooking?.startTimeStr;
-          const option = options.find(option => val?.rateTitle.toLowerCase().includes(option.option.toLowerCase()))?.abbrev || "Missing Option";
+          const option = this.optionsService.options.find(option => val?.rateTitle.toLowerCase().includes(option.option.toLowerCase()))?.abbrev || "Missing Option";
           const numOfChildren = productBooking?.priceCategoryBookings.reduce((total: number, val: any) => {
             return val?.pricingCategory.ticketCategory === "CHILD" ? total + 1 : total;
           }, 0);
