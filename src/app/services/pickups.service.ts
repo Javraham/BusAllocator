@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {IPickup} from "../typings/ipickup";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,13 @@ export class PickupsService {
       },
       error: err => console.log(err)
     })
+  }
+
+  getPickupLocations(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.http.get<any>(`${this.url}pickups/getPickupLocations`, {headers})
   }
 }

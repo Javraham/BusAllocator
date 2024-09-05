@@ -1,0 +1,29 @@
+<style>
+  button{
+    border: none;
+    background: none;
+  }
+
+  .content{
+    padding: 1.1em;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  p{
+    margin: 0;
+  }
+
+</style>
+
+<div class="content">
+  <button><i class="bi bi-pencil"></i></button>
+  <div>
+    <p><strong>{{optionsInput.nameLabel}}:</strong> {{optionsInput.name}}</p>
+    <p><strong>{{optionsInput.abbreviationLabel}}:</strong> {{optionsInput.abbreviation}}</p>
+  </div>
+</div>
