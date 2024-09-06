@@ -1,7 +1,8 @@
 export interface IBookingOptions {
   docId?: string,
   option: string,
-  abbrev: string
+  abbrev: string,
+  timestamp?: any
 }
 
 export const options: IBookingOptions[] = [

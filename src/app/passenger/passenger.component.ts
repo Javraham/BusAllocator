@@ -5,6 +5,8 @@ import {Passenger} from "../typings/passenger";
 import {Input} from "@angular/core";
 import {NgClass, NgIf, NgStyle} from "@angular/common";
 import {PickupsService} from "../services/pickups.service";
+import {lastValueFrom} from "rxjs";
+import {IPickup} from "../typings/ipickup";
 
 
 @Component({
@@ -23,11 +25,15 @@ export class PassengerComponent {
   @Input() excludedPassengers !: Passenger[];
   @Input() busColor !: string;
   isActive: boolean = false;
-  @Output() updatePassengerExclusionList = new EventEmitter<Passenger>()
+  @Output() updatePassengerExclusionList = new EventEmitter<Passenger>();
+  pickupAbbrev !: string
 
   constructor(private pickupService: PickupsService) {
   }
 
+  ngOnInit() {
+    this.loadPickupAbbrev()
+  }
   toggleButton() {
     this.updatePassengerExclusionList.emit(this.passengerInfo)
     console.log(this.passengerInfo)
@@ -60,8 +66,11 @@ export class PassengerComponent {
     }
   }
 
-  getPickupAbbrev(passenger: Passenger): string {
-    const pickupAbbrev = this.pickupService.pickupLocations.find(pickup => passenger.pickup?.includes(pickup.name))?.abbreviation;
+  getPickupAbbrev(passenger: Passenger) {
+    const pickupAbbrev = this.pickupService.pickupLocations.find((pickup: IPickup) => passenger.pickup?.includes(pickup.name))?.abbreviation;
     return pickupAbbrev ? ` (${pickupAbbrev}) ` : 'No Location';
+  }
+
+  loadPickupAbbrev() {
   }
 }

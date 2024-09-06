@@ -100,8 +100,9 @@ export class BusAutomationComponent implements OnInit{
     console.log(this.isAuthorized)
   }
 
-  getHTML() {
-    this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(this.tourBusOrganizer.printResult());
+  async getHTML() {
+    const printedResult = await this.tourBusOrganizer.printResult()
+    this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(printedResult);
   }
 
   onDateChange(event: any){

@@ -95,21 +95,13 @@
         <app-option-object
           class="col-lg-4 col-md-6 col-sm-12"
           *ngFor="let pickupObject of pickupLocations"
-          [optionsInput]="{name: pickupObject.name, nameLabel: 'Pickup name', abbreviation: pickupObject.abbreviation, abbreviationLabel: 'Pickup abbreviation'}">
+          [optionsInput]="{name: pickupObject.name, nameLabel: 'Pickup name', abbreviation: pickupObject.abbreviation, abbreviationLabel: 'Pickup abbreviation', docId: pickupObject.docId}">
         </app-option-object>
       </div>
     </ng-container>
 
     <ng-container *ngIf="selectOption === 'Options'">
-      <h4>Booking Options Management</h4>
-      <button class="add-button"><i class="bi bi-plus"></i> Add Option</button>
-      <div class="row">
-        <app-option-object
-          class="col-lg-4 col-md-6 col-sm-12"
-          *ngFor="let optionObject of options"
-          [optionsInput]="{name: optionObject.option, nameLabel: 'Bokun Name', abbreviation: optionObject.abbrev, abbreviationLabel: 'Custom Name'}">
-        </app-option-object>
-      </div>
+      <app-options-settings-page></app-options-settings-page>
     </ng-container>
 
   </div>

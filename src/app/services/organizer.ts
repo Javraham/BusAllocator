@@ -1,6 +1,7 @@
 import {Bus} from "./bus";
 import {Passenger} from "../typings/passenger";
 import {IBus} from "../typings/BusSelection";
+import {catchError, map, Observable, of} from "rxjs";
 
 export class TourOrganizer {
   buses: Bus[];

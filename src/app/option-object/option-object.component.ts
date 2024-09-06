@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ISettingOptionsInput} from "../typings/ISettingOptionsInput";
 
 @Component({
@@ -10,4 +10,9 @@ import {ISettingOptionsInput} from "../typings/ISettingOptionsInput";
 })
 export class OptionObjectComponent {
   @Input() optionsInput !: ISettingOptionsInput;
+  @Output() openEdit = new EventEmitter<ISettingOptionsInput>();
+
+  openEditOptionForm() {
+    this.openEdit.emit(this.optionsInput)
+  }
 }

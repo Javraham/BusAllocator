@@ -11,6 +11,7 @@ import {IBookingOptions} from "../typings/IBookingOptions";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {BusSettingsPageComponent} from "../bus-settings-page/bus-settings-page.component";
+import {OptionsSettingsPageComponent} from "../options-settings-page/options-settings-page.component";
 
 @Component({
   selector: 'app-settings-page',
@@ -23,6 +24,7 @@ import {BusSettingsPageComponent} from "../bus-settings-page/bus-settings-page.c
     OptionObjectComponent,
     ReactiveFormsModule,
     BusSettingsPageComponent,
+    OptionsSettingsPageComponent,
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.css'
@@ -31,7 +33,6 @@ export class SettingsPageComponent implements OnInit{
   navOptions = ["Buses", "Pickups", "Options"];
   selectOption = "Buses"
   pickupLocations !: IPickup[];
-  options !: IBookingOptions[];
 
   constructor(private pickupsService: PickupsService, private optionsService: OptionsService, private route: ActivatedRoute, private router: Router) {
   }
@@ -52,13 +53,7 @@ export class SettingsPageComponent implements OnInit{
       error: err => console.log(err)
     })
 
-    this.optionsService.getOptions().subscribe({
-      next: (response) => {
-        this.options = response.data
-        console.log(response.data)
-      },
-      error: err => console.log(err)
-    })
+
   }
   changeSelectedOption(option: string){
     this.selectOption = option

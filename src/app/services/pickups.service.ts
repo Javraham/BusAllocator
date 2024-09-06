@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {IPickup} from "../typings/ipickup";
 import {Observable} from "rxjs";
+import {IBookingOptions} from "../typings/IBookingOptions";
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,24 @@ export class PickupsService {
       },
       error: err => console.log(err)
     })
+  }
+
+  addPickupLocation(newPickupLocation: IPickup): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<any>(`${this.url}pickups/addPickupLocation`, newPickupLocation, {headers})
+  }
+
+  deletePickupLocation(docId: string): Observable<any> {
+    return this.http.delete<void>(`${this.url}options/deleteOption/${docId}`)
+  }
+
+  updatePickupLocation(body: IBookingOptions): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.put<any>(`${this.url}options/updateOption`, body, {headers})
   }
 
   getPickupLocations(): Observable<any> {

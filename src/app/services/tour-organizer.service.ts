@@ -5,6 +5,9 @@ import {IBus} from "../typings/BusSelection";
 import {BusService} from "./bus.service";
 import {PassengersService} from "./passengers.service";
 import {PickupsService} from "./pickups.service";
+import {OptionsService} from "./options.service";
+import {catchError, lastValueFrom, map, Observable, of} from "rxjs";
+import {IPickup} from "../typings/ipickup";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +15,7 @@ import {PickupsService} from "./pickups.service";
 export class TourOrganizerService {
   buses: Map<string, Bus[]>;
   TimeToPassengersMap: Map<string, Passenger[]>;
-  constructor(private passengerService: PassengersService, private pickupService: PickupsService) {
+  constructor(private passengerService: PassengersService, private pickupService: PickupsService, private optionsService: OptionsService) {
     this.buses = new Map<string, Bus[]>();
     this.TimeToPassengersMap = new Map<string, Passenger[]>();
   }
@@ -42,11 +45,10 @@ export class TourOrganizerService {
     this.buses.delete(time);
   }
 
-  printResult() {
-
-
-    const getPickupAbbrev = (passenger: Passenger): string => {
-      const pickupAbbrev = this.pickupService.pickupLocations.find(pickup => passenger.pickup.includes(pickup.name))?.abbreviation;
+  async printResult() {
+    const response = await lastValueFrom(this.pickupService.getPickupLocations())
+    const getPickupAbbrev = (passenger: Passenger) => {
+      const pickupAbbrev = response.data.find((pickup: IPickup) => passenger.pickup.includes(pickup.name))?.abbreviation;
       return pickupAbbrev ? ` (${pickupAbbrev}) ` : '';
     }
 

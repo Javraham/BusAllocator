@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import CryptoJS from 'crypto-js';
 import {FetchBookingDataOptions} from "../typings/fetch-data-booking-options";
 import {Passenger} from "../typings/passenger";
-import {options} from "../typings/IBookingOptions";
+import {IBookingOptions, options} from "../typings/IBookingOptions";
 import {OptionsService} from "./options.service";
+import {lastValueFrom} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -198,9 +199,9 @@ export class ApiService {
       ]);
 
       const combinedResults = [...jsonArrivedData.results, ...jsonConfirmedData.results, ...jsonNoShowData.results];
+      const result = await lastValueFrom(this.optionsService.getOptions());
 
-
-      const data: Passenger[] = combinedResults
+      return combinedResults
         .filter((val: any) => val.status !== "CANCELLED")
         .map((val: any) => {
           const productBooking = val.fields;
@@ -209,10 +210,10 @@ export class ApiService {
           const hasBoat = val.rateTitle.includes("Boat");
           const hasJourney = val.rateTitle.includes("AND");
           const startTime = productBooking?.startTimeStr;
-          const option = this.optionsService.options.find(option => val?.rateTitle.toLowerCase().includes(option.option.toLowerCase()))?.abbrev || "Missing Option";
           const numOfChildren = productBooking?.priceCategoryBookings.reduce((total: number, val: any) => {
             return val?.pricingCategory.ticketCategory === "CHILD" ? total + 1 : total;
           }, 0);
+          const option = result.data.find((option: IBookingOptions)=> val?.rateTitle.toLowerCase().includes(option.option.toLowerCase()))?.abbrev || "Missing Option";
 
           return {
             confirmationCode: val.confirmationCode,
@@ -230,13 +231,6 @@ export class ApiService {
           };
         });
 
-      const map: Map<string, number> = new Map<string, number>();
-      data.forEach(data_set => {
-        const passengers = map.get(data_set.startTime) || 0;
-        map.set(data_set.startTime, passengers + data_set.numOfPassengers);
-      });
-
-      return data;
     } catch (e) {
       throw new Error("Problem with authentication: Please double check your access and secret keys");
     }
