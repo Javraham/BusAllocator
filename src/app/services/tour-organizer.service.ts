@@ -79,9 +79,9 @@ export class TourOrganizerService {
           this.passengerService.getOptionsToPassengers(bus.getPassengers()).get(option)?.forEach((passenger: Passenger) => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           })
         }
@@ -109,9 +109,9 @@ export class TourOrganizerService {
           this.passengerService.getOptionsToPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).get(option)?.forEach((passenger: Passenger) => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           })
         }

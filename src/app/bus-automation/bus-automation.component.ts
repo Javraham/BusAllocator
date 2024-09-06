@@ -14,6 +14,8 @@ import {PassengersService} from "../services/passengers.service";
 import {TourOrganizer} from "../services/organizer";
 import {BusService} from "../services/bus.service";
 import {PickupsService} from "../services/pickups.service";
+import {lastValueFrom} from "rxjs";
+import {IPickup} from "../typings/ipickup";
 
 @Component({
   selector: 'app-bus-automation',
@@ -50,6 +52,7 @@ export class BusAutomationComponent implements OnInit{
     accessKey: new FormControl('', Validators.required),
     secretKey: new FormControl('', [Validators.required, Validators.email])
   });
+  pickupAbbrevs !: IPickup[];
 
 
   updateBusSelections(event: [string[], string]) {
@@ -206,6 +209,8 @@ export class BusAutomationComponent implements OnInit{
       this.errorMsg = "";
       this.loading = true;
       const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
+      const result = await lastValueFrom(this.pickupsService.getPickupLocations())
+      this.pickupAbbrevs = result.data;
       this.loading = false
       this.loadContent = true;
       this.passengers = passengers

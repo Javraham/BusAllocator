@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import {Passenger} from "../typings/passenger";
+import {PickupsService} from "./pickups.service";
+import {lastValueFrom} from "rxjs";
+import {IPickup} from "../typings/ipickup";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PassengersService {
 
-  constructor() { }
+  constructor(private pickupService: PickupsService) { }
 
   getPassengersByTime(passengers: Passenger[]) {
     const map: Map<string, Passenger[]> = new Map<string, Passenger[]>();
@@ -33,6 +36,19 @@ export class PassengersService {
   getPassengersByPickupLocation(location: string, passengers: Passenger[]): Passenger[]{
     return passengers.filter(passenger => passenger.pickup === location)
   }
+
+  async getPickupLocationAbbreviations(pickups: string[]): Promise<any[]> {
+    const result = await lastValueFrom(this.pickupService.getPickupLocations());
+
+    return pickups
+      .map(pickup => {
+        return {
+          pickup,
+          ...result.data.find((location: any) => pickup.includes(location.name))
+        }
+      }).filter(abbrev => abbrev); // Filters out undefined values
+  }
+
 
   getTotalPassengersByPickupLocations(passengers: Passenger[]): Map<string, number> {
     const pickupLocations: Map<string, number> = new Map<string, number>();

@@ -89,15 +89,7 @@
     </ng-container>
 
     <ng-container *ngIf="selectOption === 'Pickups'">
-      <h4>Pickup Locations Management</h4>
-      <button class="add-button"><i class="bi bi-plus"></i> Add Pickup</button>
-      <div class="row">
-        <app-option-object
-          class="col-lg-4 col-md-6 col-sm-12"
-          *ngFor="let pickupObject of pickupLocations"
-          [optionsInput]="{name: pickupObject.name, nameLabel: 'Pickup name', abbreviation: pickupObject.abbreviation, abbreviationLabel: 'Pickup abbreviation', docId: pickupObject.docId}">
-        </app-option-object>
-      </div>
+      <app-pickups-settings></app-pickups-settings>
     </ng-container>
 
     <ng-container *ngIf="selectOption === 'Options'">

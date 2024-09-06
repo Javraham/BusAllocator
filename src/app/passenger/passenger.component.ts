@@ -24,16 +24,14 @@ export class PassengerComponent {
   @Input() passengerInfo !: Passenger;
   @Input() excludedPassengers !: Passenger[];
   @Input() busColor !: string;
+  @Input() pickupAbbrevs !: IPickup[]
   isActive: boolean = false;
   @Output() updatePassengerExclusionList = new EventEmitter<Passenger>();
-  pickupAbbrev !: string
 
   constructor(private pickupService: PickupsService) {
   }
 
-  ngOnInit() {
-    this.loadPickupAbbrev()
-  }
+
   toggleButton() {
     this.updatePassengerExclusionList.emit(this.passengerInfo)
     console.log(this.passengerInfo)
@@ -67,10 +65,7 @@ export class PassengerComponent {
   }
 
   getPickupAbbrev(passenger: Passenger) {
-    const pickupAbbrev = this.pickupService.pickupLocations.find((pickup: IPickup) => passenger.pickup?.includes(pickup.name))?.abbreviation;
+    const pickupAbbrev = this.pickupAbbrevs.find((pickup: IPickup) => passenger.pickup?.includes(pickup.name))?.abbreviation;
     return pickupAbbrev ? ` (${pickupAbbrev}) ` : 'No Location';
-  }
-
-  loadPickupAbbrev() {
   }
 }

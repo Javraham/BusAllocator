@@ -43,6 +43,7 @@ export class EmailAutomationComponent {
   loadingAll = false;
   areButtonsDisabled = false;
   errorMsg: string = "";
+  pickupAbbrevs: any[] = [];
 
   constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService, private pickupService: PickupsService) {
 
@@ -129,6 +130,7 @@ export class EmailAutomationComponent {
       this.loadContent = false;
       this.passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
       this.pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.passengers)
+      this.pickupAbbrevs = await this.passengerService.getPickupLocationAbbreviations(Array.from(this.pickupLocations).map(val => val[0]))
       this.loadContent = true
     }
     catch (err: any){
@@ -140,13 +142,14 @@ export class EmailAutomationComponent {
   }
 
   getPickupLocations(): IPickup[] {
-    return Array.from(this.pickupLocations).map(val => {
+    return Array.from(this.pickupAbbrevs).map(pickup => {
+      console.log(pickup)
       return {
-        name: val[0],
-        abbreviation: this.pickupService.pickupLocations.find(pickup => val[0].includes(pickup.name))?.abbreviation || val[0],
+        name: pickup.pickup,
+        abbreviation: pickup.abbreviation || pickup.pickup,
         emailTemplate: {
-          subject: this.pickupService.pickupLocations.find(pickup => val[0].includes(pickup.name))?.emailTemplate.subject || "Niagara Tour Confirmation for",
-          body: this.pickupService.pickupLocations.find(pickup => val[0].includes(pickup.name))?.emailTemplate.body || "Write Email Here."
+          subject: pickup.emailTemplate.subject || "Niagara Tour Confirmation for",
+          body: pickup.emailTemplate.body || "Write Email Here."
         }
       }
     })

@@ -31,18 +31,19 @@ export class PickupsService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
+    console.log(newPickupLocation)
     return this.http.post<any>(`${this.url}pickups/addPickupLocation`, newPickupLocation, {headers})
   }
 
   deletePickupLocation(docId: string): Observable<any> {
-    return this.http.delete<void>(`${this.url}options/deleteOption/${docId}`)
+    return this.http.delete<void>(`${this.url}pickups/deletePickupLocation/${docId}`)
   }
 
-  updatePickupLocation(body: IBookingOptions): Observable<any> {
+  updatePickupLocation(body: IPickup): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-    return this.http.put<any>(`${this.url}options/updateOption`, body, {headers})
+    return this.http.put<any>(`${this.url}pickups/updatePickupLocation`, body, {headers})
   }
 
   getPickupLocations(): Observable<any> {

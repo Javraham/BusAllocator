@@ -3,5 +3,6 @@ export interface ISettingOptionsInput{
   abbreviationLabel: string,
   name: string,
   abbreviation: string,
+  emailTemplateBody?: string,
   docId: string | undefined
 }

@@ -12,6 +12,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {BusSettingsPageComponent} from "../bus-settings-page/bus-settings-page.component";
 import {OptionsSettingsPageComponent} from "../options-settings-page/options-settings-page.component";
+import {PickupsSettingsComponent} from "../pickups-settings/pickups-settings.component";
 
 @Component({
   selector: 'app-settings-page',
@@ -25,6 +26,7 @@ import {OptionsSettingsPageComponent} from "../options-settings-page/options-set
     ReactiveFormsModule,
     BusSettingsPageComponent,
     OptionsSettingsPageComponent,
+    PickupsSettingsComponent,
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.css'
@@ -44,15 +46,6 @@ export class SettingsPageComponent implements OnInit{
         this.selectOption = option;
       }
     });
-
-    this.pickupsService.getPickupLocations().subscribe({
-      next: (response) => {
-        this.pickupLocations = response.data
-        console.log(response.data)
-      },
-      error: err => console.log(err)
-    })
-
 
   }
   changeSelectedOption(option: string){
