@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {IBus} from "../typings/BusSelection";
 import {BusService} from "../services/bus.service";
 import {NgStyle} from "@angular/common";
@@ -14,5 +14,9 @@ import {NgStyle} from "@angular/common";
 })
 export class BusObjectComponent{
   @Input() busObject !: IBus;
+  @Output() editBus = new EventEmitter<IBus>();
 
+  sendBusObjectToParent() {
+    this.editBus.emit(this.busObject)
+  }
 }

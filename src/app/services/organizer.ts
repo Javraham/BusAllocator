@@ -7,7 +7,7 @@ export class TourOrganizer {
   pickupLocations: Map<string, Passenger[]>;
 
   constructor(buses: IBus[]) {
-    this.buses = buses.map(bus => new Bus(bus.busId, bus.capacity, bus.color));
+    this.buses = buses.map(bus => new Bus(bus.busId, bus.capacity, bus.color || 'black'));
     this.pickupLocations = new Map();
   }
 

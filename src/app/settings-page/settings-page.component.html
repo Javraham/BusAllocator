@@ -29,7 +29,8 @@
     border-radius: 5px;
     border: none;
     color: #808080;
-    font-size: 0.8em;
+    font-weight: 500;
+    font-size: 1em;
   }
 
   button.active{
@@ -50,6 +51,26 @@
     margin-top: 10px;
   }
 
+  .form > div{
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .form-buttons button{
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    color: white;
+    border: none;
+  }
+
+  .add-bus{
+    background-color: #4B7FCC;
+  }
+
+  .delete-bus{
+    background-color: crimson;
+  }
+
 </style>
 
 <div id="container">
@@ -62,13 +83,39 @@
   </div>
   <hr style="width: 100%; height: 1px; background-color: black"/>
   <div class="content">
+
     <ng-container *ngIf="selectOption === 'Buses'">
       <h4>Bus Management</h4>
-      <button class="add-button"><i class="bi bi-plus"></i> Add Bus</button>
+      <button class="add-button" (click)="openNewBusForm()"><i class="bi bi-plus"></i> Add Bus</button>
+        <form [formGroup]="busForm" *ngIf="isBusFormOpen" (ngSubmit)="isEditingBus ? updateBus() : addBus($event)" class="form-group" style="margin-top: 10px">
+          <div class="row form" style="margin: 0">
+            <div class="input-group col-lg-2 col-md-3 col-sm-6">
+              <span class="input-group-addon">Bus ID</span>
+              <input class="form-control" formControlName="busId" type="text" required/>
+            </div>
+            <div class="input-group col-lg-2 col-md-3 col-sm-6">
+              <span class="input-group-addon">Capacity</span>
+              <input class="form-control" formControlName="capacity"  type="number" min="0" required/>
+            </div>
+            <div class="input-group col-lg-2 col-md-3 col-sm-6">
+              <span class="input-group-addon">Color</span>
+              <input class="form-control" formControlName="color" type="text"/>
+            </div>
+          </div>
+          <ng-container *ngIf="errorMsg">
+            <p style="color: #FC5923; font-weight: 500">{{errorMsg}}</p>
+          </ng-container>
+          <div class="form-buttons" style="display: flex; gap: 10px">
+            <button type="submit" class="add-bus">Save</button>
+            <button *ngIf="isEditingBus" (click)="deleteBus()" type="button" class="delete-bus">Delete Bus</button>
+            <button type="button" class="add-bus" (click)="cancelBus()">Cancel</button>
+          </div>
+        </form>
       <div class="row">
-        <app-bus-object class="col-lg-4 col-md-6 col-sm-12" *ngFor="let busObject of buses" [busObject]="busObject"></app-bus-object>
+        <app-bus-object (editBus)="editBus($event)" class="col-lg-4 col-md-6 col-sm-12" *ngFor="let busObject of buses" [busObject]="busObject"></app-bus-object>
       </div>
     </ng-container>
+
     <ng-container *ngIf="selectOption === 'Pickups'">
       <h4>Pickup Locations Management</h4>
       <button class="add-button"><i class="bi bi-plus"></i> Add Pickup</button>
@@ -80,6 +127,7 @@
         </app-option-object>
       </div>
     </ng-container>
+
     <ng-container *ngIf="selectOption === 'Options'">
       <h4>Booking Options Management</h4>
       <button class="add-button"><i class="bi bi-plus"></i> Add Option</button>

@@ -30,6 +30,25 @@ export class BusService {
     })
   }
 
+  updateBus(body: IBus): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.put<any>(`${this.url}buses/updateBus`, body, {headers})
+  }
+
+  deleteBus(docId: string): Observable<any> {
+    return this.http.delete<void>(`${this.url}buses/deleteBus/${docId}`)
+  }
+
+  addBus(newBus: IBus): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    console.log(newBus)
+    return this.http.post<any>(`${this.url}buses/addBus`, newBus, {headers})
+  }
+
   getBuses(): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
