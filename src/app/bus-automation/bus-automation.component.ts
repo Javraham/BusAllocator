@@ -86,15 +86,6 @@ export class BusAutomationComponent implements OnInit{
     const day = String(today.getDate()).padStart(2, '0');
     this.date = `${year}-${month}-${day}`;
     if(this.isAuthorized){
-      this.busService.getBuses().subscribe({
-        next: (response) => {
-          this.allBuses = response.data.sort((a: any, b: any) => {
-            return parseInt(a.busId.substring(1)) - parseInt(b.busId.substring(1));
-          });
-          console.log(this.allBuses);
-        },
-        error: err => console.log(err)
-      });
       this.loadPassengers()
       this.form.get('accessKey')?.disable();
       this.form.get('secretKey')?.disable();
@@ -210,6 +201,10 @@ export class BusAutomationComponent implements OnInit{
       this.loading = true;
       const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
       const result = await lastValueFrom(this.pickupsService.getPickupLocations())
+      const busesResult = await lastValueFrom(this.busService.getBuses())
+      this.allBuses = busesResult.data.sort((a: any, b: any) => {
+        return parseInt(a.busId.substring(1)) - parseInt(b.busId.substring(1));
+      });
       this.pickupAbbrevs = result.data;
       this.loading = false
       this.loadContent = true;
