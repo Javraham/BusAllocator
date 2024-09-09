@@ -5,6 +5,7 @@ import {MessageService} from "../services/message.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {Passenger} from "../typings/passenger";
 import {ISentMessageResponse} from "../typings/ISentEmailResonse";
+import {pickups} from "../typings/ipickup";
 @Component({
   selector: 'app-email-container',
   standalone: true,
@@ -18,6 +19,7 @@ import {ISentMessageResponse} from "../typings/ISentEmailResonse";
 })
 export class EmailContainerComponent {
   @Input() emailInfo !: IEmail;
+  @Input() pickupPlace !: string;
   form: FormGroup = new FormGroup<any>({});
   passengers: Passenger[] = []
   successMsg: string = '';
@@ -32,9 +34,14 @@ export class EmailContainerComponent {
   }
 
   ngOnInit() {
+    let currentBody = this.emailInfo.body;
+    const index = currentBody.indexOf("Map link:");
+    if (index !== -1) {
+      currentBody = currentBody.slice(0, index) + this.pickupPlace + '\n\n' + currentBody.slice(index);
+    }
     this.form = new FormGroup({
       subject: new FormControl(this.emailInfo.subject, [Validators.required]),
-      body: new FormControl(this.emailInfo.body, [Validators.required])
+      body: new FormControl(currentBody, [Validators.required])
     });
     this.passengers = this.emailInfo.passengers
   }

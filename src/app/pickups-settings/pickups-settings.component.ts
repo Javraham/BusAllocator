@@ -92,11 +92,15 @@ export class PickupsSettingsComponent implements OnInit{
             pickupFound.emailTemplate = response.data.emailTemplate
           }
           this.isPickupFormOpen = false
+          this.pickupsForm.reset()
           console.log(response.data)
         },
-        error: err => this.errorMsg = err.message
+        error: err => {
+          this.errorMsg = err.message
+          this.pickupsForm.reset()
+        }
+
       })
-      this.pickupsForm.reset()
     }
     else{
       this.errorMsg = "! Please fill in the Bokun Name and Custom Name"

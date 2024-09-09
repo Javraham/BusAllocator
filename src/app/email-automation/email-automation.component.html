@@ -111,6 +111,11 @@
   .btn-primary{
     margin-bottom: 10px;
   }
+
+  h4{
+    margin-top: 20px;
+    font-weight: bold;
+  }
 </style>
 
 <section>
@@ -154,8 +159,14 @@
         <button *ngIf="loadingSentWhatsApp" class="btn-send whatsapp">Sending...</button>
       </div>
     <h3>Pickup Location List</h3>
-    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [WhatsAppSentLocations]=WhatsAppSentLocation(pickup.abbreviation) [SMSSentLocations]=SMSSentLocation(pickup.abbreviation) [EmailSentLocations] = EmailSentLocation(pickup.abbreviation) [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
-      <app-email-container (updateSentMessages)="updateSentMessageLocations($event)" [emailInfo]="getEmailObject(pickup)"></app-email-container>
-    </app-expandable-section>
+    <div *ngFor="let item of dataMap">
+      <h4>{{item[0][0] === "0" ? item[0].slice(1) : item[0]}} Tour</h4>
+      <app-expandable-section *ngFor="let pickup of item[1]; trackBy: trackByPickup" [WhatsAppSentLocations]=WhatsAppSentLocation(pickup.abbreviation) [SMSSentLocations]=SMSSentLocation(pickup.abbreviation) [EmailSentLocations] = EmailSentLocation(pickup.abbreviation) [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
+        <app-email-container (updateSentMessages)="updateSentMessageLocations($event)" [pickupPlace]=pickup.name [emailInfo]="getEmailObject(pickup)"></app-email-container>
+      </app-expandable-section>
+    </div>
+<!--    <app-expandable-section *ngFor="let pickup of getPickupLocations(); trackBy: trackByPickup" [WhatsAppSentLocations]=WhatsAppSentLocation(pickup.abbreviation) [SMSSentLocations]=SMSSentLocation(pickup.abbreviation) [EmailSentLocations] = EmailSentLocation(pickup.abbreviation) [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">-->
+<!--      <app-email-container (updateSentMessages)="updateSentMessageLocations($event)" [emailInfo]="getEmailObject(pickup)"></app-email-container>-->
+<!--    </app-expandable-section>-->
   </div>
 </section>

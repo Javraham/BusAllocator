@@ -44,6 +44,7 @@ export class EmailAutomationComponent {
   areButtonsDisabled = false;
   errorMsg: string = "";
   pickupAbbrevs: any[] = [];
+  dataMap !: any;
 
   constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService, private pickupService: PickupsService) {
 
@@ -129,6 +130,12 @@ export class EmailAutomationComponent {
       this.loadingContent = true;
       this.loadContent = false;
       this.passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
+      const promises= Array.from(this.passengerService.getPassengersByTime(this.passengers)).map(async ([time, passengers]) => {
+        const pickups = await this.getPickups(passengers); // Wait for the promise to resolve
+        return [time, pickups];
+      });
+      this.dataMap = await Promise.all(promises);
+      // this.dataMap = new Map(entries)
       this.pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.passengers)
       this.pickupAbbrevs = await this.passengerService.getPickupLocationAbbreviations(Array.from(this.pickupLocations).map(val => val[0]))
       this.loadContent = true
@@ -141,8 +148,11 @@ export class EmailAutomationComponent {
     }
   }
 
-  getPickupLocations(): IPickup[] {
-    return Array.from(this.pickupAbbrevs).map(pickup => {
+  async getPickups(passengers: Passenger[]) {
+    const locations = this.passengerService.getTotalPassengersByPickupLocations(passengers)
+    const pickupAbbrevs = await this.passengerService.getPickupLocationAbbreviations(Array.from(locations).map(val => val[0]))
+
+    return pickupAbbrevs.map(pickup => {
       console.log(pickup)
       return {
         name: pickup.pickup,
@@ -169,7 +179,7 @@ export class EmailAutomationComponent {
     const dayOfWeekNames = [
       "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ];
-
+    console.log(location.name)
     const formattedDate = `${dayOfWeekNames[dateObject.getUTCDay()]}, ${monthNames[dateObject.getUTCMonth()]} ${day}`;
     const passengers = this.getPassengersByLocation(location.name)
     const subject = location.emailTemplate.subject + ' ' + formattedDate
