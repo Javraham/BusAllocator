@@ -37,7 +37,7 @@ export class EmailContainerComponent {
     let currentBody = this.emailInfo.body;
     const index = currentBody.indexOf("Map link:");
     if (index !== -1) {
-      currentBody = currentBody.slice(0, index) + this.pickupPlace + '\n\n' + currentBody.slice(index);
+      currentBody = currentBody.slice(0, index) + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(index);
     }
     this.form = new FormGroup({
       subject: new FormControl(this.emailInfo.subject, [Validators.required]),

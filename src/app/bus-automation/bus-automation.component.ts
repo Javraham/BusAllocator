@@ -16,6 +16,7 @@ import {BusService} from "../services/bus.service";
 import {PickupsService} from "../services/pickups.service";
 import {lastValueFrom} from "rxjs";
 import {IPickup} from "../typings/ipickup";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-bus-automation',
@@ -69,7 +70,9 @@ export class BusAutomationComponent implements OnInit{
     this.organizePassengers(filteredBuses, filteredPassengers)
   }
 
-  constructor(private sanitizer: DomSanitizer,
+  constructor( private router: Router,
+              private route: ActivatedRoute,
+              private sanitizer: DomSanitizer,
               private apiService: ApiService,
               private tourBusOrganizer: TourOrganizerService,
               private passengerService: PassengersService,
@@ -80,18 +83,25 @@ export class BusAutomationComponent implements OnInit{
             }
 
   ngOnInit() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
-    const day = String(today.getDate()).padStart(2, '0');
-    this.date = `${year}-${month}-${day}`;
-    if(this.isAuthorized){
-      this.loadPassengers()
-      this.form.get('accessKey')?.disable();
-      this.form.get('secretKey')?.disable();
-    }
-    console.log(localStorage.getItem('access'))
-    console.log(this.isAuthorized)
+    this.route.queryParams.subscribe(params => {
+      const storedDate = params['date'];
+      if (storedDate) {
+        this.date = storedDate;
+      } else {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+        const day = String(today.getDate()).padStart(2, '0');
+        this.date = `${year}-${month}-${day}`;
+      }
+      if (this.isAuthorized) {
+        this.loadPassengers()
+        this.form.get('accessKey')?.disable();
+        this.form.get('secretKey')?.disable();
+      }
+      console.log(localStorage.getItem('access'))
+      console.log(this.isAuthorized)
+    })
   }
 
   async getHTML() {
@@ -101,6 +111,7 @@ export class BusAutomationComponent implements OnInit{
 
   onDateChange(event: any){
     this.date = event.target.value;
+    this.router.navigate([], { queryParams: { date: this.date } });
     this.loadPassengers()
   }
 
@@ -191,6 +202,7 @@ export class BusAutomationComponent implements OnInit{
     const nextDay = String(date.getDate()).padStart(2, '0');
 
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
+    this.router.navigate([], { queryParams: { date: this.date } });
     console.log(this.date)
     this.loadPassengers()
   }
@@ -256,6 +268,7 @@ export class BusAutomationComponent implements OnInit{
     const nextDay = String(date.getDate()).padStart(2, '0');
 
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
+    this.router.navigate([], { queryParams: { date: this.date } });
     console.log(this.date)
     this.loadPassengers()
   }

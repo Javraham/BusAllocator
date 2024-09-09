@@ -10,7 +10,7 @@ import {EmailContainerComponent} from "../email-container/email-container.compon
 import {IEmail} from "../typings/IEmail";
 import {MessageService} from "../services/message.service";
 import {ISentMessageResponse} from "../typings/ISentEmailResonse";
-import {PRIMARY_OUTLET} from "@angular/router";
+import {ActivatedRoute, PRIMARY_OUTLET, Router} from "@angular/router";
 import {PickupsService} from "../services/pickups.service";
 
 @Component({
@@ -26,6 +26,7 @@ import {PickupsService} from "../services/pickups.service";
   templateUrl: './email-automation.component.html',
   styleUrl: './email-automation.component.css'
 })
+
 export class EmailAutomationComponent {
   @ViewChildren(EmailContainerComponent) emailContainers!: QueryList<EmailContainerComponent>;
   date: string = "";
@@ -46,8 +47,14 @@ export class EmailAutomationComponent {
   pickupAbbrevs: any[] = [];
   dataMap !: any;
 
-  constructor(private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService, private pickupService: PickupsService) {
+  constructor(private route: ActivatedRoute, private router: Router, private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService, private pickupService: PickupsService) {
+  }
 
+  onDateChange(event: any) {
+    this.date = event.target.value;
+    this.router.navigate([], { queryParams: { date: this.date } });
+    console.log('Date from query params:', this.date); // Verify if date is received correctly
+    this.loadPassengers();
   }
 
   EmailSentLocation(pickup: string): string[]{
@@ -67,14 +74,21 @@ export class EmailAutomationComponent {
   }
 
   ngOnInit() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
-    const day = String(today.getDate()).padStart(2, '0');
-    this.date = `${year}-${month}-${day}`;
-    if(this.isAuthorized){
-      this.loadPassengers()
-    }
+    this.route.queryParams.subscribe(params => {
+      const storedDate = params['date'];
+      if (storedDate) {
+        this.date = storedDate;
+      } else {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        this.date = `${year}-${month}-${day}`;
+      }
+      if (this.isAuthorized) {
+        this.loadPassengers();
+      }
+    });
   }
 
   updateSentMessageLocations(event: [any, string]) {
@@ -135,6 +149,12 @@ export class EmailAutomationComponent {
         return [time, pickups];
       });
       this.dataMap = await Promise.all(promises);
+      const timeToMinutes = (timeStr: string) => {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours * 60 + minutes;
+      };
+
+      this.dataMap.sort((a: any, b: any) => timeToMinutes(a[0]) - timeToMinutes(b[0]));
       // this.dataMap = new Map(entries)
       this.pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.passengers)
       this.pickupAbbrevs = await this.passengerService.getPickupLocationAbbreviations(Array.from(this.pickupLocations).map(val => val[0]))
@@ -159,7 +179,7 @@ export class EmailAutomationComponent {
         abbreviation: pickup.abbreviation || pickup.pickup,
         emailTemplate: {
           subject: pickup.emailTemplate?.subject || "Niagara Tour Confirmation for",
-          body: pickup.emailTemplate?.body || "Write Email Here."
+          body: pickup.emailTemplate?.body || ""
         }
       }
     })
@@ -205,6 +225,7 @@ export class EmailAutomationComponent {
 
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
     console.log(this.date)
+    this.router.navigate([], { queryParams: { date: this.date } });
     this.loadPassengers()
   }
 
@@ -223,14 +244,15 @@ export class EmailAutomationComponent {
     const nextDay = String(date.getDate()).padStart(2, '0');
 
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
+    this.router.navigate([], { queryParams: { date: this.date } });
     console.log(this.date)
     this.loadPassengers()
   }
 
-  onDateChange(event: any){
-    this.date = event.target.value;
-    this.loadPassengers()
-  }
+  // onDateChange(event: any){
+  //   this.date = event.target.value;
+  //   this.loadPassengers()
+  // }
 
   sendAll(){
     const emailBody: IEmail[] = this.emailContainers.map(child => child.getEmailBodyFromChild())
