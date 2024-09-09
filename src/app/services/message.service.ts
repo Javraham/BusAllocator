@@ -8,7 +8,7 @@ import {catchError, Observable, throwError} from "rxjs";
   providedIn: 'root'
 })
 export class MessageService {
-  url: string = 'http://localhost:3000/'
+  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
   constructor(private http: HttpClient) { }
 
   getSentMessages(date: string, collection: string): Observable<any>{

@@ -148,8 +148,8 @@ export class EmailAutomationComponent {
         name: pickup.pickup,
         abbreviation: pickup.abbreviation || pickup.pickup,
         emailTemplate: {
-          subject: pickup.emailTemplate.subject || "Niagara Tour Confirmation for",
-          body: pickup.emailTemplate.body || "Write Email Here."
+          subject: pickup.emailTemplate?.subject || "Niagara Tour Confirmation for",
+          body: pickup.emailTemplate?.body || "Write Email Here."
         }
       }
     })

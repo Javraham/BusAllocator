@@ -1,4 +1,4 @@
-import {Component, ElementRef, model, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {BusService} from "./services/bus.service";
 import {PassengerComponent} from "./passenger/passenger.component";
