@@ -5,6 +5,8 @@
 /tmp
 /out-tsc
 /bazel-out
+/backend-server/.env
+/backend-server/credentials.json
 
 # Node
 /node_modules

@@ -1,0 +1,78 @@
+<style>
+  .add-button{
+    border: 1px solid #4B7FCC;
+    background: none;
+    border-radius: 5px;
+    color: #4B7FCC;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .form > div{
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .form-buttons button{
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    color: white;
+    border: none;
+  }
+
+  .add-bus{
+    background-color: #4B7FCC;
+  }
+
+  .delete-bus{
+    background-color: crimson;
+  }
+
+  h4{
+    margin-top: 20px;
+    color: grey;
+  }
+
+  textarea{
+    border: none;
+    box-shadow: none;
+    display: block;
+    width: 100%;
+    min-height: 200px;
+  }
+</style>
+
+<h4>Pickup Locations Management</h4>
+<button class="add-button" (click)="openNewPickupForm()"><i class="bi bi-plus"></i> Add Pickup</button>
+<form [formGroup]="pickupsForm" *ngIf="isPickupFormOpen" (ngSubmit)="isEditingPickup ? updatePickup() : addNewPickup()" class="form-group" style="margin-top: 10px">
+  <div class="row form" style="margin: 0">
+    <div class="input-group col-md-3 col-sm-6">
+      <span class="input-group-addon">Pickup Name</span>
+      <input class="form-control" formControlName="name" type="text" required/>
+    </div>
+    <div class="input-group col-md-3 col-sm-6">
+      <span class="input-group-addon">Pickup Abbreviation</span>
+      <input class="form-control" formControlName="abbreviation"  type="text" required/>
+    </div>
+    <div class="form-group">
+      <label for="body">EmailBody:</label>
+      <textarea id="body" class="form-control" rows="5" formControlName="body"></textarea>
+    </div>
+  </div>
+  <ng-container *ngIf="errorMsg">
+    <p style="color: #FC5923; font-weight: 500">{{errorMsg}}</p>
+  </ng-container>
+  <div class="form-buttons" style="display: flex; gap: 10px">
+    <button type="submit" class="add-bus">Save</button>
+    <button *ngIf="isEditingPickup" type="button" (click)="deleteOption()" class="delete-bus">Delete Bus</button>
+    <button type="button" class="add-bus" (click)="cancelNewPickup()">Cancel</button>
+  </div>
+</form>
+<div class="row">
+  <app-option-object
+    class="col-lg-4 col-md-6 col-sm-12"
+    (openEdit)="editPickup($event)"
+    *ngFor="let pickupObject of pickupLocations"
+    [optionsInput]="{emailTemplateBody: pickupObject.emailTemplate.body, name: pickupObject.name, nameLabel: 'Pickup name', abbreviation: pickupObject.abbreviation, abbreviationLabel: 'Pickup abbreviation', docId: pickupObject.docId}">
+  </app-option-object>
+</div>

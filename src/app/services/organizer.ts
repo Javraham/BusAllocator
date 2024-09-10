@@ -1,13 +1,14 @@
 import {Bus} from "./bus";
 import {Passenger} from "../typings/passenger";
 import {IBus} from "../typings/BusSelection";
+import {catchError, map, Observable, of} from "rxjs";
 
 export class TourOrganizer {
   buses: Bus[];
   pickupLocations: Map<string, Passenger[]>;
 
   constructor(buses: IBus[]) {
-    this.buses = buses.map(bus => new Bus(bus.busId, bus.capacity, bus.color));
+    this.buses = buses.map(bus => new Bus(bus.busId, bus.capacity, bus.color || 'black'));
     this.pickupLocations = new Map();
   }
 

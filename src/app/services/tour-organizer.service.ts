@@ -4,7 +4,10 @@ import {Passenger} from "../typings/passenger";
 import {IBus} from "../typings/BusSelection";
 import {BusService} from "./bus.service";
 import {PassengersService} from "./passengers.service";
-import {pickups} from "../typings/ipickup";
+import {PickupsService} from "./pickups.service";
+import {OptionsService} from "./options.service";
+import {catchError, lastValueFrom, map, Observable, of} from "rxjs";
+import {IPickup} from "../typings/ipickup";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +15,7 @@ import {pickups} from "../typings/ipickup";
 export class TourOrganizerService {
   buses: Map<string, Bus[]>;
   TimeToPassengersMap: Map<string, Passenger[]>;
-  constructor(private passengerService: PassengersService) {
+  constructor(private passengerService: PassengersService, private pickupService: PickupsService, private optionsService: OptionsService) {
     this.buses = new Map<string, Bus[]>();
     this.TimeToPassengersMap = new Map<string, Passenger[]>();
   }
@@ -42,10 +45,10 @@ export class TourOrganizerService {
     this.buses.delete(time);
   }
 
-  printResult() {
-
-    function getPickupAbbrev(passenger: Passenger): string {
-      const pickupAbbrev = pickups.find(pickup => passenger.pickup.includes(pickup.name))?.abbreviation;
+  async printResult() {
+    const response = await lastValueFrom(this.pickupService.getPickupLocations())
+    const getPickupAbbrev = (passenger: Passenger) => {
+      const pickupAbbrev = response.data.find((pickup: IPickup) => passenger.pickup.includes(pickup.name))?.abbreviation;
       return pickupAbbrev ? ` (${pickupAbbrev}) ` : '';
     }
 
@@ -63,7 +66,7 @@ export class TourOrganizerService {
       for (const bus of busList) {
         htmlResult += `<p style="font-weight: 700">Bus (${bus.busId})</p>
                      <p style="font-weight: 700">Pickups: ${bus.getCurrentLoad()} TOTAL PAX</p>`
-        const pickupLocations = this.passengerService.getPassengersByPickupLocations(bus.getPassengers());
+        const pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(bus.getPassengers());
 
         Array.from(pickupLocations.entries()).forEach(val => {
           htmlResult += `<p>${val[0]} - ${val[1]} PAX</p>`
@@ -76,9 +79,9 @@ export class TourOrganizerService {
           this.passengerService.getOptionsToPassengers(bus.getPassengers()).get(option)?.forEach((passenger: Passenger) => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           })
         }
@@ -93,7 +96,7 @@ export class TourOrganizerService {
     for(const time of sortedTimeMap.keys()){
       if(!this.buses.has(time)){
         htmlResult += `<p style="font-weight: 700; font-size: 1.2em">${parseInt(time[0]) == 0 ? time.slice(1) : time} - ${this.passengerService.getTotalPassengers(this.TimeToPassengersMap.get(time))} TOTAL PAX</p>`
-        const pickupLocations = this.passengerService.getPassengersByPickupLocations(this.TimeToPassengersMap.get(time) as Passenger[]);
+        const pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(this.TimeToPassengersMap.get(time) as Passenger[]);
 
         Array.from(pickupLocations.entries()).forEach(val => {
           htmlResult += `<p>${val[0]} - ${val[1]} PAX</p>`
@@ -106,9 +109,9 @@ export class TourOrganizerService {
           this.passengerService.getOptionsToPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).get(option)?.forEach((passenger: Passenger) => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
             } else {
-              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
+              htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}</p>`
             }
           })
         }

@@ -1,19 +1,63 @@
 <style>
 
-  main {
+  *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
   }
 
-  nav {
-    background-color: white; /* Background color */
-    margin: 0;
+  nav{
+    padding: 10px 30px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding: 1em 2em 1em 2em; /* Adjust padding as needed */
-    z-index: 1000; /* Ensures the navbar is above other elements */
+    background-color: white;
+  }
+
+  nav ul{
+    display: flex;
+    gap: 30px;
     align-items: center;
   }
+
+  li{
+    list-style-type: none;
+  }
+
+  a{
+    text-decoration: none;
+    color: #4B7FCC;
+    font-weight: 600;
+  }
+
+  /*ul{*/
+  /*  list-style: none;*/
+  /*  display: flex;*/
+  /*  margin-bottom: 0;*/
+  /*  height: 100%;*/
+  /*}*/
+
+  /*a{*/
+  /*  padding: 10px;*/
+  /*  color: #4B7FCC;*/
+  /*  font-weight: bold;*/
+  /*  font-size: 1em;*/
+  /*}*/
+  /*main {*/
+  /*  margin: 0;*/
+  /*  padding: 0;*/
+  /*}*/
+
+  /*nav {*/
+  /*  background-color: white; !* Background color *!*/
+  /*  margin: 0;*/
+  /*  display: flex;*/
+  /*  justify-content: space-between;*/
+  /*  padding: 1em 2em 1em 2em; !* Adjust padding as needed *!*/
+  /*  z-index: 1000; !* Ensures the navbar is above other elements *!*/
+  /*  align-items: center;*/
+  /*}*/
 
   h4 {
     margin: 0;
@@ -21,51 +65,8 @@
     font-size: 2em;
   }
 
-  .styled-button {
-    background: linear-gradient(135deg, #FC5923 0%, #4169E0 100%);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    outline: none; /* Remove default outline */
-  }
-
-  .styled-button:hover {
-    background: linear-gradient(135deg, #4169E0 0%, #FC5923 100%);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
-  }
-
-  .styled-button:active {
-    background: linear-gradient(135deg, #FC5923 0%, #4169E0 100%);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    transform: translateY(0);
-    color: white; /* Ensure text color stays white */
-  }
-
   #content{
     padding: 3em;
-  }
-
-  .text-area {
-    margin-top: 1em;
-    background-color: white;
-    border-radius: 10px;
-    height: 50vh;
-    overflow-y: auto;
-    padding-left: 1em;
-    padding-top: 10px;
-    border: 5px solid rgb(239 246 255);
-  }
-
-  .date{
-    margin-bottom: 10px;
-    margin-top: 10px;
   }
 
   h1{
@@ -79,182 +80,73 @@
     padding-bottom: 10px;
   }
 
-  #date {
-    text-align: left;
+  button i{
+    color: #4B7FCC;
   }
 
-  .error-msg {
-    background-color: #fda5a5;
-    display: flex;
-    /*align-items: center;*/
-    gap: 5px;
-    padding: 10px;
-    border-radius: 5px;
+  .side-panel-button{
+    display: none;
+    font-size: 30px;
   }
 
-  .error-text{
-    color: #b63f3f;
-    margin: 0;
-    font-weight: 600;
+  a i{
+    display: none;
   }
 
-  .loading-placeholder {
-    display: flex;
-    position: absolute;
-    flex-direction: column;
-    gap: 10px; /* Space between loading lines */
-    width: 50%;
-    margin: 20px auto; /* Center the placeholder */
-  }
 
-  .loading-title,
-  .loading-line {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 5px;
-  }
-
-  .loading-title {
-    width: 60%; /* Adjust width for title */
-    height: 20px;
-  }
-
-  .loading-line {
-    width: 100%; /* Full width for content lines */
-    height: 15px;
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
+  @media screen and (max-width: 600px) {
+    nav ul{
+      position: absolute;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background-color: white;
+      overflow: hidden;
+      align-items: center;
+      transition: all 0.5s;
+      gap: 0;
     }
-    100% {
-      background-position: 200% 0;
+
+    nav ul li{
+      width: 100%;
+      padding: 20px 30px;
+    }
+
+    li:hover{
+      background-color: #f1faff;
+    }
+
+    a i{
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .side-panel-button{
+      display: block;
+      background: none;
+      border: none;
     }
   }
-
-  .edit-button {
-    background: #FC5923FF; /* Blue background */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-
 </style>
 <main>
   <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
-    <img src="assets/logo.png" alt="Logo" width="231" height="49" />
+    <img src="assets/logo.png" alt="Logo" width="192" height="40" />
+    <ul #navList id="navList">
+      <li>
+        <a routerLink="/" (click)="toggleMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
+      </li>
+      <li>
+        <a routerLink="/email-automation" (click)="toggleMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
+      </li>
+      <li>
+        <a routerLink="/settings" (click)="toggleMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
+      </li>
+    </ul>
+    <button class="side-panel-button" (click)="toggleMenu()"><i class="bi bi-list" ></i></button>
   </nav>
-  <div class="container-fluid" id="content" #content>
-    <div class="row">
-      <form [formGroup]="form" (ngSubmit)="Authorize()" style="padding-left: 0">
-        <div class="col-md-3 col-sm-4" style="margin-bottom: 10px;">
-          <div class="input-group">
-            <span class="input-group-addon">AccessKey</span>
-            <input class="form-control" formControlName="accessKey" name="access-key" type="text" required/>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-5" style="margin-bottom: 10px;">
-          <div class="input-group">
-            <span class="input-group-addon">SecretKey</span>
-            <input class="form-control" formControlName="secretKey" name="secret-key" type="text" required/>
-          </div>
-        </div>
-        <div class="col-md-2 col-sm-4" style="margin-bottom: 10px;">
-          <button *ngIf="!isAuthorized; else notAuthorized" type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-lock-fill" style="color: white"></i> Authorize</button>
-          <ng-template #notAuthorized>
-            <button type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-unlock-fill" style="color: white"></i> Logout</button>
-          </ng-template>
-        </div>
-      </form>
 
-    </div>
-    <div class="row date">
-      <div class="col-md-3 col-sm-6" style="margin-bottom: 10px; padding-right: 0">
-        <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-          <input id="date" type="date" class="form-control" [value]="date" (change)="onDateChange($event)" />
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
-        <button class="btn btn-primary" style="background-color: #4169E0; color: white; margin-right: 10px" (click)="getPrevDayPassengers()">Previous day</button>
-        <button class="btn btn-primary" style="background-color: #4169E0; color: white" (click)="getNextDayPassengers()">Next day</button>
-      </div>
-    </div>
-    <div *ngIf="errorMsg.length > 0" class="error-msg col-md-6">
-      <i class="bi bi-exclamation-circle" style="color: #b63f3f"></i>
-      <p class="error-text">{{errorMsg}}</p>
-    </div>
-    <div *ngIf="loading" class="loading-placeholder">
-      <div class="loading-title"></div>
-      <div class="loading-line"></div>
-      <div class="loading-line"></div>
-      <div class="loading-line"></div>
-    </div>
-   <div *ngIf="loadContent && !loading">
-     <button class="edit-button btn" (click)="toggleEditCapacities()">Edit Bus Capacities</button>
-     <div class="row" *ngIf="canEdit">
-       <div *ngFor="let bus of allBuses" class="form-group col-lg-1 col-md-2 col-sm-4">
-         <label [for] = "'input' + '-' + bus.busId" style="font-size: 1.1em" class="">{{ bus.busId }}</label>
-         <input
-           role="switch"
-           type="number"
-           class="form-control"
-           [value]="bus.capacity"
-           [id] = "'input' + '-' + bus.busId"
-           (change)="editCapacity(bus.busId, $event)"
-         />
-       </div>
-     </div>
-     <h4>Passenger List</h4>
-      <div *ngFor="let time of getNumOfPassengersByTime()">
-        <h5>{{time[0][0] === "0" ? time[0].slice(1) : time[0]}} - {{time[1]}} Passengers</h5>
-        <app-bus-selection-buttons
-          (removeBuses)="resetBusesForTime($event)"
-          [time]="time[0]"
-          [usedBuses]="usedBuses"
-          (updatedUsedBuses)="updateUsedBuses($event)"
-          (updateCheckList)="updateBusSelections($event)"
-          [selectedOptions]="busSelections"
-          [successMap]="successMap"
-        >
-        </app-bus-selection-buttons>
-        <div *ngIf="getBusesByTime(time[0]); then isAllocated else isNotAllocated"></div>
-        <ng-template #isAllocated>
-          <div *ngFor="let bus of getBusesByTime(time[0])">
-            <h5>Bus ({{bus.busId}}) - {{bus.getCurrentLoad()}} Passengers</h5>
-            <div class="row">
-              <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of bus.getPassengers()">
-                <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="bus.color"></app-passenger>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="excludedPassengersMap.has(time[0]) && (excludedPassengersMap.get(time[0])?.length || 0) > 0">
-            <h5>Excluded Passengers</h5>
-            <div class="row">
-              <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of excludedPassengersMap.get(time[0])">
-                <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4169E0'"></app-passenger>
-              </div>
-            </div>
-          </div>
-        </ng-template>
-        <ng-template #isNotAllocated>
-          <div class="row">
-            <div *ngFor="let passenger of getPassengersByTime(time[0])" class="col-lg-4 col-md-6 col-sm-12">
-              <app-passenger [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4169E0'"></app-passenger>
-            </div>
-          </div>
-        </ng-template>
-      </div>
-      <div style="margin-top: 20px" class="">
-        <button class="styled-button" (click)="getHTML()">Generate List</button>
-        <div class="text-area" contenteditable="true" [innerHTML]="htmlContent">
-        </div>
-      </div>
-    </div>
+  <div class="container-fluid" id="content" #content>
+    <router-outlet />
   </div>
 </main>
 
-<router-outlet />

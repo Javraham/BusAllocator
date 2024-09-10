@@ -1,0 +1,90 @@
+<style>
+  .collapsible-container {
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background-color: white;
+    border: 1px solid #c8d0e0;
+  }
+
+  .header {
+    padding: 1.1em;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .content {
+    padding: 1.5em 3em 1.5em 3em;
+  }
+
+  .header button {
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .sent-message{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .sent-email{
+    background-color: #FC5923;
+  }
+
+  .sent-sms{
+    background-color: #3eace8;
+  }
+
+  .sent-whatsapp{
+    background-color: #0ab937;
+  }
+
+  @keyframes expand {
+    from {
+      max-height: 0;
+      opacity: 0;
+    }
+    to {
+      max-height: 500px; /* Adjust based on expected max content height */
+      opacity: 1;
+    }
+  }
+
+</style>
+
+<div class="collapsible-container">
+  <div class="header" (click)="toggle()" [ngStyle]="{'border-bottom': isExpanded ? '1px solid #c8d0e0' : 'none'}">
+    <div>
+      <h4>{{ title }} | {{ numOfPassengers }} Passengers </h4>
+      <div>
+        <div *ngIf="EmailSentLocations.length" style="color: #FC5923; font-weight: bold">
+          Email Sent!
+          <strong *ngIf="getUnsentEmailsPassengerNames().length > 0" style="color: #FC5923; font-weight: bold" >Not Sent To:
+            <strong>{{getUnsentEmailsPassengerNames().join(", ")}}</strong>
+          </strong>
+        </div>
+        <div *ngIf="SMSSentLocations.length" style="color: #3eace8; font-weight: bold">
+          SMS Sent!
+          <strong *ngIf="getUnsentSMSPassengerNames().length > 0" style="color: #3eace8; font-weight: bold" >Not Sent To:
+            <strong>{{getUnsentSMSPassengerNames().join(", ")}}</strong>
+          </strong>
+        </div>
+        <div *ngIf="WhatsAppSentLocations.length" style="color: #0ab937; font-weight: bold">
+          WhatsApp Sent!
+          <strong *ngIf="getUnsentWhatsAppPassengerNames().length > 0" style="color: #0ab937; font-weight: bold" >Not Sent To:
+            <strong>{{getUnsentWhatsAppPassengerNames().join(", ")}}</strong>
+          </strong>
+        </div>
+      </div>
+    </div>
+    <button><i class="bi bi-chevron-down" *ngIf="!isExpanded"></i><i class="bi bi-chevron-up" *ngIf="isExpanded"></i></button>
+  </div>
+
+
+  <div class="content" *ngIf="isExpanded">
+    <ng-content></ng-content>
+  </div>
+</div>

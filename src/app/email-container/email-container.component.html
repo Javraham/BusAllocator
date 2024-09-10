@@ -1,0 +1,224 @@
+<style>
+  .form-container{
+    background-color: white;
+    border: 1px solid #d5d5d5;
+    border-radius: 10px;
+    box-shadow: rgba(65, 105, 224, 0.3);
+  }
+
+  .header{
+    background-color: rgba(65, 105, 224, 0.65);
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    padding: 10px 1.1em 10px 1.1em;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .btn-send{
+    background: white;
+    border-radius: 10px;
+    color: rgba(65, 105, 224, 0.65);
+    padding: 5px 10px 5px 10px;
+    border: 1px solid rgba(65, 105, 224, 0.65);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .email{
+    color: #FC5923;
+    border: 1px solid #FC5923;
+  }
+
+  .sms{
+    color: #3eace8;
+    border: 1px solid #3eace8;
+  }
+
+  .whatsapp{
+    color: #57dc7a;
+    border: 1px solid #57dc7a;
+
+  }
+
+  p{
+    margin: 0;
+    font-weight: bold;
+  }
+
+  @media screen and (max-width: 600px) {
+    button .btn-text {
+      display: none;
+    }
+  }
+
+  .body{
+    padding: 1.8em;
+  }
+
+  input:focus{
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgba(65, 105, 224, 0.65);
+  }
+
+  textarea:focus{
+    border: none;
+    outline: none;
+  }
+
+  textarea{
+    border: none;
+    box-shadow: none;
+    display: block;
+    width: 100%;
+    min-height: 200px;
+  }
+
+  input{
+    border: none;
+    border-bottom: 1px solid #e5e5e5;
+    box-shadow: none;
+    display: block;
+    width: 100%;
+  }
+
+  label{
+    color: #808080
+  }
+
+  .pax-container{
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .pax-container p{
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .pax-container button{
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .restore-btn{
+    background: none;
+    border: 1px solid #4B7FCC;
+    border-radius: 10px;
+    color: #4B7FCC;
+    padding: 5px;
+  }
+
+  .error-message{
+    color: #b63f3f;
+    display: flex;
+    gap: 3px;
+  }
+
+  .success-msg{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #d1ffbd;
+    color: #0ab937;
+    display: flex;
+    gap: 5px;
+  }
+
+  .error-msg{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fda5a5;
+    color: #b63f3f;
+    display: flex;
+    gap: 5px;
+  }
+
+  .spinner {
+    width: 1em;
+    height: 1em;
+    border: 2px solid rgba(0, 0, 0, 0.1);  /* Light gray border */
+    border-left-color: #4B7FCC;  /* Darker left-side for the spinner effect */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;  /* Smooth rotation */
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);  /* Start at 0 degrees */
+    }
+    100% {
+      transform: rotate(360deg);  /* Complete rotation */
+    }
+  }
+</style>
+
+<div class="email-container">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div style="display: flex; gap: 5px; margin-bottom: 10px">
+      <button *ngIf="!loadingAll" class="btn-send" type="submit" (click)="sendAll($event)"> <i class="bi bi-send"></i> <span class="btn-text">Send All</span></button>
+      <div *ngIf="loadingAll" class="btn-send"> <span style="border-left-color: #4B7FCC;" class="spinner"></span><span class="btn-text">Sending</span></div>
+      <button *ngIf="!loadingSentEmail" class="btn-send email" type="submit" (click)="sendEmail($event)"> <i class="bi bi-envelope"></i> <span class="btn-text">Send Email</span></button>
+      <div *ngIf="loadingSentEmail" class="btn-send email"><span style="border-left-color: #FC5923;" class="spinner"></span><span class="btn-text">Sending</span></div>
+      <button *ngIf="!loadingSentSMS" class="btn-send sms" type="submit" (click)="sendSMS('send-sms', $event)"> <i class="bi bi-chat-dots"></i> <span class="btn-text">Send SMS</span></button>
+      <div *ngIf="loadingSentSMS" class="btn-send sms"><span style="border-left-color: #3eace8;" class="spinner"></span><span class="btn-text">Sending</span></div>
+      <button *ngIf="!loadingSentWhatsapp" class="btn-send whatsapp" type="submit" (click)="sendSMS('send-whatsapp', $event)"> <i class="bi bi-whatsapp"></i> <span class="btn-text">Send WhatsApp</span></button>
+      <div *ngIf="loadingSentWhatsapp" class="btn-send whatsapp"><span style="border-left-color: #0ab937;" class="spinner"></span><span class="btn-text">Sending</span></div>
+    </div>
+    <div class="form-container">
+      <div class="header">
+        <i class="bi bi-send-fill"></i>
+        <p>New Message</p>
+      </div>
+      <div class="body">
+        <div style="margin-bottom: 10px">
+          <div *ngIf="successMsg" class="success-msg">
+            <i class="bi bi-check-circle"></i>
+            <p>{{successMsg}}</p>
+          </div>
+          <div *ngIf="errorMsg" class="error-msg">
+            <i class="bi bi-x-circle-fill"></i>
+            <p>{{errorMsg}}</p>
+
+          </div>
+          <div style="border-bottom: 1px solid #e5e5e5; padding: 5px">
+            <label>To</label>
+            <div style="display: flex; gap: 5px; overflow: auto; white-space: nowrap; flex-wrap: wrap">
+              <div class="pax-container" *ngFor="let passenger of passengers">
+                <button type="button" (click)="removePassenger(passenger)"><i class="bi bi-x-circle"></i></button>
+                <p>{{passenger.firstName}} {{passenger.lastName}}</p>
+              </div>
+              <button type="button" (click)="restorePassengers()" class="restore-btn">Restore Passengers</button>
+            </div>
+          </div>
+          <div *ngIf="passengers.length === 0" class="error-message">
+            <i class="bi bi-exclamation-circle"></i>
+            At least one person needed.
+          </div>
+        </div>
+        <div style="margin-bottom: 10px">
+          <label for="subject">Subject</label>
+          <input class="" id="subject" formControlName="subject" />
+          <div *ngIf="form.get('subject')?.invalid && form.get('subject')?.touched" class="error-message">
+            <i class="bi bi-exclamation-circle"></i>
+            Subject is required.
+          </div>
+        </div>
+        <textarea formControlName="body">Hello World!</textarea>
+        <div *ngIf="form.get('body')?.invalid && form.get('body')?.touched" class="error-message">
+          <i class="bi bi-exclamation-circle"></i>
+          Body text is required.
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

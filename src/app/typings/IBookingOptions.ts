@@ -1,6 +1,8 @@
 export interface IBookingOptions {
+  docId?: string,
   option: string,
-  abbrev: string
+  abbrev: string,
+  timestamp?: any
 }
 
 export const options: IBookingOptions[] = [
@@ -10,15 +12,13 @@ export const options: IBookingOptions[] = [
     abbrev: "Boat Cruise + Journey"
   },
   {
-    option: "boat cruise",
+    option: "or journey behind the falls",
     abbrev: "Boat Cruise"
   },
   {
     option: "Standard Tour",
     abbrev: "No boat"
   },
-
-  // Niagara on the lake Tour - 7:00
 
   {
     option: "Standard rate",
