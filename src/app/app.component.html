@@ -133,13 +133,13 @@
     <img src="assets/logo.png" alt="Logo" width="192" height="40" />
     <ul #navList id="navList">
       <li>
-        <a routerLink="/" (click)="toggleMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
+        <a routerLink="/" (click)="turnOffMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
       </li>
       <li>
-        <a routerLink="/email-automation" (click)="toggleMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
+        <a routerLink="/email-automation" (click)="turnOffMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
       </li>
       <li>
-        <a routerLink="/settings" (click)="toggleMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
+        <a routerLink="/settings" (click)="turnOffMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
       </li>
     </ul>
     <button class="side-panel-button" (click)="toggleMenu()"><i class="bi bi-list" ></i></button>
