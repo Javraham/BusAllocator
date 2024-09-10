@@ -1,38 +1,68 @@
 <style>
 
-  main {
+  *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
   }
 
-  nav {
-    background-color: white; /* Background color */
-    margin: 0;
+  nav{
+    padding: 10px 30px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding: 1em 2em 1em 2em; /* Adjust padding as needed */
-    z-index: 1000; /* Ensures the navbar is above other elements */
+    background-color: white;
+  }
+
+  nav ul{
+    display: flex;
+    gap: 30px;
     align-items: center;
   }
+
+  li{
+    list-style-type: none;
+  }
+
+  a{
+    text-decoration: none;
+    color: #4B7FCC;
+    font-weight: 600;
+  }
+
+  /*ul{*/
+  /*  list-style: none;*/
+  /*  display: flex;*/
+  /*  margin-bottom: 0;*/
+  /*  height: 100%;*/
+  /*}*/
+
+  /*a{*/
+  /*  padding: 10px;*/
+  /*  color: #4B7FCC;*/
+  /*  font-weight: bold;*/
+  /*  font-size: 1em;*/
+  /*}*/
+  /*main {*/
+  /*  margin: 0;*/
+  /*  padding: 0;*/
+  /*}*/
+
+  /*nav {*/
+  /*  background-color: white; !* Background color *!*/
+  /*  margin: 0;*/
+  /*  display: flex;*/
+  /*  justify-content: space-between;*/
+  /*  padding: 1em 2em 1em 2em; !* Adjust padding as needed *!*/
+  /*  z-index: 1000; !* Ensures the navbar is above other elements *!*/
+  /*  align-items: center;*/
+  /*}*/
 
   h4 {
     margin: 0;
     font-weight: 500;
     font-size: 2em;
-  }
-
-  .styled-button {
-    background: linear-gradient(135deg, #FC5923 0%, #4169E0 100%);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    outline: none; /* Remove default outline */
   }
 
   #content{
@@ -50,36 +80,69 @@
     padding-bottom: 10px;
   }
 
-  ul{
-    list-style: none;
-    display: flex;
-    margin-bottom: 0;
-    height: 100%;
-  }
-
-  a{
-    padding: 10px;
+  button i{
     color: #4B7FCC;
-    font-weight: bold;
-    font-size: 1em;
   }
 
+  .side-panel-button{
+    display: none;
+    font-size: 30px;
+  }
+
+  a i{
+    display: none;
+  }
+
+
+  @media screen and (max-width: 600px) {
+    nav ul{
+      position: absolute;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background-color: white;
+      overflow: hidden;
+      align-items: center;
+      transition: all 0.5s;
+      gap: 0;
+    }
+
+    nav ul li{
+      width: 100%;
+      padding: 20px 30px;
+    }
+
+    li:hover{
+      background-color: #f1faff;
+    }
+
+    a i{
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .side-panel-button{
+      display: block;
+      background: none;
+      border: none;
+    }
+  }
 </style>
 <main>
   <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
     <img src="assets/logo.png" alt="Logo" width="192" height="40" />
-    <ul>
+    <ul #navList id="navList">
       <li>
-        <a routerLink="/">Bus</a>
+        <a routerLink="/" (click)="toggleMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
       </li>
       <li>
-        <a routerLink="/email-automation">Email</a>
+        <a routerLink="/email-automation" (click)="toggleMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
       </li>
       <li>
-        <a routerLink="/settings">Settings</a>
+        <a routerLink="/settings" (click)="toggleMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
       </li>
     </ul>
-
+    <button class="side-panel-button" (click)="toggleMenu()"><i class="bi bi-list" ></i></button>
   </nav>
 
   <div class="container-fluid" id="content" #content>
