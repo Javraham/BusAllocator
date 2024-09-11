@@ -9,7 +9,7 @@ import {IBookingOptions} from "../typings/IBookingOptions";
 })
 export class PickupsService {
   pickupLocations: IPickup[] = []
-  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
+  url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
   setPickupLocations() {

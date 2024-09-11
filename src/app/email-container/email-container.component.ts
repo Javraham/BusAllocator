@@ -105,6 +105,7 @@ export class EmailContainerComponent {
           resolve(undefined)
         },
         error: (error) => {
+          console.error(error)
           this.successMsg = ""
           console.log(error)
           this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;

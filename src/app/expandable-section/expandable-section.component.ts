@@ -30,12 +30,13 @@ export class ExpandableSectionComponent{
   }
 
   getUnsentWhatsAppPassengerNames() {
-    const filteredPassengers = this.passengers.filter(passenger => !this.WhatsAppSentLocations.includes(passenger.phoneNumber))
+    const filteredPassengers = this.passengers.filter(passenger => !this.WhatsAppSentLocations.includes(passenger.phoneNumber ? passenger.phoneNumber.replace(/[a-zA-Z\s]/g, '') : ''))
     return filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName)
   }
 
   getUnsentSMSPassengerNames() {
-    const filteredPassengers = this.passengers.filter(passenger => !this.SMSSentLocations.includes(passenger.phoneNumber))
+    const filteredPassengers = this.passengers.filter(passenger => !this.SMSSentLocations.includes( passenger.phoneNumber ? passenger.phoneNumber.replace(/[a-zA-Z\s]/g, '') : ''))
+    console.log(this.SMSSentLocations)
     return filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName)
   }
 

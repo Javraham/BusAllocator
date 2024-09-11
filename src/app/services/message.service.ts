@@ -8,7 +8,7 @@ import {catchError, Observable, throwError} from "rxjs";
   providedIn: 'root'
 })
 export class MessageService {
-  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
+  url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
   getSentMessages(date: string, collection: string): Observable<any>{
@@ -67,7 +67,9 @@ export class MessageService {
       'x-api-key': 'hjkuwnndjw23=dkl'
     });
 
-    const phoneNumbers = SMSObject.passengers.map(passenger => passenger.phoneNumber)
+    const phoneNumbers = SMSObject.passengers.map(passenger => passenger.phoneNumber).filter(number => number != null).map(number => {
+      return number.replace(/[a-zA-Z\s]/g, '');
+    })
     console.log(phoneNumbers)
     const body = {
       passengerPhoneNumbers: phoneNumbers,
