@@ -23,5 +23,8 @@
 
 <div class="content" [ngStyle]="{'border-color': busObject.color}">
   <button (click)="sendBusObjectToParent()"><i class="bi bi-pencil"></i></button>
-  <p><strong>Bus ID:</strong> {{busObject.busId}}, <strong>Capacity:</strong> {{busObject.capacity}}, <strong>Color: </strong>{{busObject.color}}</p>
+  <div>
+    <p><strong>Bus ID:</strong> {{busObject.busId}}</p>
+    <p><strong>Capacity:</strong> {{busObject.capacity}}</p>
+  </div>
 </div>

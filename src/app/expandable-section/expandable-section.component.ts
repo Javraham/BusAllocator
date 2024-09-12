@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, Input} from '@angular/core';
-import {NgIf, NgStyle} from "@angular/common";
+import {NgClass, NgIf, NgStyle} from "@angular/common";
 import {Passenger} from "../typings/passenger";
 
 @Component({
@@ -7,7 +7,8 @@ import {Passenger} from "../typings/passenger";
   standalone: true,
   imports: [
     NgIf,
-    NgStyle
+    NgStyle,
+    NgClass
   ],
   templateUrl: './expandable-section.component.html',
   styleUrl: './expandable-section.component.css'

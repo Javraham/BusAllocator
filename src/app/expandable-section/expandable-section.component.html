@@ -12,10 +12,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-
-  .content {
-    padding: 1.5em 3em 1.5em 3em;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.5s ease-in-out;
   }
 
   .header button {
@@ -53,10 +51,20 @@
     }
   }
 
+  .collapsible-container .content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.5s ease-in-out;
+  }
+
+  .collapsible-container .content.expanded {
+    max-height: 500px; /* Adjust this max height as needed */
+  }
+
 </style>
 
 <div class="collapsible-container">
-  <div class="header" (click)="toggle()" [ngStyle]="{'border-bottom': isExpanded ? '1px solid #c8d0e0' : 'none'}">
+  <div class="header" (click)="toggle()" [ngStyle]="{'border-color': isExpanded ? '#c8d0e0' : 'transparent'}">
     <div>
       <h4>{{ title }} | {{ numOfPassengers }} Passengers </h4>
       <div>
@@ -84,7 +92,7 @@
   </div>
 
 
-  <div class="content" *ngIf="isExpanded">
+  <div class="content" [ngClass]="{expanded: isExpanded}">
     <ng-content></ng-content>
   </div>
 </div>
