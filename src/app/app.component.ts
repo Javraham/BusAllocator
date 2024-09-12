@@ -63,4 +63,8 @@ export class AppComponent implements OnInit{
       this.renderer.setStyle(this.navList.nativeElement, 'maxHeight', '0px');
     }
   }
+
+  turnOffMenu() {
+    this.renderer.setStyle(this.navList.nativeElement, 'maxHeight', '0px');
+  }
 }

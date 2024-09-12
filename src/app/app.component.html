@@ -8,11 +8,12 @@
   }
 
   nav{
-    padding: 10px 30px;
+    padding: 15px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: white;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3); /* Shadow effect */
   }
 
   nav ul{
@@ -86,7 +87,7 @@
 
   .side-panel-button{
     display: none;
-    font-size: 30px;
+    font-size: 25px;
   }
 
   a i{
@@ -133,13 +134,13 @@
     <img src="assets/logo.png" alt="Logo" width="192" height="40" />
     <ul #navList id="navList">
       <li>
-        <a routerLink="/" (click)="toggleMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
+        <a routerLink="/" (click)="turnOffMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
       </li>
       <li>
-        <a routerLink="/email-automation" (click)="toggleMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
+        <a routerLink="/email-automation" (click)="turnOffMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
       </li>
       <li>
-        <a routerLink="/settings" (click)="toggleMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
+        <a routerLink="/settings" (click)="turnOffMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
       </li>
     </ul>
     <button class="side-panel-button" (click)="toggleMenu()"><i class="bi bi-list" ></i></button>
