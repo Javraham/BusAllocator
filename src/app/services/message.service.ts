@@ -8,7 +8,7 @@ import {catchError, Observable, throwError} from "rxjs";
   providedIn: 'root'
 })
 export class MessageService {
-  url: string = 'http://localhost:3000/'
+  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
   constructor(private http: HttpClient) { }
 
   getSentMessages(date: string, collection: string): Observable<any>{
@@ -19,46 +19,6 @@ export class MessageService {
     });
 
     return this.http.get(`${this.url}getMessagesByDate`, {params, headers})
-  }
-
-  addEmails(date: string, location: string): Observable<any>{
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-    const body = {
-      date,
-      location,
-      emails: ['avrahamj@mcmaster.ca']
-    }
-    return this.http.post(`${this.url}add-emails`, body, {headers}).pipe(
-      catchError(error => {
-        console.error('Error occurred:', error);
-        return throwError(() => new Error('Failed to send email. Please check your connection.'));
-      })
-    );
-  }
-
-  sendAllEmails(emailObjectArray: IEmail[]): Observable<any>{
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'x-api-key': 'hjkuwnndjw23=dkl'
-    });
-
-    const locations = emailObjectArray.map(emailObject => {
-      return {
-        ...emailObject,
-        passengerEmailAddresses: ['avrahamjonathan@gmail.com']
-      }
-    })
-
-    console.log(locations)
-
-    return this.http.post(`${this.url}send-emails-to-all`, {locations}, {headers}).pipe(
-      catchError(error => {
-        console.error('Error occurred:', error);
-        return throwError(() => new Error('Failed to send email. Please check your connection.'));
-      })
-    );
   }
 
   sendSMS(SMSObject: ISMS, endpoint: string): Observable<any>{
@@ -72,7 +32,7 @@ export class MessageService {
     })
     console.log(phoneNumbers)
     const body = {
-      passengerPhoneNumbers: phoneNumbers,
+      passengerPhoneNumbers: ["6478987430", "679876"],
       message: SMSObject.message,
       location: SMSObject.location,
       date: SMSObject.date

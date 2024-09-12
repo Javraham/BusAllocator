@@ -249,19 +249,6 @@ export class EmailAutomationComponent {
     this.loadPassengers()
   }
 
-  // onDateChange(event: any){
-  //   this.date = event.target.value;
-  //   this.loadPassengers()
-  // }
-
-  sendAll(){
-    const emailBody: IEmail[] = this.emailContainers.map(child => child.getEmailBodyFromChild())
-    this.emailService.sendAllEmails(emailBody).subscribe({
-      next: response => console.log(response),
-      error: err => console.log(err)
-    })
-  }
-
   async sendSMSToAll(){
     this.loadingSentSMS = true;
 

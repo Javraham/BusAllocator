@@ -50,40 +50,11 @@ export class EmailContainerComponent {
     console.log(this.passengers)
   }
 
-  addEmail() {
-    this.loadingSentEmail = true
-    this.emailService.addEmails(this.emailInfo.date, this.emailInfo.location).subscribe({
-      next: (response) => {
-        this.successMsg = response.message
-        this.loadingSentEmail = false
-        this.updateSentMessages.emit(response.data)
-      },
-      error: (error) => {
-        this.successMsg = ""
-        this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
-        this.loadingSentEmail = false;
-      },
-    })
-  }
-
-  getEmailBodyFromChild(): IEmail {
-    return {
-      passengers: this.passengers,
-      body: this.form.value.body,
-      subject: this.form.value.subject,
-      date: this.emailInfo.date,
-      location: this.emailInfo.location
-    }
-  }
-
   sendSMS(endpoint: string, event?: any): Promise<any> {
-    // const confirmation = window.confirm('Are you sure you want to proceed?');
-    // if(!confirmation){
-    //   return new Promise((resolve, reject) => {
-    //     reject(undefined)
-    //   })
-    // }
     if(event) event.preventDefault(); // Prevent form submission
+
+    const message = this.form.value.body + '\n\n ** NO REPLY **'
+
     return new Promise((resolve, reject) => {
       if (this.form.invalid || this.passengers.length === 0) {
         this.form.markAllAsTouched();
@@ -93,7 +64,7 @@ export class EmailContainerComponent {
       endpoint === "send-sms" ? this.loadingSentSMS = true : this.loadingSentWhatsapp = true;
       this.emailService.sendSMS({
         passengers: this.passengers,
-        message: this.form.value.body,
+        message,
         date: this.emailInfo.date,
         location: this.emailInfo.location
       },endpoint).subscribe({

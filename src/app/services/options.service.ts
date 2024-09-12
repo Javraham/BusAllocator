@@ -11,7 +11,7 @@ import {IBus} from "../typings/BusSelection";
 export class OptionsService {
 
   options: IBookingOptions[] = []
-  url: string = 'http://localhost:3000/'
+  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
   constructor(private http: HttpClient) { }
 
   addOption(newOption: IBookingOptions): Observable<any> {
