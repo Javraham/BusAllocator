@@ -11,7 +11,6 @@ import {IEmail} from "../typings/IEmail";
 import {MessageService} from "../services/message.service";
 import {ISentMessageResponse} from "../typings/ISentEmailResonse";
 import {ActivatedRoute, Router} from "@angular/router";
-import {PickupsService} from "../services/pickups.service";
 
 @Component({
   selector: 'app-email-automation',
