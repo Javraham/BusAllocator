@@ -64,7 +64,8 @@ export class EmailAutomationComponent {
   getUnSentMessages(){
     this.dataMap.forEach((item: any) => {
       item[1].forEach((pickup: any) => {
-        const obj: any = {abbreviation: pickup.abbreviation}
+        console.log(item[0])
+        const obj: any = {time: item[0], abbreviation: pickup.abbreviation}
         const passengers = this.getPassengersByLocation(pickup.name)
         const emailSentPassengers = this.EmailSentLocation(pickup.abbreviation)?.sentTo
         const smsSentPassengers = this.SMSSentLocation(pickup.abbreviation)?.sentTo

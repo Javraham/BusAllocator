@@ -173,7 +173,7 @@
       <div class="unsent-msg">
         <div *ngFor="let unsentMessages of unsentMessagesMap">
           <div *ngIf="unsentMessages.whatsapp || unsentMessages.email || unsentMessages.sms">
-            <h4>{{unsentMessages.abbreviation}}</h4>
+            <h4>{{unsentMessages.time[0] === "0" ? unsentMessages.time.slice(1) : unsentMessages.time}} - {{unsentMessages.abbreviation}}</h4>
             <p *ngIf="unsentMessages.email">Email not sent to: <strong>{{unsentMessages.email.join(', ')}}</strong></p>
             <p *ngIf="unsentMessages.sms">SMS not sent to: <strong>{{unsentMessages.sms.join(', ')}}</strong></p>
             <p *ngIf="unsentMessages.whatsapp">WhatsApp not sent to: <strong>{{unsentMessages.whatsapp.join(', ')}}</strong></p>
