@@ -122,6 +122,7 @@ export class EmailAutomationComponent {
     const locationFound = messageType.find(location => location.location === event[0].location)
     if(locationFound){
       locationFound.sentTo = event[0].sentTo;
+      locationFound.timestamp = event[0].timestamp;
     }
     else{
       messageType.push(event[0])

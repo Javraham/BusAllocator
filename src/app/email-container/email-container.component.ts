@@ -113,6 +113,7 @@ export class EmailContainerComponent {
           this.errorMsg = ""
           this.successMsg = response.message
           this.loadingSentWhatsapp = false;
+          console.log(response.data)
           this.updateSentMessages.emit([response.data, "whatsapp", this.pickupPlace])
           resolve(undefined)
         },
