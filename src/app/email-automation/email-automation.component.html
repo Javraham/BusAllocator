@@ -116,6 +116,16 @@
     margin-top: 20px;
     font-weight: bold;
   }
+
+  .unsent-msg{
+    background-color: white;
+    padding: 1.2em;
+    border-radius: 10px;
+  }
+
+  .unsent-msg h4{
+    margin-top: 0;
+  }
 </style>
 
 <section>
@@ -158,6 +168,19 @@
         <button *ngIf="!loadingSentWhatsApp" class="btn-send whatsapp" [disabled]="areButtonsDisabled" (click)="sendWhatsAppToAll()">Send WhatsApp To All</button>
         <button *ngIf="loadingSentWhatsApp" class="btn-send whatsapp">Sending...</button>
       </div>
+    <ng-container *ngIf="hasUnsentMessages()">
+      <h3>Unsent Messages</h3>
+      <div class="unsent-msg">
+        <div *ngFor="let unsentMessages of unsentMessagesMap">
+          <div *ngIf="unsentMessages.whatsapp || unsentMessages.email || unsentMessages.sms">
+            <h4>{{unsentMessages.abbreviation}}</h4>
+            <p *ngIf="unsentMessages.email">Email not sent to: <strong>{{unsentMessages.email.join(', ')}}</strong></p>
+            <p *ngIf="unsentMessages.sms">SMS not sent to: <strong>{{unsentMessages.sms.join(', ')}}</strong></p>
+            <p *ngIf="unsentMessages.whatsapp">WhatsApp not sent to: <strong>{{unsentMessages.whatsapp.join(', ')}}</strong></p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
     <h3>Pickup Location List</h3>
     <div *ngFor="let item of dataMap">
       <h4>{{item[0][0] === "0" ? item[0].slice(1) : item[0]}} Tour</h4>

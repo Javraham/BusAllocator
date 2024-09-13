@@ -9,7 +9,7 @@ import {IWhatsApp} from "../typings/IWhatsApp";
   providedIn: 'root'
 })
 export class MessageService {
-  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
+  url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
   getSentMessages(date: string, collection: string): Observable<any>{

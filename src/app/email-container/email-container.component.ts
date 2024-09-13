@@ -26,7 +26,7 @@ export class EmailContainerComponent {
   loadingSentSMS = false;
   loadingSentWhatsapp = false;
   loadingAll = false;
-  @Output() updateSentMessages = new EventEmitter<[any, string]>();
+  @Output() updateSentMessages = new EventEmitter<[any, string, string]>();
 
   constructor(private emailService: MessageService) {
   }
@@ -48,12 +48,11 @@ export class EmailContainerComponent {
     console.log(this.passengers)
   }
 
-
-
   sendSMS(endpoint: string, event?: any): Promise<any> {
     if(event) event.preventDefault(); // Prevent form submission
 
-    const message = this.form.value.body + '\n\n ** NO REPLY **'
+    const message = this.form.value.body + '\n\n **NO REPLY** \n' +
+      'We can be contacted at book@tourstoniagarafalls.com or +1 416-792-7968'
 
     return new Promise((resolve, reject) => {
       if (this.form.invalid || this.passengers.length === 0) {
@@ -72,7 +71,8 @@ export class EmailContainerComponent {
           this.errorMsg = ""
           this.successMsg = response.message
           this.loadingSentSMS = false;
-          this.updateSentMessages.emit([response.data, "sms"])
+          console.log(response.data)
+          this.updateSentMessages.emit([response.data, "sms", this.pickupPlace])
           resolve(undefined)
         },
         error: (error) => {
@@ -113,7 +113,7 @@ export class EmailContainerComponent {
           this.errorMsg = ""
           this.successMsg = response.message
           this.loadingSentWhatsapp = false;
-          this.updateSentMessages.emit([response.data, "whatsapp"])
+          this.updateSentMessages.emit([response.data, "whatsapp", this.pickupPlace])
           resolve(undefined)
         },
         error: (error) => {
@@ -156,7 +156,7 @@ export class EmailContainerComponent {
           this.successMsg = response.message
           this.loadingSentEmail = false
           console.log(response)
-          this.updateSentMessages.emit([response.data, "email"])
+          this.updateSentMessages.emit([response.data, "email", this.pickupPlace])
           resolve(undefined)
         },
         error: (error) => {
