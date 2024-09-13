@@ -2,7 +2,7 @@ import {Component, QueryList, ViewChildren} from '@angular/core';
 import {Passenger} from "../typings/passenger";
 import {ApiService} from "../services/api.service";
 import {PassengersService} from "../services/passengers.service";
-import {IPickup, pickups} from "../typings/ipickup";
+import {IPickup} from "../typings/ipickup";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {ExpandableSectionComponent} from "../expandable-section/expandable-section.component";
@@ -10,7 +10,7 @@ import {EmailContainerComponent} from "../email-container/email-container.compon
 import {IEmail} from "../typings/IEmail";
 import {MessageService} from "../services/message.service";
 import {ISentMessageResponse} from "../typings/ISentEmailResonse";
-import {ActivatedRoute, PRIMARY_OUTLET, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {PickupsService} from "../services/pickups.service";
 
 @Component({
@@ -47,7 +47,7 @@ export class EmailAutomationComponent {
   pickupAbbrevs: any[] = [];
   dataMap !: any;
 
-  constructor(private route: ActivatedRoute, private router: Router, private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService, private pickupService: PickupsService) {
+  constructor(private route: ActivatedRoute, private router: Router, private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
   }
 
   onDateChange(event: any) {
@@ -272,16 +272,16 @@ export class EmailAutomationComponent {
 
     for (const [index, child] of this.emailContainers.toArray().entries()) {
       try {
-        await child.sendSMS('send-whatsapp');  // Wait for each SMS to complete
-        console.log(`SMS sent successfully for child ${index + 1}`);
+        await child.sendWhatsApp('send-whatsapp');  // Wait for each SMS to complete
+        console.log(`WhatsApp sent successfully for child ${index + 1}`);
       } catch (error) {
         console.error('Error sending SMS:', error);  // Handle the error and continue
       }
 
       // Add a delay between each SMS sending to prevent hitting Twilio rate limits
-      if (index < this.emailContainers.length - 1) {
-        await this.delay(1000);
-      }
+      // if (index < this.emailContainers.length - 1) {
+      //   await this.delay(1000);
+      // }
     }
 
     this.loadingSentWhatsApp = false;

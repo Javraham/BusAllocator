@@ -3,6 +3,7 @@ import {IEmail} from "../typings/IEmail";
 import {ISMS} from "../typings/ISMS";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {catchError, Observable, throwError} from "rxjs";
+import {IWhatsApp} from "../typings/IWhatsApp";
 
 @Injectable({
   providedIn: 'root'
@@ -32,10 +33,36 @@ export class MessageService {
     })
     console.log(phoneNumbers)
     const body = {
-      passengerPhoneNumbers: ["6478987430", "679876"],
+      passengerPhoneNumbers: ["+16478987430"],
       message: SMSObject.message,
       location: SMSObject.location,
       date: SMSObject.date
+    }
+
+    return this.http.post(`${this.url}${endpoint}`, body, {headers, responseType: 'json'}).pipe(
+      catchError(error => {
+        console.error('Error occurred:', error.error);
+        return throwError(() => new Error(error.error.message));
+      })
+    );
+  }
+
+  sendWhatsApp(WhatsAppObject: IWhatsApp, endpoint: string): Observable<any>{
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'x-api-key': 'hjkuwnndjw23=dkl'
+    });
+
+    const phoneNumbers = WhatsAppObject.passengers.map(passenger => passenger.phoneNumber).filter(number => number != null).map(number => {
+      return number.replace(/[a-zA-Z\s]/g, '');
+    })
+    console.log(phoneNumbers)
+    const body = {
+      passengerPhoneNumbers: ["+16478987430"],
+      locationString: WhatsAppObject.locationString,
+      mapLink: WhatsAppObject.mapLink,
+      location: WhatsAppObject.location,
+      date: WhatsAppObject.date
     }
 
     return this.http.post(`${this.url}${endpoint}`, body, {headers, responseType: 'json'}).pipe(

@@ -4,8 +4,6 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {MessageService} from "../services/message.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {Passenger} from "../typings/passenger";
-import {ISentMessageResponse} from "../typings/ISentEmailResonse";
-import {pickups} from "../typings/ipickup";
 @Component({
   selector: 'app-email-container',
   standalone: true,
@@ -50,6 +48,8 @@ export class EmailContainerComponent {
     console.log(this.passengers)
   }
 
+
+
   sendSMS(endpoint: string, event?: any): Promise<any> {
     if(event) event.preventDefault(); // Prevent form submission
 
@@ -61,7 +61,7 @@ export class EmailContainerComponent {
         reject(undefined)
         return;
       }
-      endpoint === "send-sms" ? this.loadingSentSMS = true : this.loadingSentWhatsapp = true;
+      this.loadingSentSMS = true;
       this.emailService.sendSMS({
         passengers: this.passengers,
         message,
@@ -71,8 +71,8 @@ export class EmailContainerComponent {
         next: (response) => {
           this.errorMsg = ""
           this.successMsg = response.message
-          endpoint === "send-sms" ? this.loadingSentSMS = false : this.loadingSentWhatsapp = false;
-          this.updateSentMessages.emit([response.data, endpoint == "send-sms" ? "sms" : "whatsapp"])
+          this.loadingSentSMS = false;
+          this.updateSentMessages.emit([response.data, "sms"])
           resolve(undefined)
         },
         error: (error) => {
@@ -80,7 +80,48 @@ export class EmailContainerComponent {
           this.successMsg = ""
           console.log(error)
           this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
-          endpoint === "send-sms" ? this.loadingSentSMS = false : this.loadingSentWhatsapp = false;
+          this.loadingSentSMS = false;
+          reject(undefined)
+        },
+      })
+    })
+  }
+
+  sendWhatsApp(endpoint: string, event?: any): Promise<any> {
+    if(event) event.preventDefault(); // Prevent form submission
+
+    const regex = /(https?:\/\/[^\s]+)/g;
+
+    const matches = this.form.value.body.match(regex);
+    const mapLink = matches ? matches[0] : null;
+
+    return new Promise((resolve, reject) => {
+      if (this.form.invalid || this.passengers.length === 0) {
+        this.form.markAllAsTouched();
+        reject(undefined)
+        return;
+      }
+      this.loadingSentWhatsapp = true;
+      this.emailService.sendWhatsApp({
+        passengers: this.passengers,
+        locationString: this.pickupPlace,
+        mapLink,
+        date: this.emailInfo.date,
+        location: this.emailInfo.location
+      },endpoint).subscribe({
+        next: (response) => {
+          this.errorMsg = ""
+          this.successMsg = response.message
+          this.loadingSentWhatsapp = false;
+          this.updateSentMessages.emit([response.data, "whatsapp"])
+          resolve(undefined)
+        },
+        error: (error) => {
+          console.error(error)
+          this.successMsg = ""
+          console.log(error)
+          this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
+          this.loadingSentWhatsapp = false;
           reject(undefined)
         },
       })
@@ -148,7 +189,7 @@ export class EmailContainerComponent {
       await Promise.all([
         this.sendEmail(),
         this.sendSMS('send-sms'),
-        this.sendSMS('send-whatsapp')
+        this.sendWhatsApp('send-whatsapp')
       ])
       this.errorMsg = ""
       this.successMsg = "All Messages Sent Successfully"
