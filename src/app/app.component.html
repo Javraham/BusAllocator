@@ -13,7 +13,8 @@
 
 </style>
 <main>
-  <app-sidenav [isClosed] = isClosed (changeIsClosed)="toggleMenu($event)"></app-sidenav>
+<!--  <app-sidenav [isClosed] = isClosed (changeIsClosed)="toggleMenu($event)"></app-sidenav>-->
+  <app-horizontal-nav></app-horizontal-nav>
   <section class="container-fluid" id="content" [ngStyle]="getStyles()" #content>
     <router-outlet />
   </section>

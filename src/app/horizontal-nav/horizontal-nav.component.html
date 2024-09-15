@@ -1,5 +1,137 @@
+<style>
+
+  *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+  }
+
+  nav{
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3); /* Shadow effect */
+  }
+
+  nav ul{
+    display: flex;
+    gap: 30px;
+    align-items: center;
+  }
+
+  li{
+    list-style-type: none;
+  }
+
+  a{
+    text-decoration: none;
+    color: #4B7FCC;
+    font-weight: 600;
+  }
+
+  /*ul{*/
+  /*  list-style: none;*/
+  /*  display: flex;*/
+  /*  margin-bottom: 0;*/
+  /*  height: 100%;*/
+  /*}*/
+
+  /*a{*/
+  /*  padding: 10px;*/
+  /*  color: #4B7FCC;*/
+  /*  font-weight: bold;*/
+  /*  font-size: 1em;*/
+  /*}*/
+  /*main {*/
+  /*  margin: 0;*/
+  /*  padding: 0;*/
+  /*}*/
+
+  /*nav {*/
+  /*  background-color: white; !* Background color *!*/
+  /*  margin: 0;*/
+  /*  display: flex;*/
+  /*  justify-content: space-between;*/
+  /*  padding: 1em 2em 1em 2em; !* Adjust padding as needed *!*/
+  /*  z-index: 1000; !* Ensures the navbar is above other elements *!*/
+  /*  align-items: center;*/
+  /*}*/
+
+  h4 {
+    margin: 0;
+    font-weight: 500;
+    font-size: 2em;
+  }
+
+  #content{
+    padding: 3em;
+  }
+
+  h1{
+    color: black;
+  }
+
+  h5{
+    font-weight: bold;
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  button i{
+    color: #4B7FCC;
+  }
+
+  .side-panel-button{
+    display: none;
+    font-size: 25px;
+  }
+
+  a i{
+    display: none;
+  }
+
+
+  @media screen and (max-width: 600px) {
+    nav ul{
+      position: absolute;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background-color: white;
+      overflow: hidden;
+      align-items: center;
+      transition: all 0.5s;
+      gap: 0;
+    }
+
+    nav ul li{
+      width: 100%;
+      padding: 20px 30px;
+    }
+
+    li:hover{
+      background-color: #f1faff;
+    }
+
+    a i{
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .side-panel-button{
+      display: block;
+      background: none;
+      border: none;
+    }
+  }
+</style>
+
 <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
-  <img src="assets/logo.png" alt="Logo" width="192" height="40" />
+  <img src="assets/logo-2.png" alt="Logo" width="40" height="40" />
   <ul #navList id="navList">
     <li>
       <a routerLink="/" (click)="turnOffMenu()">

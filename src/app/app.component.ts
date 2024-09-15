@@ -9,11 +9,12 @@ import {BusAutomationComponent} from "./bus-automation/bus-automation.component"
 import {PickupsService} from "./services/pickups.service";
 import {OptionsService} from "./services/options.service";
 import {SidenavComponent} from "./sidenav/sidenav.component";
+import {HorizontalNavComponent} from "./horizontal-nav/horizontal-nav.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PassengerComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule, BusAutomationComponent, RouterLink, RouterLinkActive, SidenavComponent],
+  imports: [RouterOutlet, PassengerComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule, BusAutomationComponent, RouterLink, RouterLinkActive, SidenavComponent, HorizontalNavComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
