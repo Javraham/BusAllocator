@@ -54,6 +54,7 @@
     min-width: 60px;
     display: flex;
     align-items: center;
+    justify-content: center;
   }
 
   .sidebar header .image-text{
@@ -159,7 +160,7 @@
       <div class="menu">
         <ul class="menu-links">
           <li class="nav-link">
-            <a routerLink="/bus-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+            <a routerLink="/bus-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
               <i class="bi bi-bus-front icon"></i>
               <span class="text nav-text">Bus Automation</span>
             </a>
