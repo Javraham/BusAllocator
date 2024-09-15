@@ -8,18 +8,19 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BusAutomationComponent} from "./bus-automation/bus-automation.component";
 import {PickupsService} from "./services/pickups.service";
 import {OptionsService} from "./services/options.service";
+import {SidenavComponent} from "./sidenav/sidenav.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PassengerComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule, BusAutomationComponent, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, PassengerComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule, BusAutomationComponent, RouterLink, RouterLinkActive, SidenavComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit{
   @ViewChild('content') content!: ElementRef;
   isClosed: boolean = true;
-  readonly maxWidth: number = 768;
+  readonly maxWidth: number = 1100;
   smallScreen !: boolean;
   currentRoute !: string;
   selectedOption !: string;
@@ -32,9 +33,6 @@ export class AppComponent implements OnInit{
     this.router.events.subscribe(() => {
       this.selectedOption = this.router.url.split('/')[1];
     });
-    this.pickupService.setPickupLocations()
-    this.busService.setBuses()
-    this.optionService.setOptions()
   }
 
   @HostListener('window:resize')
@@ -45,8 +43,8 @@ export class AppComponent implements OnInit{
     this.smallScreen = window.innerWidth < this.maxWidth;
   }
 
-  toggleMenu() {
-    this.isClosed = !this.isClosed;
+  toggleMenu(event: any) {
+    this.isClosed = event
   }
 
   getStyles(){
@@ -74,13 +72,5 @@ export class AppComponent implements OnInit{
         'transition': 'all 0.3s ease'
       }
     }
-  }
-
-  isActive(route: string){
-    return this.selectedOption.includes(route)
-  }
-
-  isBusActive(){
-    return !this.selectedOption.includes('email-automation') && !this.selectedOption.includes('settings')
   }
 }
