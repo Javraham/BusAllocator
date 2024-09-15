@@ -48,9 +48,6 @@ export class AppComponent implements OnInit{
   }
 
   getStyles(){
-    return {
-
-    }
     if(this.smallScreen){
       return {
         'position': 'relative',
