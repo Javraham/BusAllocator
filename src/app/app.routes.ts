@@ -5,7 +5,7 @@ import {SettingsPageComponent} from "./settings-page/settings-page.component";
 
 export const routes: Routes = [
   {
-    path: "bus-automation",
+    path: "",
     component: BusAutomationComponent,
     title: "Bus Automation Page"
   },

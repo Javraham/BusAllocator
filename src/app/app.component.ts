@@ -1,5 +1,5 @@
 import {Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild} from '@angular/core';
-import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {BusService} from "./services/bus.service";
 import {PassengerComponent} from "./passenger/passenger.component";
 import {CommonModule, NgOptimizedImage} from '@angular/common';
@@ -21,12 +21,17 @@ export class AppComponent implements OnInit{
   isClosed: boolean = true;
   readonly maxWidth: number = 768;
   smallScreen !: boolean;
+  currentRoute !: string;
+  selectedOption !: string;
 
-  constructor(private renderer: Renderer2, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService) {
+  constructor(private router: Router, private renderer: Renderer2, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService) {
   }
 
   ngOnInit() {
     this.smallScreen = window.innerWidth < this.maxWidth;
+    this.router.events.subscribe(() => {
+      this.selectedOption = this.router.url.split('/')[1];
+    });
     this.pickupService.setPickupLocations()
     this.busService.setBuses()
     this.optionService.setOptions()
@@ -69,5 +74,13 @@ export class AppComponent implements OnInit{
         'transition': 'all 0.3s ease'
       }
     }
+  }
+
+  isActive(route: string){
+    return this.selectedOption.includes(route)
+  }
+
+  isBusActive(){
+    return !this.selectedOption.includes('email-automation') && !this.selectedOption.includes('settings')
   }
 }

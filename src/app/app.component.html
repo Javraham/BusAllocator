@@ -90,7 +90,7 @@
   }
 
   .sidebar li a:hover{
-    background: #4B7FCC;
+    background: #FC5923;
     border-radius: 5px;
     transition: all 0.5s ease;
   }
@@ -108,7 +108,13 @@
 
   .sidebar li a:hover .icon,
   .sidebar li a:hover .text{
-    color: #fff;
+    color: white;
+    transition: all 0.5s ease;
+  }
+
+  .sidebar li a.active-link:hover .icon,
+  .sidebar li a.active-link:hover .text{
+    color: white;
     transition: all 0.5s ease;
   }
 
@@ -129,8 +135,12 @@
   }
 
   .active-link {
-    background-color: rgba(75, 127, 204, 0.2);
+    background-color: rgba(252, 89, 35, 0.2);
     border-radius: 5px;
+  }
+
+  .sidebar li a.active-link .icon, .sidebar li a.active-link .text {
+    color: #FC5923;
   }
 
   img{
@@ -160,19 +170,19 @@
       <div class="menu">
         <ul class="menu-links">
           <li class="nav-link">
-            <a routerLink="/bus-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
+            <a routerLink="/" (click)="selectedOption = ''" [ngClass]="{'active-link': isBusActive()}"  >
               <i class="bi bi-bus-front icon"></i>
               <span class="text nav-text">Bus Automation</span>
             </a>
           </li>
           <li class="nav-link">
-            <a routerLink="/email-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
+            <a routerLink="/email-automation" (click)="selectedOption = 'email-automation'" [ngClass]="{'active-link': isActive('email-automation')}" >
               <i class="bi bi-envelope icon"></i>
               <span class="text nav-text">Email Automation</span>
             </a>
           </li>
           <li class="nav-link">
-            <a routerLink="/settings" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
+            <a routerLink="/settings" (click)="selectedOption = 'settings'" [ngClass]="{'active-link': isActive('settings')}">
               <i class="bi bi-gear icon"></i>
               <span class="text nav-text">Setting</span>
             </a>
