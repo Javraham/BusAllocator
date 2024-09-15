@@ -93,66 +93,19 @@
   a i{
     display: none;
   }
-
-
-  @media screen and (max-width: 600px) {
-    nav ul{
-      position: absolute;
-      left: 0;
-      right: 0;
-      flex-direction: column;
-      background-color: white;
-      overflow: hidden;
-      align-items: center;
-      transition: all 0.5s;
-      gap: 0;
-    }
-
-    nav ul li{
-      width: 100%;
-      padding: 20px 30px;
-    }
-
-    li:hover{
-      background-color: #f1faff;
-    }
-
-    a i{
-      display: inline-block;
-      margin-right: 10px;
-    }
-
-    .side-panel-button{
-      display: block;
-      background: none;
-      border: none;
-    }
-  }
 </style>
-
-<nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
-  <img src="assets/logo-2.png" alt="Logo" width="40" height="40" />
-  <ul #navList id="navList">
-    <li>
-      <a routerLink="/" (click)="turnOffMenu()">
-        <i class="bi bi-bus-front"></i>
-        <span>Bus Automation</span>
-      </a>
-    </li>
-    <li>
-      <a routerLink="/email-automation" (click)="turnOffMenu()">
-        <i class="bi bi-envelope"></i>
-        <span>Email Automation</span>
-      </a>
-    </li>
-    <li>
-      <a routerLink="/settings" (click)="turnOffMenu()">
-        <i class="bi bi-gear"></i>
-        <span>Setting</span>
-      </a>
-    </li>
-  </ul>
-  <button class="side-panel-button" (click)="toggleMenu()">
-    <i class="bi bi-list" ></i>
-  </button>
-</nav>
+  <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
+    <img src="assets/logo-2.png" alt="Logo" width="40" height="39" />
+    <ul #navList id="navList">
+      <li>
+        <a routerLink="/" (click)="turnOffMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
+      </li>
+      <li>
+        <a routerLink="/email-automation" (click)="turnOffMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
+      </li>
+      <li>
+        <a routerLink="/settings" (click)="turnOffMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
+      </li>
+    </ul>
+    <button class="side-panel-button" (click)="toggleMenu()"><i class="bi bi-list" ></i></button>
+  </nav>

@@ -23,7 +23,6 @@ export class AppComponent implements OnInit{
   isClosed: boolean = true;
   readonly maxWidth: number = 1100;
   smallScreen !: boolean;
-  currentRoute !: string;
   selectedOption !: string;
 
   constructor(private router: Router, private renderer: Renderer2, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService) {
@@ -49,6 +48,9 @@ export class AppComponent implements OnInit{
   }
 
   getStyles(){
+    return {
+
+    }
     if(this.smallScreen){
       return {
         'position': 'relative',

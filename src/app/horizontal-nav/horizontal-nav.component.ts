@@ -15,7 +15,7 @@ import {OptionsService} from "../services/options.service";
 })
 export class HorizontalNavComponent {
   @ViewChild('navbar') navbar!: ElementRef;
-  @ViewChild('content') content!: ElementRef;
+  // @ViewChild('content') content!: ElementRef;
   @ViewChild('navList', { static: false }) navList!: ElementRef;
   menuList = document.getElementById("navList") as HTMLElement;
 
@@ -25,7 +25,7 @@ export class HorizontalNavComponent {
   ngAfterViewInit() {
     const navbarHeight = this.navbar.nativeElement.offsetHeight;
     const mediaQuery = window.matchMedia('(max-width: 600px)');
-    this.content.nativeElement.style.marginTop = `${navbarHeight}px`;
+    // this.content.nativeElement.style.marginTop = `${navbarHeight}px`;
 
     if (mediaQuery.matches) {
       // If the media query matches, apply the top value dynamically to the ul
