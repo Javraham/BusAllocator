@@ -19,11 +19,14 @@ import {OptionsService} from "./services/options.service";
 export class AppComponent implements OnInit{
   @ViewChild('content') content!: ElementRef;
   isClosed: boolean = true;
+  readonly maxWidth: number = 768;
+  smallScreen !: boolean;
 
   constructor(private renderer: Renderer2, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService) {
   }
 
   ngOnInit() {
+    this.smallScreen = window.innerWidth < this.maxWidth;
     this.pickupService.setPickupLocations()
     this.busService.setBuses()
     this.optionService.setOptions()
@@ -31,12 +34,40 @@ export class AppComponent implements OnInit{
 
   @HostListener('window:resize')
   onResize() {
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < this.maxWidth) {
       this.isClosed = true;
     }
+    this.smallScreen = window.innerWidth < this.maxWidth;
   }
 
   toggleMenu() {
     this.isClosed = !this.isClosed;
+  }
+
+  getStyles(){
+    if(this.smallScreen){
+      return {
+        'position': 'relative',
+        'left': '88px',
+        'width': 'calc(100% - 88px)',
+      }
+    }
+    else if(!this.smallScreen && !this.isClosed){
+      return {
+        'position': 'relative',
+        'left': '250px',
+        'width': 'calc(100% - 250px)',
+        'transition': 'all 0.3s ease'
+      }
+    }
+
+    else{
+      return {
+        'position': 'relative',
+        'left': '88px',
+        'width': 'calc(100% - 88px)',
+        'transition': 'all 0.3s ease'
+      }
+    }
   }
 }

@@ -10,19 +10,34 @@
   #content{
     padding: 3em;
     position: relative;
-    left: 250px;
-    width: calc(100% - 250px);
-    transition: all 0.3s ease;
   }
 
   .sidebar .menu{
     margin-top: 35px;
   }
 
-  .sidebar.closed ~ #content{
-    left: 88px;
-    width: calc(100% - 88px);
+  .header-text .name{
+    font-weight: 600;
   }
+
+  .header-text .profession{
+    margin-top: -2px;
+  }
+
+  .sidebar header{
+    position: relative;
+  }
+
+  .toggle{
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translateY(-50%);
+    font-size: 22px;
+    color: #4B7FCC;
+    cursor: pointer;
+  }
+
   .sidebar{
     position: fixed;
     top: 0;
@@ -48,7 +63,7 @@
 
   .sidebar .text{
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
     transition: all 0.4s ease;
     white-space: nowrap;
   }
@@ -117,6 +132,11 @@
     border-radius: 5px;
   }
 
+  img{
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
 
 </style>
 <main>
@@ -124,31 +144,34 @@
     <header>
       <div class="image-text">
         <span class="image">
-          <i class="bi bi-list toggle" (click)="toggleMenu()"></i>
+          <img src="assets/logo-2.png" alt="Logo" width="40" height="40" />
         </span>
         <div class="text header-text">
-          <img src="assets/logo.png" alt="Logo" width="140" height="30" />
+          <span class="name">Queen Tours</span>
+          <span class="profession">Niagara Falls</span>
         </div>
       </div>
+      <i *ngIf="isClosed" class="bi bi-arrow-right-circle-fill toggle" (click)="toggleMenu()"></i>
+      <i *ngIf="!isClosed" class="bi bi-arrow-left-circle-fill toggle" (click)="toggleMenu()"></i>
     </header>
 
     <div class="menu-bar">
       <div class="menu">
         <ul class="menu-links">
           <li class="nav-link">
-            <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+            <a routerLink="/bus-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
               <i class="bi bi-bus-front icon"></i>
               <span class="text nav-text">Bus Automation</span>
             </a>
           </li>
           <li class="nav-link">
-            <a routerLink="/email-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+            <a routerLink="/email-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
               <i class="bi bi-envelope icon"></i>
               <span class="text nav-text">Email Automation</span>
             </a>
           </li>
           <li class="nav-link">
-            <a routerLink="/settings" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+            <a routerLink="/settings" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
               <i class="bi bi-gear icon"></i>
               <span class="text nav-text">Setting</span>
             </a>
@@ -157,7 +180,7 @@
       </div>
     </div>
   </nav>
-  <section class="container-fluid" id="content" #content>
+  <section class="container-fluid" id="content" [ngStyle]="getStyles()" #content>
     <router-outlet />
   </section>
 </main>
