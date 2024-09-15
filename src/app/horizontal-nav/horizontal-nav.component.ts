@@ -24,24 +24,7 @@ export class HorizontalNavComponent {
 
   ngAfterViewInit() {
     const navbarHeight = this.navbar.nativeElement.offsetHeight;
-    const mediaQuery = window.matchMedia('(max-width: 600px)');
-    // this.content.nativeElement.style.marginTop = `${navbarHeight}px`;
-
-    if (mediaQuery.matches) {
-      // If the media query matches, apply the top value dynamically to the ul
-      this.renderer.setStyle(this.navList.nativeElement, 'top', `${navbarHeight}px`);
-    }
-
-    // Listen for changes in screen width (for responsiveness)
-    mediaQuery.addEventListener('change', (event) => {
-      if (event.matches) {
-        // If the screen width goes below 600px, set the top value
-        this.renderer.setStyle(this.navList.nativeElement, 'top', `${navbarHeight}px`);
-      } else {
-        // If the screen width goes above 600px, remove the top value
-        this.renderer.removeStyle(this.navList.nativeElement, 'top');
-      }
-    });
+    this.renderer.setStyle(this.navList.nativeElement, 'top', `${navbarHeight}px`);
 
     this.navList.nativeElement.style.maxHeight = '0px';
   }

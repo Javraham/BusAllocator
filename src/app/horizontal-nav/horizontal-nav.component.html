@@ -14,12 +14,7 @@
     justify-content: space-between;
     background-color: white;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3); /* Shadow effect */
-  }
-
-  nav ul{
-    display: flex;
-    gap: 30px;
-    align-items: center;
+    position: relative;
   }
 
   li{
@@ -57,13 +52,39 @@
     color: #4B7FCC;
   }
 
-  .side-panel-button{
-    display: none;
-    font-size: 25px;
+
+  nav ul{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 20px;
+    flex-direction: column;
+    background-color: white;
+    overflow: hidden;
+    align-items: center;
+    transition: all 0.5s;
+    gap: 0;
+  }
+
+  nav ul li{
+    width: 100%;
+    padding: 20px 30px;
+  }
+
+  li:hover{
+    background-color: #f1faff;
   }
 
   a i{
-    display: none;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .side-panel-button{
+    display: block;
+    background: none;
+    border: none;
+    font-size: 22px;
   }
 </style>
   <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
