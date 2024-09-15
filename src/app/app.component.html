@@ -4,150 +4,161 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
-  }
-
-  nav{
-    padding: 15px 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: white;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3); /* Shadow effect */
-  }
-
-  nav ul{
-    display: flex;
-    gap: 30px;
-    align-items: center;
-  }
-
-  li{
-    list-style-type: none;
-  }
-
-  a{
-    text-decoration: none;
-    color: #4B7FCC;
-    font-weight: 600;
-  }
-
-  /*ul{*/
-  /*  list-style: none;*/
-  /*  display: flex;*/
-  /*  margin-bottom: 0;*/
-  /*  height: 100%;*/
-  /*}*/
-
-  /*a{*/
-  /*  padding: 10px;*/
-  /*  color: #4B7FCC;*/
-  /*  font-weight: bold;*/
-  /*  font-size: 1em;*/
-  /*}*/
-  /*main {*/
-  /*  margin: 0;*/
-  /*  padding: 0;*/
-  /*}*/
-
-  /*nav {*/
-  /*  background-color: white; !* Background color *!*/
-  /*  margin: 0;*/
-  /*  display: flex;*/
-  /*  justify-content: space-between;*/
-  /*  padding: 1em 2em 1em 2em; !* Adjust padding as needed *!*/
-  /*  z-index: 1000; !* Ensures the navbar is above other elements *!*/
-  /*  align-items: center;*/
-  /*}*/
-
-  h4 {
-    margin: 0;
-    font-weight: 500;
-    font-size: 2em;
+    font-family: 'Poppins', sans-serif;
   }
 
   #content{
     padding: 3em;
+    position: relative;
+    left: 250px;
+    width: calc(100% - 250px);
+    transition: all 0.3s ease;
   }
 
-  h1{
-    color: black;
+  .sidebar .menu{
+    margin-top: 35px;
   }
 
-  h5{
-    font-weight: bold;
+  .sidebar.closed ~ #content{
+    left: 88px;
+    width: calc(100% - 88px);
+  }
+  .sidebar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    padding: 10px 14px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    z-index: 100;
+  }
+
+  .sidebar .image{
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar header .image-text{
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar .text{
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+  }
+
+  header .image-text .header-text{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .image i{
+    border-radius: 6px;
+    background-color: #4B7FCC;
+    padding: 2px 5px;
+    font-size: 22px;
+    color: white;
+  }
+  .sidebar li{
+    height: 50px;
+    margin-top: 10px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar li a:hover{
+    background: #4B7FCC;
+    border-radius: 5px;
+    transition: all 0.5s ease;
+  }
+  .sidebar li .icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 60px;
     font-size: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  }
+  .sidebar li .icon,
+  .sidebar li .text{
+    color: #707070;
   }
 
-  button i{
-    color: #4B7FCC;
+  .sidebar li a:hover .icon,
+  .sidebar li a:hover .text{
+    color: #fff;
+    transition: all 0.5s ease;
   }
 
-  .side-panel-button{
-    display: none;
-    font-size: 25px;
+  .sidebar li a{
+    text-decoration: none;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
   }
 
-  a i{
-    display: none;
+  .sidebar.closed{
+    width: 88px;
+  }
+
+  .sidebar.closed .text{
+    opacity: 0;
+  }
+
+  .active-link {
+    background-color: rgba(75, 127, 204, 0.2);
+    border-radius: 5px;
   }
 
 
-  @media screen and (max-width: 600px) {
-    nav ul{
-      position: absolute;
-      left: 0;
-      right: 0;
-      flex-direction: column;
-      background-color: white;
-      overflow: hidden;
-      align-items: center;
-      transition: all 0.5s;
-      gap: 0;
-    }
-
-    nav ul li{
-      width: 100%;
-      padding: 20px 30px;
-    }
-
-    li:hover{
-      background-color: #f1faff;
-    }
-
-    a i{
-      display: inline-block;
-      margin-right: 10px;
-    }
-
-    .side-panel-button{
-      display: block;
-      background: none;
-      border: none;
-    }
-  }
 </style>
 <main>
-  <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
-    <img src="assets/logo.png" alt="Logo" width="192" height="40" />
-    <ul #navList id="navList">
-      <li>
-        <a routerLink="/" (click)="turnOffMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
-      </li>
-      <li>
-        <a routerLink="/email-automation" (click)="turnOffMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
-      </li>
-      <li>
-        <a routerLink="/settings" (click)="turnOffMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
-      </li>
-    </ul>
-    <button class="side-panel-button" (click)="toggleMenu()"><i class="bi bi-list" ></i></button>
-  </nav>
+  <nav class="sidebar" [ngClass]="{closed: isClosed}">
+    <header>
+      <div class="image-text">
+        <span class="image">
+          <i class="bi bi-list toggle" (click)="toggleMenu()"></i>
+        </span>
+        <div class="text header-text">
+          <img src="assets/logo.png" alt="Logo" width="140" height="30" />
+        </div>
+      </div>
+    </header>
 
-  <div class="container-fluid" id="content" #content>
+    <div class="menu-bar">
+      <div class="menu">
+        <ul class="menu-links">
+          <li class="nav-link">
+            <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="bi bi-bus-front icon"></i>
+              <span class="text nav-text">Bus Automation</span>
+            </a>
+          </li>
+          <li class="nav-link">
+            <a routerLink="/email-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="bi bi-envelope icon"></i>
+              <span class="text nav-text">Email Automation</span>
+            </a>
+          </li>
+          <li class="nav-link">
+            <a routerLink="/settings" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="bi bi-gear icon"></i>
+              <span class="text nav-text">Setting</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <section class="container-fluid" id="content" #content>
     <router-outlet />
-  </div>
+  </section>
 </main>
 
