@@ -21,15 +21,18 @@ import {HorizontalNavComponent} from "./horizontal-nav/horizontal-nav.component"
 export class AppComponent implements OnInit{
   @ViewChild('content') content!: ElementRef;
   isClosed: boolean = true;
-  readonly maxWidth: number = 1100;
+  readonly maxWidth: number = 900;
+  readonly horizontalNavMaxWidth: number = 600;
   smallScreen !: boolean;
   selectedOption !: string;
+  useHorizontalNav !: boolean;
 
   constructor(private router: Router, private renderer: Renderer2, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService) {
   }
 
   ngOnInit() {
     this.smallScreen = window.innerWidth < this.maxWidth;
+    this.useHorizontalNav = window.innerWidth < this.horizontalNavMaxWidth;  // Controls horizontal nav
     this.router.events.subscribe(() => {
       this.selectedOption = this.router.url.split('/')[1];
     });
@@ -41,6 +44,7 @@ export class AppComponent implements OnInit{
       this.isClosed = true;
     }
     this.smallScreen = window.innerWidth < this.maxWidth;
+    this.useHorizontalNav = window.innerWidth < this.horizontalNavMaxWidth;  // Controls horizontal nav
   }
 
   toggleMenu(event: any) {
@@ -48,7 +52,8 @@ export class AppComponent implements OnInit{
   }
 
   getStyles(){
-    if(this.smallScreen){
+    if(this.useHorizontalNav) return
+    else if(this.smallScreen){
       return {
         'position': 'relative',
         'left': '88px',

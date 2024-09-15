@@ -165,19 +165,22 @@
     <div class="menu">
       <ul class="menu-links">
         <li class="nav-link">
-          <a routerLink="/" (click)="selectedOption = ''" [ngClass]="{'active-link': isBusActive()}"  >
+          <a routerLink="/bus-automation" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: false }" >
             <i class="bi bi-bus-front icon"></i>
             <span class="text nav-text">Bus Automation</span>
           </a>
         </li>
         <li class="nav-link">
-          <a routerLink="/email-automation" (click)="selectedOption = 'email-automation'" [ngClass]="{'active-link': isActive('email-automation')}" >
+          <a routerLink="/email-automation" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: false }">
             <i class="bi bi-envelope icon"></i>
             <span class="text nav-text">Email Automation</span>
           </a>
         </li>
         <li class="nav-link">
-          <a routerLink="/settings" (click)="selectedOption = 'settings'" [ngClass]="{'active-link': isActive('settings')}">
+          <a routerLink="/settings" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: false }">
             <i class="bi bi-gear icon"></i>
             <span class="text nav-text">Setting</span>
           </a>
