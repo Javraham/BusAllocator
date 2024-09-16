@@ -57,8 +57,8 @@ export class EmailAutomationComponent {
     this.router.navigate([], { queryParams: { date: this.date }})
   }
 
-  EmailSentLocation(pickup: string): ISentMessageResponse | undefined{
-    return this.sentEmailLocations?.find((obj: ISentMessageResponse) => obj.location === pickup)
+  EmailSentLocation(pickup: string, tourTime: string): ISentMessageResponse | undefined{
+    return this.sentEmailLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTimes.includes(tourTime))
   }
 
   getUnSentMessages(){
@@ -66,9 +66,9 @@ export class EmailAutomationComponent {
       item[1].forEach((pickup: any) => {
         const obj: any = {time: item[0], abbreviation: pickup.abbreviation}
         const passengers = this.getPassengersByLocation(pickup.name)
-        const emailSentPassengers = this.EmailSentLocation(pickup.abbreviation)?.sentTo
-        const smsSentPassengers = this.SMSSentLocation(pickup.abbreviation)?.sentTo
-        const whatsappSentPassengers = this.WhatsAppSentLocation(pickup.abbreviation)?.sentTo
+        const emailSentPassengers = this.EmailSentLocation(pickup.abbreviation, item[0])?.sentTo
+        const smsSentPassengers = this.SMSSentLocation(pickup.abbreviation, item[0])?.sentTo
+        const whatsappSentPassengers = this.WhatsAppSentLocation(pickup.abbreviation, item[0])?.sentTo
         if (emailSentPassengers) {
           const filteredPassengers = passengers.filter(passenger => !emailSentPassengers.includes(passenger.email))
           obj['email'] = filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName);
@@ -87,12 +87,12 @@ export class EmailAutomationComponent {
     })
   }
 
-  SMSSentLocation(pickup: string): ISentMessageResponse | undefined{
-    return this.sentSMSLocations?.find((obj: ISentMessageResponse) => obj.location === pickup)
+  SMSSentLocation(pickup: string, tourTime: string): ISentMessageResponse | undefined{
+    return this.sentSMSLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTimes.includes(tourTime))
   }
 
-  WhatsAppSentLocation(pickup: string): ISentMessageResponse | undefined{
-    return this.sentWhatsAppLocations?.find((obj: ISentMessageResponse) => obj.location === pickup)
+  WhatsAppSentLocation(pickup: string, tourTime: string): ISentMessageResponse | undefined{
+    return this.sentWhatsAppLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTimes.includes(tourTime))
   }
 
   trackByPickup(index: number, pickup: IPickup): string {
@@ -123,11 +123,14 @@ export class EmailAutomationComponent {
     if(locationFound){
       locationFound.sentTo = event[0].sentTo;
       locationFound.timestamp = event[0].timestamp;
+      if(!locationFound.tourTimes.includes(event[0].tourTime)){
+        locationFound.tourTimes.push(event[0].tourTime)
+      }
     }
     else{
-      messageType.push(event[0])
+      messageType.push({...event[0], tourTimes: [event[0].tourTime]})
     }
-    const found = this.unsentMessagesMap.find((pickup: any) => pickup.abbreviation == event[0].location)
+    const found = this.unsentMessagesMap.find((pickup: any) => pickup.abbreviation == event[0].location && event[0].tourTime === pickup.time)
 
     if(found) {
       if (event[1] === "email") {
@@ -149,6 +152,7 @@ export class EmailAutomationComponent {
   getSentEmails(){
     this.emailService.getSentMessages(this.date, 'emails').subscribe({
       next: response => {
+        console.log(response)
         this.sentEmailLocations = response;
       },
       error: err => console.log(err)
@@ -158,6 +162,8 @@ export class EmailAutomationComponent {
   getSentWhatsApp(){
     this.emailService.getSentMessages(this.date, 'whatsapp').subscribe({
       next: response => {
+        console.log(response)
+
         this.sentWhatsAppLocations = response;
       },
       error: err => console.log(err)
@@ -167,6 +173,7 @@ export class EmailAutomationComponent {
   getSentSMS(){
     this.emailService.getSentMessages(this.date, 'sms').subscribe({
       next: response => {
+        console.log(response)
         this.sentSMSLocations = response;
       },
       error: err => console.log(err)

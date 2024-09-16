@@ -18,6 +18,7 @@ import {Passenger} from "../typings/passenger";
 export class EmailContainerComponent {
   @Input() emailInfo !: IEmail;
   @Input() pickupPlace !: string;
+  @Input() tourTime !: string;
   form: FormGroup = new FormGroup<any>({});
   passengers: Passenger[] = []
   successMsg: string = '';
@@ -65,7 +66,8 @@ export class EmailContainerComponent {
         passengers: this.passengers,
         message,
         date: this.emailInfo.date,
-        location: this.emailInfo.location
+        location: this.emailInfo.location,
+        tourTime: this.tourTime
       },endpoint).subscribe({
         next: (response) => {
           this.errorMsg = ""
@@ -107,7 +109,8 @@ export class EmailContainerComponent {
         locationString: this.pickupPlace,
         mapLink,
         date: this.emailInfo.date,
-        location: this.emailInfo.location
+        location: this.emailInfo.location,
+        tourTime: this.tourTime
       },endpoint).subscribe({
         next: (response) => {
           this.errorMsg = ""
@@ -150,7 +153,8 @@ export class EmailContainerComponent {
         body: this.form.value.body,
         subject: this.form.value.subject,
         date: this.emailInfo.date,
-        location: this.emailInfo.location
+        location: this.emailInfo.location,
+        tourTime: this.tourTime
       }).subscribe({
         next: (response) => {
           this.errorMsg = ""

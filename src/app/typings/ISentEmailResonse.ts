@@ -3,5 +3,6 @@ import {Timestamp} from "rxjs";
 export interface ISentMessageResponse {
   location: string,
   sentTo: string[],
-  timestamp?: any
+  timestamp?: any,
+  tourTimes: string[]
 }

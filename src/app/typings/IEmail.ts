@@ -6,5 +6,6 @@ export interface IEmail {
   body: string,
   bodyHTML ?: HTMLElement
   date: string,
-  location: string
+  location: string,
+  tourTime?: string
 }

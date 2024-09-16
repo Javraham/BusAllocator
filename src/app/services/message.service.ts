@@ -35,7 +35,8 @@ export class MessageService {
       passengerPhoneNumbers: ["+16478987430"],
       message: SMSObject.message,
       location: SMSObject.location,
-      date: SMSObject.date
+      date: SMSObject.date,
+      tourTime: SMSObject.tourTime
     }
 
     return this.http.post(`${this.url}${endpoint}`, body, {headers, responseType: 'json'}).pipe(
@@ -61,7 +62,8 @@ export class MessageService {
       locationString: WhatsAppObject.locationString,
       mapLink: WhatsAppObject.mapLink,
       location: WhatsAppObject.location,
-      date: WhatsAppObject.date
+      date: WhatsAppObject.date,
+      tourTime: WhatsAppObject.tourTime
     }
 
     return this.http.post(`${this.url}${endpoint}`, body, {headers, responseType: 'json'}).pipe(
@@ -85,7 +87,8 @@ export class MessageService {
       body: emailObject.body,
       subject: emailObject.subject,
       date: emailObject.date,
-      location: emailObject.location
+      location: emailObject.location,
+      tourTime: emailObject.tourTime
     }
     return this.http.post(`${this.url}send-email`, body, {headers, responseType: 'json'}).pipe(
       catchError(error => {

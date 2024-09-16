@@ -184,8 +184,8 @@
     <h3>Pickup Location List</h3>
     <div *ngFor="let item of dataMap">
       <h4>{{item[0][0] === "0" ? item[0].slice(1) : item[0]}} Tour</h4>
-      <app-expandable-section *ngFor="let pickup of item[1]; trackBy: trackByPickup" [WhatsAppSentLocations]=WhatsAppSentLocation(pickup.abbreviation) [SMSSentLocations]=SMSSentLocation(pickup.abbreviation) [EmailSentLocations] = EmailSentLocation(pickup.abbreviation) [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
-        <app-email-container (updateSentMessages)="updateSentMessageLocations($event)" [pickupPlace]=pickup.name [emailInfo]="getEmailObject(pickup)"></app-email-container>
+      <app-expandable-section *ngFor="let pickup of item[1]; trackBy: trackByPickup" [WhatsAppSentLocations]="WhatsAppSentLocation(pickup.abbreviation, item[0])" [SMSSentLocations]="SMSSentLocation(pickup.abbreviation, item[0])" [EmailSentLocations] = "EmailSentLocation(pickup.abbreviation, item[0])" [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
+        <app-email-container (updateSentMessages)="updateSentMessageLocations($event)" [pickupPlace]=pickup.name [tourTime] = item[0] [emailInfo]="getEmailObject(pickup)"></app-email-container>
       </app-expandable-section>
     </div>
   </div>

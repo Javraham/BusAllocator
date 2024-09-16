@@ -5,5 +5,6 @@ export interface IWhatsApp{
   locationString: string,
   mapLink: string,
   date: string,
-  location: string
+  location: string,
+  tourTime?: string,
 }
