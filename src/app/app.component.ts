@@ -1,5 +1,5 @@
-import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import {Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {BusService} from "./services/bus.service";
 import {PassengerComponent} from "./passenger/passenger.component";
 import {CommonModule, NgOptimizedImage} from '@angular/common';
@@ -8,63 +8,74 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BusAutomationComponent} from "./bus-automation/bus-automation.component";
 import {PickupsService} from "./services/pickups.service";
 import {OptionsService} from "./services/options.service";
+import {SidenavComponent} from "./sidenav/sidenav.component";
+import {HorizontalNavComponent} from "./horizontal-nav/horizontal-nav.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PassengerComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule, BusAutomationComponent, RouterLink],
+  imports: [RouterOutlet, PassengerComponent, CommonModule, BusSelectionButtonsComponent, NgOptimizedImage, FormsModule, ReactiveFormsModule, BusAutomationComponent, RouterLink, RouterLinkActive, SidenavComponent, HorizontalNavComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit{
-  @ViewChild('navbar') navbar!: ElementRef;
   @ViewChild('content') content!: ElementRef;
-  @ViewChild('navList', { static: false }) navList!: ElementRef;
-  menuList = document.getElementById("navList") as HTMLElement;
+  isClosed: boolean = true;
+  readonly maxWidth: number = 900;
+  readonly horizontalNavMaxWidth: number = 600;
+  smallScreen !: boolean;
+  selectedOption !: string;
+  useHorizontalNav !: boolean;
 
-  constructor(private renderer: Renderer2, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService) {
-  }
-
-  ngAfterViewInit() {
-    const navbarHeight = this.navbar.nativeElement.offsetHeight;
-    const mediaQuery = window.matchMedia('(max-width: 600px)');
-    this.content.nativeElement.style.marginTop = `${navbarHeight}px`;
-
-    if (mediaQuery.matches) {
-      // If the media query matches, apply the top value dynamically to the ul
-      this.renderer.setStyle(this.navList.nativeElement, 'top', `${navbarHeight}px`);
-    }
-
-    // Listen for changes in screen width (for responsiveness)
-    mediaQuery.addEventListener('change', (event) => {
-      if (event.matches) {
-        // If the screen width goes below 600px, set the top value
-        this.renderer.setStyle(this.navList.nativeElement, 'top', `${navbarHeight}px`);
-      } else {
-        // If the screen width goes above 600px, remove the top value
-        this.renderer.removeStyle(this.navList.nativeElement, 'top');
-      }
-    });
-
-    this.navList.nativeElement.style.maxHeight = '0px';
+  constructor(private router: Router, private renderer: Renderer2, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService) {
   }
 
   ngOnInit() {
-    this.pickupService.setPickupLocations()
-    this.busService.setBuses()
-    this.optionService.setOptions()
+    this.smallScreen = window.innerWidth < this.maxWidth;
+    this.useHorizontalNav = window.innerWidth < this.horizontalNavMaxWidth;  // Controls horizontal nav
+    this.router.events.subscribe(() => {
+      this.selectedOption = this.router.url.split('/')[1];
+    });
   }
 
-  toggleMenu() {
-    const currentMaxHeight = this.navList.nativeElement.style.maxHeight;
-    if (currentMaxHeight === '0px' || currentMaxHeight === '') {
-      this.renderer.setStyle(this.navList.nativeElement, 'maxHeight', '300px');
-    } else {
-      this.renderer.setStyle(this.navList.nativeElement, 'maxHeight', '0px');
+  @HostListener('window:resize')
+  onResize() {
+    if (window.innerWidth < this.maxWidth) {
+      this.isClosed = true;
     }
+    this.smallScreen = window.innerWidth < this.maxWidth;
+    this.useHorizontalNav = window.innerWidth < this.horizontalNavMaxWidth;  // Controls horizontal nav
   }
 
-  turnOffMenu() {
-    this.renderer.setStyle(this.navList.nativeElement, 'maxHeight', '0px');
+  toggleMenu(event: any) {
+    this.isClosed = event
+  }
+
+  getStyles(){
+    if(this.useHorizontalNav) return
+    else if(this.smallScreen){
+      return {
+        'position': 'relative',
+        'left': '88px',
+        'width': 'calc(100% - 88px)',
+      }
+    }
+    else if(!this.smallScreen && !this.isClosed){
+      return {
+        'position': 'relative',
+        'left': '250px',
+        'width': 'calc(100% - 250px)',
+        'transition': 'all 0.3s ease'
+      }
+    }
+
+    else{
+      return {
+        'position': 'relative',
+        'left': '88px',
+        'width': 'calc(100% - 88px)',
+        'transition': 'all 0.3s ease'
+      }
+    }
   }
 }
