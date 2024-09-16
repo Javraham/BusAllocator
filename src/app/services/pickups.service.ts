@@ -21,7 +21,6 @@ export class PickupsService {
     locationsResponse.subscribe({
       next: (response) => {
         this.pickupLocations = response.data
-        console.log(response.data)
       },
       error: err => console.log(err)
     })

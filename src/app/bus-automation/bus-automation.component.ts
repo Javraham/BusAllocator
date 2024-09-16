@@ -112,7 +112,6 @@ export class BusAutomationComponent implements OnInit{
   onDateChange(event: any){
     this.date = event.target.value;
     this.router.navigate([], { queryParams: { date: this.date } });
-    this.loadPassengers()
   }
 
   getBusesByTime(time: string){
@@ -204,7 +203,6 @@ export class BusAutomationComponent implements OnInit{
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
     this.router.navigate([], { queryParams: { date: this.date } });
     console.log(this.date)
-    this.loadPassengers()
   }
 
   async loadPassengers() {
@@ -269,8 +267,6 @@ export class BusAutomationComponent implements OnInit{
 
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
     this.router.navigate([], { queryParams: { date: this.date } });
-    console.log(this.date)
-    this.loadPassengers()
   }
 
   toggleEditCapacities() {

@@ -41,7 +41,6 @@ export class OptionsService {
     optionsResponse.subscribe({
       next: (response) => {
         this.options = response.data
-        console.log(response.data)
       },
       error: err => console.log(err)
     })

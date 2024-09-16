@@ -52,9 +52,9 @@ export class EmailAutomationComponent {
 
   onDateChange(event: any) {
     this.date = event.target.value;
-    this.router.navigate([], { queryParams: { date: this.date } });
+    // this.router.navigate([], { queryParams: { date: this.date } });
     console.log('Date from query params:', this.date); // Verify if date is received correctly
-    this.loadPassengers();
+    this.router.navigate([], { queryParams: { date: this.date }})
   }
 
   EmailSentLocation(pickup: string): ISentMessageResponse | undefined{
@@ -64,7 +64,6 @@ export class EmailAutomationComponent {
   getUnSentMessages(){
     this.dataMap.forEach((item: any) => {
       item[1].forEach((pickup: any) => {
-        console.log(item[0])
         const obj: any = {time: item[0], abbreviation: pickup.abbreviation}
         const passengers = this.getPassengersByLocation(pickup.name)
         const emailSentPassengers = this.EmailSentLocation(pickup.abbreviation)?.sentTo
@@ -150,9 +149,7 @@ export class EmailAutomationComponent {
   getSentEmails(){
     this.emailService.getSentMessages(this.date, 'emails').subscribe({
       next: response => {
-        console.log(response)
         this.sentEmailLocations = response;
-        this.sentEmailLocations.forEach((obj: ISentMessageResponse) => console.log(obj.location))
       },
       error: err => console.log(err)
     })
@@ -161,9 +158,7 @@ export class EmailAutomationComponent {
   getSentWhatsApp(){
     this.emailService.getSentMessages(this.date, 'whatsapp').subscribe({
       next: response => {
-        console.log(response)
         this.sentWhatsAppLocations = response;
-        this.sentWhatsAppLocations.forEach((obj: ISentMessageResponse) => console.log(obj.location))
       },
       error: err => console.log(err)
     })
@@ -172,9 +167,7 @@ export class EmailAutomationComponent {
   getSentSMS(){
     this.emailService.getSentMessages(this.date, 'sms').subscribe({
       next: response => {
-        console.log(response)
         this.sentSMSLocations = response;
-        this.sentSMSLocations.forEach((obj: ISentMessageResponse) => console.log(obj.location))
       },
       error: err => console.log(err)
     })
@@ -183,7 +176,7 @@ export class EmailAutomationComponent {
   hasUnsentMessages(){
     return this.unsentMessagesMap.some((obj: any) => {
       console.log(Object.keys(obj))
-      return Object.keys(obj).length > 1
+      return Object.keys(obj).length > 2
     })
   }
 
@@ -193,6 +186,7 @@ export class EmailAutomationComponent {
       this.getSentEmails()
       this.getSentWhatsApp()
       this.getSentSMS()
+      this.unsentMessagesMap = [];
       this.loadingContent = true;
       this.loadContent = false;
       this.passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
@@ -228,7 +222,6 @@ export class EmailAutomationComponent {
     const pickupAbbrevs = await this.passengerService.getPickupLocationAbbreviations(Array.from(locations).map(val => val[0]))
 
     return pickupAbbrevs.map(pickup => {
-      console.log(pickup)
       return {
         name: pickup.pickup,
         abbreviation: pickup.abbreviation || pickup.pickup,
@@ -254,7 +247,6 @@ export class EmailAutomationComponent {
     const dayOfWeekNames = [
       "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ];
-    console.log(location.name)
     const formattedDate = `${dayOfWeekNames[dateObject.getUTCDay()]}, ${monthNames[dateObject.getUTCMonth()]} ${day}`;
     const passengers = this.getPassengersByLocation(location.name)
     const subject = location.emailTemplate.subject + ' ' + formattedDate
@@ -280,8 +272,7 @@ export class EmailAutomationComponent {
 
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
     console.log(this.date)
-    this.router.navigate([], { queryParams: { date: this.date } });
-    this.loadPassengers()
+    this.router.navigate([], { queryParams: { date: this.date }})
   }
 
   getNextDayPassengers() {
@@ -299,9 +290,8 @@ export class EmailAutomationComponent {
     const nextDay = String(date.getDate()).padStart(2, '0');
 
     this.date = `${nextYear}-${nextMonth}-${nextDay}`;
-    this.router.navigate([], { queryParams: { date: this.date } });
-    console.log(this.date)
-    this.loadPassengers()
+    this.router.navigate([], { queryParams: { date: this.date }})
+
   }
 
   async sendSMSToAll(){

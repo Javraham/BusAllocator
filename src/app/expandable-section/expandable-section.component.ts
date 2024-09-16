@@ -30,7 +30,6 @@ export class ExpandableSectionComponent{
     if(!obj?.timestamp) return ""
 
     const date = new Date(obj.timestamp._seconds * 1000 + obj.timestamp._nanoseconds / 1000000);
-    console.log(date)
     const pad = (num: any) => num.toString().padStart(2, '0');
 
     const year = date.getFullYear();

@@ -13,7 +13,6 @@ export class MessageService {
   constructor(private http: HttpClient) { }
 
   getSentMessages(date: string, collection: string): Observable<any>{
-    console.log(date)
     let params = new HttpParams().set('date', date).set('collection', collection);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',

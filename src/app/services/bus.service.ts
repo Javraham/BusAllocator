@@ -24,7 +24,6 @@ export class BusService {
         this.buses = response.data.sort((a: any, b: any) => {
           return parseInt(a.busId.substring(1)) - parseInt(b.busId.substring(1))
         })
-        console.log(response.data)
       },
       error: err => console.log(err)
     })
