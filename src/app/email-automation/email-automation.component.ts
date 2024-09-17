@@ -58,7 +58,7 @@ export class EmailAutomationComponent {
   }
 
   EmailSentLocation(pickup: string, tourTime: string): ISentMessageResponse | undefined{
-    return this.sentEmailLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTimes.includes(tourTime))
+    return this.sentEmailLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTime == tourTime)
   }
 
   getUnSentMessages(){
@@ -88,11 +88,11 @@ export class EmailAutomationComponent {
   }
 
   SMSSentLocation(pickup: string, tourTime: string): ISentMessageResponse | undefined{
-    return this.sentSMSLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTimes.includes(tourTime))
+    return this.sentSMSLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTime == tourTime)
   }
 
   WhatsAppSentLocation(pickup: string, tourTime: string): ISentMessageResponse | undefined{
-    return this.sentWhatsAppLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTimes.includes(tourTime))
+    return this.sentWhatsAppLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTime == tourTime)
   }
 
   trackByPickup(index: number, pickup: IPickup): string {
@@ -119,16 +119,13 @@ export class EmailAutomationComponent {
 
   updateSentMessageLocations(event: [any, string, string]) {
     const messageType = event[1] === "email" ? this.sentEmailLocations : event[1] === "sms" ? this.sentSMSLocations : this.sentWhatsAppLocations
-    const locationFound = messageType.find(location => location.location === event[0].location)
+    const locationFound = messageType.find(location => location.location === event[0].location && location.tourTime === event[0].tourTime)
     if(locationFound){
       locationFound.sentTo = event[0].sentTo;
       locationFound.timestamp = event[0].timestamp;
-      if(!locationFound.tourTimes.includes(event[0].tourTime)){
-        locationFound.tourTimes.push(event[0].tourTime)
-      }
     }
     else{
-      messageType.push({...event[0], tourTimes: [event[0].tourTime]})
+      messageType.push(event[0])
     }
     const found = this.unsentMessagesMap.find((pickup: any) => pickup.abbreviation == event[0].location && event[0].tourTime === pickup.time)
 
