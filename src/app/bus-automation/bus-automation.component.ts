@@ -48,6 +48,7 @@ export class BusAutomationComponent implements OnInit{
   loading:boolean = false;
   canEdit: boolean = false;
   allBuses !: IBus[];
+  passengerToBusMap = new Map<string, string>();
 
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
@@ -56,8 +57,20 @@ export class BusAutomationComponent implements OnInit{
   pickupAbbrevs !: IPickup[];
 
 
+  trackByConfirmationID(index: number, passenger: Passenger){
+    return passenger.confirmationCode
+  }
+
   updateBusSelections(event: [string[], string]) {
+    const prevValue = this.busSelections.get(event[1]) || []
+
     this.busSelections.set(event[1], event[0])
+    for(const key of this.passengerToBusMap.keys()){
+      console.log(event[0], this.passengerToBusMap.get(key))
+      if(!event[0].includes(<string>this.passengerToBusMap.get(key))){
+        this.passengerToBusMap.set(key, "No Bus Selected")
+      }
+    }
   }
 
   updateUsedBuses(event: [string[], string]) {
@@ -123,12 +136,15 @@ export class BusAutomationComponent implements OnInit{
     this.usedBuses.delete(event[0]);
     this.successMap.delete(event[0]);
     this.busSelections.delete(event[0]);
+    this.passengerToBusMap = new Map<string, string>()
+    console.log(this.passengerToBusMap)
     this.tourBusOrganizer.resetBusesForTime(event[0]);
   }
 
   resetBusSelection() {
     this.excludedPassengers = []
     this.busSelections = new Map<string, string[]>()
+    this.passengerToBusMap = new Map<string, string>()
   }
 
   organizePassengers(busInfoList: IBus[], passengers: Passenger[]) {
@@ -284,5 +300,20 @@ export class BusAutomationComponent implements OnInit{
         bus.capacity = parseInt(event.target.value)
       }
     })
+  }
+
+  updatePassengerBusList(event: [Passenger, IBus]) {
+    this.passengerToBusMap.set(event[0].confirmationCode, event[1].busId)
+    console.log(this.passengerToBusMap)
+  }
+
+  updateAllowEditBus(event: Passenger) {
+    if(this.passengerToBusMap.has(event.confirmationCode)){
+      this.passengerToBusMap.delete(event.confirmationCode)
+    }
+    else{
+      this.passengerToBusMap.set(event.confirmationCode, "Bus Not Chosen")
+    }
+    console.log(this.passengerToBusMap)
   }
 }

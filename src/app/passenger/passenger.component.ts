@@ -3,10 +3,12 @@ import {TourOrganizerService} from "../services/tour-organizer.service";
 import {TourOrganizer} from "../services/organizer";
 import {Passenger} from "../typings/passenger";
 import {Input} from "@angular/core";
-import {NgClass, NgIf, NgStyle} from "@angular/common";
+import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {PickupsService} from "../services/pickups.service";
 import {lastValueFrom} from "rxjs";
 import {IPickup} from "../typings/ipickup";
+import {FormsModule} from "@angular/forms";
+import {IBus} from "../typings/BusSelection";
 
 
 @Component({
@@ -15,7 +17,9 @@ import {IPickup} from "../typings/ipickup";
   imports: [
     NgIf,
     NgStyle,
-    NgClass
+    NgClass,
+    FormsModule,
+    NgForOf
   ],
   templateUrl: './passenger.component.html',
   styleUrl: './passenger.component.css'
@@ -25,17 +29,30 @@ export class PassengerComponent {
   @Input() excludedPassengers !: Passenger[];
   @Input() busColor !: string;
   @Input() pickupAbbrevs !: IPickup[]
+  @Input() selectedBuses !: Map<string, string[]>;
+  @Input() buses !: IBus[];
   isActive: boolean = false;
   @Output() updatePassengerExclusionList = new EventEmitter<Passenger>();
+  @Output() updatePassengerBusList = new EventEmitter<[Passenger, IBus]>();
+  @Output() updateAllowEditBus = new EventEmitter<Passenger>();
+  @Input() selectedPassengerBus !: Map<string, string>;
 
-  constructor(private pickupService: PickupsService) {
+  trackByBusId(index: number, bus: IBus){
+    return bus.busId
   }
 
+  constructor() {
+    console.log("hello")
+  }
 
   toggleButton() {
     this.updatePassengerExclusionList.emit(this.passengerInfo)
     console.log(this.passengerInfo)
     console.log(this.excludedPassengers)
+  }
+
+  getSelectedBuses(){
+    return this.buses.filter(bus => this.selectedBuses.get(this.passengerInfo.startTime)?.includes(bus.busId))
   }
 
   getButtonStyles() {
@@ -52,7 +69,6 @@ export class PassengerComponent {
         "background-color": this.busColor,
         "font-weight": "600"
       }
-
   }
   getStyles() {
     return {
@@ -67,5 +83,18 @@ export class PassengerComponent {
   getPickupAbbrev(passenger: Passenger) {
     const pickupAbbrev = this.pickupAbbrevs.find((pickup: IPickup) => passenger.pickup?.includes(pickup.name))?.abbreviation;
     return pickupAbbrev ? ` (${pickupAbbrev}) ` : 'No Location';
+  }
+
+  onBusChange(bus: IBus) {
+    this.updatePassengerBusList.emit([this.passengerInfo, bus])
+  }
+
+  isChecked(busId: string) {
+    console.log(busId === this.selectedPassengerBus.get(this.passengerInfo.confirmationCode))
+    return busId === this.selectedPassengerBus.get(this.passengerInfo.confirmationCode)
+  }
+
+  toggleEditBus() {
+    this.updateAllowEditBus.emit(this.passengerInfo)
   }
 }
