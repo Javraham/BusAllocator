@@ -67,7 +67,7 @@ export class BusAutomationComponent implements OnInit{
     this.busSelections.set(event[1], event[0])
     for(const key of this.passengerToBusMap.keys()){
       console.log(event[0], this.passengerToBusMap.get(key))
-      if(!event[0].includes(<string>this.passengerToBusMap.get(key))){
+      if(!event[0].includes(<string>this.passengerToBusMap.get(key)) && this.passengerService.getPassengerByConfirmationID(this.passengers, key)?.startTime === event[1]){
         this.passengerToBusMap.set(key, "No Bus Selected")
       }
     }
@@ -136,7 +136,11 @@ export class BusAutomationComponent implements OnInit{
     this.usedBuses.delete(event[0]);
     this.successMap.delete(event[0]);
     this.busSelections.delete(event[0]);
-    this.passengerToBusMap = new Map<string, string>()
+    for(const key of this.passengerToBusMap.keys()){
+      if(this.passengerService.getPassengerByConfirmationID(this.passengers, key)?.startTime === event[0]){
+        this.passengerToBusMap.delete(key)
+      }
+    }
     console.log(this.passengerToBusMap)
     this.tourBusOrganizer.resetBusesForTime(event[0]);
   }

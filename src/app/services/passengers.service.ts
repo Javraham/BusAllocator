@@ -26,6 +26,10 @@ export class PassengersService {
     return map
   }
 
+  getPassengerByConfirmationID(passengers: Passenger[], confirmationID: string): Passenger | undefined{
+    return passengers.find(passenger => passenger.confirmationCode === confirmationID)
+  }
+
   getTotalPassengers(passengers: Passenger[] | undefined){
     if(passengers)
       return passengers.reduce((total, passenger) => total + passenger.numOfPassengers, 0);
