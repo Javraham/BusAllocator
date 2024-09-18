@@ -40,7 +40,6 @@ export class BusSelectionButtonsComponent implements OnInit{
   }
 
   isDisabled(busId: string){
-    console.log(this.usedBuses.entries())
     for(const entry of this.selectedOptions.entries()){
       if(entry[0] == this.time) continue
       for(const bus of entry[1]){

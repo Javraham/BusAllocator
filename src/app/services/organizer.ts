@@ -17,6 +17,7 @@ export class TourOrganizer {
     return passengers.reduce((total, passenger) => total + passenger.numOfPassengers, 0);
   }
 
+
   loadData(data: Passenger[]): void {
     for (const passengerData of data) {
       const pickup = passengerData['pickup'];
@@ -85,7 +86,7 @@ export class TourOrganizer {
     return result.sort((a, b) => b[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0) - a[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0))
   }
 
-  allocatePassengers(sortedLocations = this.getSortedLocation(), numOfTries: number = 0, isSplit: boolean = false): [boolean, boolean] {
+  allocatePassengers(passengerToBusList: ([string, string])[], sortedLocations = this.getSortedLocation(), numOfTries: number = 0, isSplit: boolean = false ): [boolean, boolean] {
     try {
       const totalCapacities = this.buses.reduce((bus, currentBus) => bus + currentBus.capacity, 0)
       const totalPassengers = sortedLocations.reduce((val, current) => {
@@ -97,6 +98,23 @@ export class TourOrganizer {
         return [false, false]
       }
 
+      for (const [passengerCode, busId] of passengerToBusList) {
+        const bus = this.buses.find(bus => bus.busId === busId) as Bus;
+        const locationWithPassenger = sortedLocations.find(([_, passengers]) =>
+          passengers.some(passenger => passenger.confirmationCode === passengerCode)
+        );
+
+        if (locationWithPassenger) {
+          const passengers = locationWithPassenger[1];
+          const passenger = passengers.find(p => p.confirmationCode === passengerCode);
+
+          if (passenger) {
+            if(!bus.addPassenger(passenger)){
+              return [false, false]
+            }
+          }
+        }
+      }
       const shuffle = (array: any[]) => {
         for (let i = array.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -109,7 +127,13 @@ export class TourOrganizer {
           return true;
         }
 
-        const [location, passengers] = sortedLocations[index];
+        let [location, passengers] = sortedLocations[index];
+
+        if(passengerToBusList.length){
+          passengers = passengers.filter(passenger => !passengerToBusList.map(item => item[0]).includes(passenger.confirmationCode))
+          console.log("Passengers: ", passengers)
+        }
+
         const availableBuses = this.buses.filter(bus =>
           bus.getCurrentLoad() + passengers.reduce((total, currentValue) => total+currentValue.numOfPassengers, 0) <= bus.capacity);
 
@@ -132,7 +156,7 @@ export class TourOrganizer {
 
       if (!success) {
         console.error("Unable to allocate all passengers.");
-        return this.allocatePassengers(this.getSplitSortedLocation(numOfTries), numOfTries+1, true)
+        return this.allocatePassengers(passengerToBusList, this.getSplitSortedLocation(numOfTries), numOfTries+1, true)
       }
 
       return [success, isSplit];
