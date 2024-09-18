@@ -98,7 +98,7 @@ export class TourOrganizer {
         return [false, false]
       }
 
-      passengerToBusList.forEach(([passengerCode, busId]) => {
+      for (const [passengerCode, busId] of passengerToBusList) {
         const bus = this.buses.find(bus => bus.busId === busId) as Bus;
         const locationWithPassenger = sortedLocations.find(([_, passengers]) =>
           passengers.some(passenger => passenger.confirmationCode === passengerCode)
@@ -109,11 +109,12 @@ export class TourOrganizer {
           const passenger = passengers.find(p => p.confirmationCode === passengerCode);
 
           if (passenger) {
-            bus.addPassenger(passenger);
+            if(!bus.addPassenger(passenger)){
+              return [false, false]
+            }
           }
         }
-      });
-
+      }
       const shuffle = (array: any[]) => {
         for (let i = array.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
