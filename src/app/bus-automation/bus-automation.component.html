@@ -208,7 +208,7 @@
         <h5>Bus ({{bus.busId}}) - {{bus.getCurrentLoad()}} Passengers</h5>
         <div class="row">
           <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of bus.getPassengers(); trackBy: trackByConfirmationID">
-            <app-passenger (updateAllowEditBus)="updateAllowEditBus($event)" (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections" [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="bus.color"></app-passenger>
+            <app-passenger [selectedPassengerBus]="passengerToBusMap" (updateAllowEditBus)="updateAllowEditBus($event)" (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections" [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="bus.color"></app-passenger>
           </div>
         </div>
       </div>
@@ -216,7 +216,7 @@
         <h5>Excluded Passengers</h5>
         <div class="row">
           <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of excludedPassengersMap.get(time[0]); trackBy: trackByConfirmationID">
-            <app-passenger (updateAllowEditBus)="updateAllowEditBus($event)" (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections" [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4169E0'"></app-passenger>
+            <app-passenger (updateAllowEditBus)="updateAllowEditBus($event)" [selectedPassengerBus]="passengerToBusMap"  (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections" [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4169E0'"></app-passenger>
           </div>
         </div>
       </div>

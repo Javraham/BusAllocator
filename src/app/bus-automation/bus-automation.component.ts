@@ -148,9 +148,10 @@ export class BusAutomationComponent implements OnInit{
   }
 
   organizePassengers(busInfoList: IBus[], passengers: Passenger[]) {
+    const passengerToBusList = Array.from(this.passengerToBusMap).filter(item => busInfoList.map(bus => bus.busId).includes(item[1]))
     const organizer = new TourOrganizer(busInfoList)
     organizer.loadData(passengers)
-    const isAllocated = organizer.allocatePassengers()
+    const isAllocated = organizer.allocatePassengers(passengerToBusList)
     if(isAllocated[0]){
       console.log(isAllocated)
       organizer.buses.forEach(bus => {
