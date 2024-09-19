@@ -83,7 +83,7 @@ export class MessageService {
     const emailAddresses = emailObject.passengers.map(passenger => passenger.email)
     console.log(emailObject.passengers.map(passenger => passenger.email))
     const body = {
-      passengerEmailAddresses: ["avrahamjonathan@gmail.com"],
+      passengerEmailAddresses: emailAddresses,
       body: emailObject.body,
       subject: emailObject.subject,
       date: emailObject.date,

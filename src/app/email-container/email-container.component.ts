@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {IEmail} from "../typings/IEmail";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MessageService} from "../services/message.service";
@@ -15,10 +15,12 @@ import {Passenger} from "../typings/passenger";
   templateUrl: './email-container.component.html',
   styleUrl: './email-container.component.css'
 })
-export class EmailContainerComponent {
+export class EmailContainerComponent{
   @Input() emailInfo !: IEmail;
   @Input() pickupPlace !: string;
+  @Input() pickupAbbrev !: string;
   @Input() tourTime !: string;
+  @Input() EmailSentLocations !: any;
   form: FormGroup = new FormGroup<any>({});
   passengers: Passenger[] = []
   successMsg: string = '';
@@ -42,7 +44,7 @@ export class EmailContainerComponent {
       subject: new FormControl(this.emailInfo.subject, [Validators.required]),
       body: new FormControl(currentBody, [Validators.required])
     });
-    this.passengers = this.emailInfo.passengers
+    this.passengers = this.getPassengersWithUnsentEmails(this.emailInfo.passengers)
   }
 
   run() {
@@ -138,6 +140,13 @@ export class EmailContainerComponent {
     console.log('Form Submitted');
   }
 
+  getPassengersWithUnsentEmails(passengers: Passenger[]): Passenger[]{
+    const emails = this.EmailSentLocations.map((location: any) => location.sentTo).flat()
+    return passengers.filter(passenger => {
+      return !emails?.includes(passenger.email)
+    })
+  }
+
 
   sendEmail(event?: any): Promise<any> {
     if(event) event.preventDefault(); // Prevent form submission
@@ -162,6 +171,7 @@ export class EmailContainerComponent {
           this.loadingSentEmail = false
           console.log(response)
           this.updateSentMessages.emit([response.data, "email", this.pickupPlace])
+          this.passengers = this.getPassengersWithUnsentEmails(this.emailInfo.passengers)
           resolve(undefined)
         },
         error: (error) => {

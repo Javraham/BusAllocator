@@ -24,6 +24,7 @@ export class ExpandableSectionComponent{
   @Input() passengers!: Passenger[]
 
   constructor() {
+    console.log(this.EmailSentLocations)
   }
 
   getTimeStamp(obj: ISentMessageResponse | undefined){

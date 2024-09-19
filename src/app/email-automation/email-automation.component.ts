@@ -119,31 +119,38 @@ export class EmailAutomationComponent {
 
   updateSentMessageLocations(event: [any, string, string]) {
     const messageType = event[1] === "email" ? this.sentEmailLocations : event[1] === "sms" ? this.sentSMSLocations : this.sentWhatsAppLocations
+    console.log(messageType, event[0])
     const locationFound = messageType.find(location => location.location === event[0].location && location.tourTime === event[0].tourTime)
     if(locationFound){
-      locationFound.sentTo = event[0].sentTo;
+      locationFound.sentTo = [...new Set([...locationFound.sentTo, ...event[0].sentTo])]
       locationFound.timestamp = event[0].timestamp;
     }
     else{
       messageType.push(event[0])
     }
     const found = this.unsentMessagesMap.find((pickup: any) => pickup.abbreviation == event[0].location && event[0].tourTime === pickup.time)
-
+    const sentTo = locationFound?.sentTo || messageType[messageType.length-1].sentTo
     if(found) {
       if (event[1] === "email") {
         const passengers = this.getPassengersByLocation(event[2])
-        const filteredPassengers = passengers.filter(passenger => !event[0].sentTo.includes(passenger.email))
+        console.log(sentTo)
+        const filteredPassengers = passengers.filter(passenger => !sentTo.includes(passenger.email))
         found['email'] = filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName);
       } else if (event[1] === "sms") {
         const passengers = this.getPassengersByLocation(event[2])
-        const filteredPassengers = passengers.filter(passenger => !event[0].sentTo.includes(passenger.phoneNumber ? passenger.phoneNumber.replace(/[a-zA-Z\s]/g, '') : ''))
+        const filteredPassengers = passengers.filter(passenger => !sentTo.includes(passenger.phoneNumber ? passenger.phoneNumber.replace(/[a-zA-Z\s]/g, '') : ''))
         found['sms'] = filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName);
       } else {
         const passengers = this.getPassengersByLocation(event[2])
-        const filteredPassengers = passengers.filter(passenger => !event[0].sentTo.includes(passenger.phoneNumber ? passenger.phoneNumber.replace(/[a-zA-Z\s]/g, '') : ''))
+        const filteredPassengers = passengers.filter(passenger => !sentTo.includes(passenger.phoneNumber ? passenger.phoneNumber.replace(/[a-zA-Z\s]/g, '') : ''))
         found['whatsapp'] = filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName);
       }
     }
+  }
+
+  getPassengersWithUnsentEmails(passengers: Passenger[]): Passenger[]{
+    const emails = this.sentEmailLocations.map(email => email.sentTo).flat()
+    return passengers.filter(passenger => !emails.includes(passenger.email))
   }
 
   getSentEmails(){
@@ -179,8 +186,7 @@ export class EmailAutomationComponent {
 
   hasUnsentMessages(){
     return this.unsentMessagesMap.some((obj: any) => {
-      console.log(Object.keys(obj))
-      return Object.keys(obj).length > 2
+      return (obj.hasOwnProperty("whatsapp") && obj.whatsapp.length) || (obj.hasOwnProperty("email") && obj.email.length) || (obj.hasOwnProperty("sms") && obj.sms.length)
     })
   }
 
@@ -384,4 +390,6 @@ export class EmailAutomationComponent {
   getNumPassengersByTime(time: string) {
     return this.passengerService.getNumOfPassengersByTime(this.passengers, time)
   }
+
+  protected readonly location = location;
 }

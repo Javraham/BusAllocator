@@ -187,11 +187,11 @@
       <h3>Unsent Messages</h3>
       <div class="unsent-msg">
         <div *ngFor="let unsentMessages of unsentMessagesMap">
-          <div *ngIf="unsentMessages.whatsapp || unsentMessages.email || unsentMessages.sms">
+          <div *ngIf="(unsentMessages.whatsapp && unsentMessages.whatsapp.length) ||( unsentMessages.email && unsentMessages.email.length) || (unsentMessages.sms && unsentMessages.sms.length)">
             <h4>{{unsentMessages.time[0] === "0" ? unsentMessages.time.slice(1) : unsentMessages.time}} - {{unsentMessages.abbreviation}}</h4>
-            <p *ngIf="unsentMessages.email">Email not sent to: <strong>{{unsentMessages.email.join(', ')}}</strong></p>
-            <p *ngIf="unsentMessages.sms">SMS not sent to: <strong>{{unsentMessages.sms.join(', ')}}</strong></p>
-            <p *ngIf="unsentMessages.whatsapp">WhatsApp not sent to: <strong>{{unsentMessages.whatsapp.join(', ')}}</strong></p>
+            <p *ngIf="unsentMessages.email && unsentMessages.email.length">Email not sent to: <strong>{{unsentMessages.email.join(', ')}}</strong></p>
+            <p *ngIf="unsentMessages.sms && unsentMessages.sms.length">SMS not sent to: <strong>{{unsentMessages.sms.join(', ')}}</strong></p>
+            <p *ngIf="unsentMessages.whatsapp && unsentMessages.whatsapp.length">WhatsApp not sent to: <strong>{{unsentMessages.whatsapp.join(', ')}}</strong></p>
           </div>
         </div>
       </div>
@@ -200,7 +200,7 @@
     <div *ngFor="let item of dataMap">
       <h4>{{item[0][0] === "0" ? item[0].slice(1) : item[0]}} Tour - {{getNumPassengersByTime(item[0])}} Passengers</h4>
       <app-expandable-section *ngFor="let pickup of item[1]; trackBy: trackByPickup" [WhatsAppSentLocations]="WhatsAppSentLocation(pickup.abbreviation, item[0])" [SMSSentLocations]="SMSSentLocation(pickup.abbreviation, item[0])" [EmailSentLocations] = "EmailSentLocation(pickup.abbreviation, item[0])" [passengers]="getPassengersByLocation(pickup.name)" [title]="pickup.abbreviation" [numOfPassengers]="pickupLocations.get(pickup.name) || 0">
-        <app-email-container (updateSentMessages)="updateSentMessageLocations($event)" [pickupPlace]=pickup.name [tourTime] = item[0] [emailInfo]="getEmailObject(pickup)"></app-email-container>
+        <app-email-container [EmailSentLocations] = "sentEmailLocations" (updateSentMessages)="updateSentMessageLocations($event)" [pickupAbbrev] = pickup.abbreviation [pickupPlace]=pickup.name [tourTime] = item[0] [emailInfo]="getEmailObject(pickup)"></app-email-container>
       </app-expandable-section>
     </div>
   </div>
