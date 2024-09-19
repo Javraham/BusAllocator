@@ -21,7 +21,7 @@ export class OptionsService {
     return this.http.post<any>(`${this.url}options/addOption`, newOption, {headers})
   }
 
-  deleteBus(docId: string): Observable<any> {
+  deleteOption(docId: string): Observable<any> {
     return this.http.delete<void>(`${this.url}options/deleteOption/${docId}`)
   }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import CryptoJS from 'crypto-js';
 import {FetchBookingDataOptions} from "../typings/fetch-data-booking-options";
 import {Passenger} from "../typings/passenger";
-import {IBookingOptions, options} from "../typings/IBookingOptions";
+import {IBookingOptions} from "../typings/IBookingOptions";
 import {OptionsService} from "./options.service";
 import {lastValueFrom} from "rxjs";
 

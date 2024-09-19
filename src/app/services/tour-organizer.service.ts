@@ -47,6 +47,9 @@ export class TourOrganizerService {
 
   async printResult() {
     const response = await lastValueFrom(this.pickupService.getPickupLocations())
+    const optionsResponse = await lastValueFrom(this.optionsService.getOptions())
+    console.log(optionsResponse)
+    const sortedOptions = optionsResponse.data.sort((optionA: any, optionB: any) => optionA.priority - optionB.priority).map((option: any) => option.abbrev)
     const getPickupAbbrev = (passenger: Passenger) => {
       const pickupAbbrev = response.data.find((pickup: IPickup) => passenger.pickup.includes(pickup.name))?.abbreviation;
       return pickupAbbrev ? ` (${pickupAbbrev}) ` : '';
@@ -72,11 +75,11 @@ export class TourOrganizerService {
           htmlResult += `<p>${val[0]} - ${val[1]} PAX</p>`
         })
 
-        for(const option of this.passengerService.getOptionsToPassengers(bus.passengers).keys()){
+        for(const option of this.passengerService.getOptionsToPassengers(bus.passengers, sortedOptions).keys()){
           htmlResult += "<br/>"
           const [numOfAdults, numOfChildren] = this.passengerService.getNumOfPassengersForOption(option, bus.passengers)
           htmlResult += `<p>${option} - <strong>${numOfAdults} ${numOfAdults !== 1 ? "Adults" : "Adult"}${numOfChildren > 0 ? ', ' + numOfChildren + ' ' + (numOfChildren !== 1 ? "Children" : "Child") : ""}</strong></p>`
-          this.passengerService.getOptionsToPassengers(bus.getPassengers()).get(option)?.forEach((passenger: Passenger) => {
+          this.passengerService.getOptionsToPassengers(bus.getPassengers(), sortedOptions).get(option)?.forEach((passenger: Passenger) => {
             const numOfAdults = passenger.numOfPassengers - passenger.numOfChildren;
             if (passenger.numOfChildren !== 0) {
               htmlResult += `<p>${passenger.firstName} ${passenger.lastName}${getPickupAbbrev(passenger)} - ${passenger.phoneNumber ?? "No Phone Number"} - ${numOfAdults} ${numOfAdults !== 1  ? "Adults" : "Adult"}, ${passenger.numOfChildren} ${passenger.numOfChildren == 1 ? "Child" : "Children"}</p>`
@@ -102,7 +105,7 @@ export class TourOrganizerService {
           htmlResult += `<p>${val[0]} - ${val[1]} PAX</p>`
         })
 
-        for(const option of this.passengerService.getOptionsToPassengers(this.TimeToPassengersMap.get(time) as Passenger[]).keys()){
+        for(const option of this.passengerService.getOptionsToPassengers(this.TimeToPassengersMap.get(time) as Passenger[], sortedOptions).keys()){
           htmlResult += "<br/>"
           const [numOfAdults, numOfChildren] = this.passengerService.getNumOfPassengersForOption(option, this.TimeToPassengersMap.get(time) as Passenger[])
           htmlResult += `<p>${option} - <strong>${numOfAdults} ${numOfAdults !== 1 ? "Adults" : "Adult"}${numOfChildren > 0 ? ', ' + numOfChildren + ' ' + (numOfChildren !== 1 ? "Children" : "Child") : ""}</strong></p>`

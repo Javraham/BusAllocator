@@ -3,13 +3,15 @@ import {Passenger} from "../typings/passenger";
 import {PickupsService} from "./pickups.service";
 import {lastValueFrom} from "rxjs";
 import {IPickup} from "../typings/ipickup";
+import {OptionsService} from "./options.service";
+import {IBookingOptions} from "../typings/IBookingOptions";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PassengersService {
 
-  constructor(private pickupService: PickupsService) { }
+  constructor(private pickupService: PickupsService, private optionService: OptionsService) { }
 
   getPassengersByTime(passengers: Passenger[]) {
     const map: Map<string, Passenger[]> = new Map<string, Passenger[]>();
@@ -101,17 +103,16 @@ export class PassengersService {
     return passengers.filter(passenger => passenger.hasBoat && !passenger.hasJourney);
   }
 
-  getOptionsToPassengers(passengers: Passenger[]) {
+  getOptionsToPassengers(passengers: Passenger[], sortedOptions?: any) {
     function getNumber (str: string){
       const match = str.match(/[\[(](\d+(\.\d+)?)[\])]/);
       return match ? parseFloat(match[1]) : -1;
     }
-    function sortKeys(map: Map<string, Passenger[]>) {
-      const sortOrder = ["No boat", "Boat Cruise", "Boat Cruise + Journey"];
+    const  sortKeys = (map: Map<string, Passenger[]>, sortedOptions?: any) => {
 
       // Get the map's keys and sort them according to the sortOrder array
       const sortedKeys = Array.from(map.keys()).sort((a: string, b: string) => {
-        return sortOrder.indexOf(a) - sortOrder.indexOf(b);
+        return sortedOptions.indexOf(a) - sortedOptions.indexOf(b);
       });
 
       // Create a new sorted map
@@ -141,7 +142,8 @@ export class PassengersService {
       // Update the map with the sorted array
       optionsMap.set(key, passengers);
     }
-    return sortKeys(optionsMap)
+    if(sortedOptions) return sortKeys(optionsMap, sortedOptions)
+    else return optionsMap
   }
 
   getNumOfPassengersForOption(option: string, passengers: Passenger[]) {

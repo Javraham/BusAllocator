@@ -4,5 +4,6 @@ export interface ISettingOptionsInput{
   name: string,
   abbreviation: string,
   emailTemplateBody?: string,
-  docId: string | undefined
+  docId: string | undefined,
+  priority?: number
 }
