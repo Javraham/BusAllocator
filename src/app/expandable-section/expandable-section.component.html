@@ -51,21 +51,21 @@
       <h4>{{ title }} | {{ numOfPassengers }} {{numOfPassengers > 1 ? "Passengers" : "Passenger"}}</h4>
       <div>
         <div *ngIf="EmailSentLocations?.sentTo?.length" style="color: #FC5923; font-weight: bold">
-          Email Sent!
+          {{EmailSentLocations?.numMessagesSent}} {{EmailSentLocations?.numMessagesSent == 1 ? "Email": "Emails"}} Sent!
           <strong>{{getTimeStamp(EmailSentLocations)}} </strong>
           <strong *ngIf="getUnsentEmailsPassengerNames().length > 0" style="color: #FC5923; font-weight: bold" >- Not Sent To:
             <strong>{{getUnsentEmailsPassengerNames().join(", ")}}</strong>
           </strong>
         </div>
         <div *ngIf="SMSSentLocations?.sentTo?.length" style="color: #3eace8; font-weight: bold">
-          SMS Sent!
+          {{SMSSentLocations?.numMessagesSent}} SMS Sent!
           <strong>{{getTimeStamp(SMSSentLocations)}} </strong>
           <strong *ngIf="getUnsentSMSPassengerNames().length > 0" style="color: #3eace8; font-weight: bold" >- Not Sent To:
             <strong>{{getUnsentSMSPassengerNames().join(", ")}}</strong>
           </strong>
         </div>
         <div *ngIf="WhatsAppSentLocations?.sentTo?.length" style="color: #0ab937; font-weight: bold">
-          WhatsApp Sent!
+          {{WhatsAppSentLocations?.numMessagesSent}} WhatsApp {{WhatsAppSentLocations?.numMessagesSent == 1 ? "Message": "Messages"}} Sent!
           <strong>{{getTimeStamp(WhatsAppSentLocations)}} </strong>
           <strong *ngIf="getUnsentWhatsAppPassengerNames().length > 0" style="color: #0ab937; font-weight: bold" >- Not Sent To:
             <strong>{{getUnsentWhatsAppPassengerNames().join(", ")}}</strong>

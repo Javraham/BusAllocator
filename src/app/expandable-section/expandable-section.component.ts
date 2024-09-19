@@ -24,7 +24,6 @@ export class ExpandableSectionComponent{
   @Input() passengers!: Passenger[]
 
   constructor() {
-    console.log(this.EmailSentLocations)
   }
 
   getTimeStamp(obj: ISentMessageResponse | undefined){
@@ -44,6 +43,7 @@ export class ExpandableSectionComponent{
   }
 
   getUnsentEmailsPassengerNames() {
+    console.log(this.EmailSentLocations)
     const filteredPassengers = this.passengers.filter(passenger => !this.EmailSentLocations?.sentTo.includes(passenger.email))
     return filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName)
   }

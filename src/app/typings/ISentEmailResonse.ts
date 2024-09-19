@@ -4,5 +4,6 @@ export interface ISentMessageResponse {
   location: string,
   sentTo: string[],
   timestamp?: any,
-  tourTime: string
+  tourTime: string,
+  numMessagesSent: number
 }
