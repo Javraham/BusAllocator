@@ -153,6 +153,17 @@ export class PassengersService {
     return [adults, children];
   }
 
+  getNumOfPassengersByTime(passengers: Passenger[], time: string) {
+    return passengers.reduce((prev: number, curr) => {
+      if(curr.startTime === time){
+        return prev + curr.numOfPassengers
+      }
+      else{
+        return prev
+      }
+    }, 0)
+  }
+
   getJourneyPassengers(passengers: Passenger[]): Passenger[] {
     return passengers.filter(passenger => passenger.hasJourney);
   }

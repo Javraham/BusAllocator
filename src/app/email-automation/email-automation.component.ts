@@ -380,4 +380,8 @@ export class EmailAutomationComponent {
       this.areButtonsDisabled = false
     }
   }
+
+  getNumPassengersByTime(time: string) {
+    return this.passengerService.getNumOfPassengersByTime(this.passengers, time)
+  }
 }
