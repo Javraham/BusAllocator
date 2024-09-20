@@ -32,7 +32,7 @@ export class MessageService {
     })
     console.log(phoneNumbers)
     const body = {
-      passengerPhoneNumbers: ["+16478987430"],
+      passengerPhoneNumbers: phoneNumbers,
       message: SMSObject.message,
       location: SMSObject.location,
       date: SMSObject.date,
@@ -58,7 +58,7 @@ export class MessageService {
     })
     console.log(phoneNumbers)
     const body = {
-      passengerPhoneNumbers: ["+16478987430"],
+      passengerPhoneNumbers: phoneNumbers,
       locationString: WhatsAppObject.locationString,
       mapLink: WhatsAppObject.mapLink,
       location: WhatsAppObject.location,

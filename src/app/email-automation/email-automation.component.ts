@@ -61,11 +61,15 @@ export class EmailAutomationComponent {
     return this.sentEmailLocations?.find((obj: ISentMessageResponse) => obj.location === pickup && obj.tourTime == tourTime)
   }
 
+  getNumOfPassengers(location: string, time: string) {
+    return this.passengerService.getTotalPassengers(this.getPassengersByLocation(location, time))
+  }
+
   getUnSentMessages(){
     this.dataMap.forEach((item: any) => {
       item[1].forEach((pickup: any) => {
         const obj: any = {time: item[0], abbreviation: pickup.abbreviation}
-        const passengers = this.getPassengersByLocation(pickup.name)
+        const passengers = this.getPassengersByLocation(pickup.name, item[0])
         const emailSentPassengers = this.EmailSentLocation(pickup.abbreviation, item[0])?.sentTo
         const smsSentPassengers = this.SMSSentLocation(pickup.abbreviation, item[0])?.sentTo
         const whatsappSentPassengers = this.WhatsAppSentLocation(pickup.abbreviation, item[0])?.sentTo
@@ -133,16 +137,16 @@ export class EmailAutomationComponent {
     const sentTo = locationFound?.sentTo || messageType[messageType.length-1].sentTo
     if(found) {
       if (event[1] === "email") {
-        const passengers = this.getPassengersByLocation(event[2])
+        const passengers = this.getPassengersByLocation(event[2], found.time)
         console.log(sentTo)
         const filteredPassengers = passengers.filter(passenger => !sentTo.includes(passenger.email))
         found['email'] = filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName);
       } else if (event[1] === "sms") {
-        const passengers = this.getPassengersByLocation(event[2])
+        const passengers = this.getPassengersByLocation(event[2], found.time)
         const filteredPassengers = passengers.filter(passenger => !sentTo.includes(passenger.phoneNumber ? passenger.phoneNumber.replace(/[a-zA-Z\s]/g, '') : ''))
         found['sms'] = filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName);
       } else {
-        const passengers = this.getPassengersByLocation(event[2])
+        const passengers = this.getPassengersByLocation(event[2], found.time)
         const filteredPassengers = passengers.filter(passenger => !sentTo.includes(passenger.phoneNumber ? passenger.phoneNumber.replace(/[a-zA-Z\s]/g, '') : ''))
         found['whatsapp'] = filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName);
       }
@@ -201,6 +205,7 @@ export class EmailAutomationComponent {
       this.loadingContent = true;
       this.loadContent = false;
       this.passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
+      console.log(this.passengerService.getPassengersByTime(this.passengers))
       const promises= Array.from(this.passengerService.getPassengersByTime(this.passengers)).map(async ([time, passengers]) => {
         const pickups = await this.getPickups(passengers); // Wait for the promise to resolve
         return [time, pickups];
@@ -244,11 +249,11 @@ export class EmailAutomationComponent {
     })
   }
 
-  getPassengersByLocation(location: string){
-    return this.passengerService.getPassengersByPickupLocation(location, this.passengers)
+  getPassengersByLocation(location: string, time: string){
+    return this.passengerService.getPassengersByPickupLocation(location, this.passengers).filter(passenger => passenger.startTime === time)
   }
 
-  getEmailObject(location: IPickup): IEmail {
+  getEmailObject(location: IPickup, time: string): IEmail {
     const dateObject = new Date(this.date)
     const day = dateObject.getUTCDate();
     const monthNames = [
@@ -259,7 +264,7 @@ export class EmailAutomationComponent {
       "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ];
     const formattedDate = `${dayOfWeekNames[dateObject.getUTCDay()]}, ${monthNames[dateObject.getUTCMonth()]} ${day}`;
-    const passengers = this.getPassengersByLocation(location.name)
+    const passengers = this.getPassengersByLocation(location.name, time)
     const subject = location.emailTemplate.subject + ' ' + formattedDate
     const body = location.emailTemplate.body
     return {
@@ -373,19 +378,30 @@ export class EmailAutomationComponent {
   async sentAll() {
     this.loadingAll = true
     this.areButtonsDisabled = true
-    const responses = this.emailContainers.toArray().map(container => container.sendAll().catch(err => {
-      console.error(err)
-      return null
-    }))
-    try{
-      await Promise.all(responses)
+    for (const child of this.emailContainers.toArray()) {
+      try {
+        await child.sendAll();  // Wait for each SMS to complete
+      } catch (error) {
+        console.error('Error sending Messages:', error);  // Handle the error and continue
+      }
+      finally {
+        this.loadingAll = false;
+        this.areButtonsDisabled = false
+      }
     }
-    catch (error){
-      console.error('Error in concurrent email sending:', error);    }
-    finally {
-      this.loadingAll = false;
-      this.areButtonsDisabled = false
-    }
+    // const responses = this.emailContainers.toArray().map(container => container.sendAll().catch(err => {
+    //   console.error(err)
+    //   return null
+    // }))
+    // try{
+    //   await Promise.all(responses)
+    // }
+    // catch (error){
+    //   console.error('Error in concurrent email sending:', error);    }
+    // finally {
+    //   this.loadingAll = false;
+    //   this.areButtonsDisabled = false
+    // }
   }
 
   getNumPassengersByTime(time: string) {
