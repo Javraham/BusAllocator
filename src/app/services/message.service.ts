@@ -93,7 +93,7 @@ export class MessageService {
     return this.http.post(`${this.url}send-email`, body, {headers, responseType: 'json'}).pipe(
       catchError(error => {
         console.error('Error occurred:', error);
-        return throwError(() => new Error('Failed to send email. Please check your connection.'));
+        return throwError(() => new Error(error.error.message));
       })
     );
   }

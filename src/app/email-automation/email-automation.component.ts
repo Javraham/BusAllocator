@@ -253,6 +253,22 @@ export class EmailAutomationComponent {
     return this.passengerService.getPassengersByPickupLocation(location, this.passengers).filter(passenger => passenger.startTime === time)
   }
 
+  checkDate() {
+    const now = new Date(); // Get the current date
+    const twoDaysAgo = new Date(now);
+    const threeDaysFromNow = new Date(now);
+
+    // Subtract two days from the current date
+    twoDaysAgo.setDate(now.getDate() - 2);
+
+    // Add three days to the current date
+    threeDaysFromNow.setDate(now.getDate() + 3);
+
+    const target = new Date(this.date);
+
+    return (target < twoDaysAgo || target > threeDaysFromNow);
+  }
+
   getEmailObject(location: IPickup, time: string): IEmail {
     const dateObject = new Date(this.date)
     const day = dateObject.getUTCDate();

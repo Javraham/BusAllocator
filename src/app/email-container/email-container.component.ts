@@ -34,6 +34,7 @@ export class EmailContainerComponent{
   constructor(private emailService: MessageService) {
   }
 
+
   ngOnInit() {
     let currentBody = this.emailInfo.body;
     const mapLinkIndex = currentBody.indexOf("Map link:");
@@ -48,8 +49,17 @@ export class EmailContainerComponent{
     this.passengers = this.getPassengersWithUnsentEmails(this.emailInfo.passengers)
   }
 
-  run() {
-    console.log(this.passengers)
+  checkDate() {
+    const now = new Date(); // Get the current date
+    const twoDaysAgo = new Date(now);
+    const threeDaysFromNow = new Date(now);
+
+    twoDaysAgo.setDate(now.getDate() - 2);
+    threeDaysFromNow.setDate(now.getDate() + 3);
+
+    const target = new Date(this.emailInfo.date);
+
+    return (target < twoDaysAgo || target > threeDaysFromNow);
   }
 
   sendSMS(endpoint: string, event?: any): Promise<any> {
@@ -177,7 +187,7 @@ export class EmailContainerComponent{
         },
         error: (error) => {
           this.successMsg = ""
-          this.errorMsg = error.error == undefined ? "Failed to connect to server." : error.error.errorMsg;
+          this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
           this.loadingSentEmail = false;
           reject(undefined)
         },
