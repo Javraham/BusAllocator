@@ -271,6 +271,7 @@ export class EmailAutomationComponent {
       passengers,
       subject,
       body,
+      formattedDate,
       date: this.date,
       location: location.abbreviation
     }

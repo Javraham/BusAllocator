@@ -4,7 +4,7 @@ export interface IEmail {
   passengers: Passenger[],
   subject: string,
   body: string,
-  bodyHTML ?: HTMLElement
+  formattedDate?: string
   date: string,
   location: string,
   tourTime?: string

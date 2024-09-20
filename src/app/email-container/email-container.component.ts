@@ -36,9 +36,10 @@ export class EmailContainerComponent{
 
   ngOnInit() {
     let currentBody = this.emailInfo.body;
-    const index = currentBody.indexOf("Map link:");
-    if (index !== -1) {
-      currentBody = currentBody.slice(0, index) + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(index);
+    const mapLinkIndex = currentBody.indexOf("Map link:");
+
+    if (mapLinkIndex !== -1) {
+      currentBody = currentBody.slice(0, mapLinkIndex) + "Tour Date: " + this.emailInfo.formattedDate + '\n\n' + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(mapLinkIndex);
     }
     this.form = new FormGroup({
       subject: new FormControl(this.emailInfo.subject, [Validators.required]),
