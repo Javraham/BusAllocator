@@ -421,4 +421,10 @@ export class EmailAutomationComponent {
   }
 
   protected readonly location = location;
+
+  restoreAllPassengers() {
+    for(const emailContainer of this.emailContainers){
+      emailContainer.restorePassengers()
+    }
+  }
 }

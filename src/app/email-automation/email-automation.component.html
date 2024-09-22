@@ -53,6 +53,11 @@
     border: 1px solid #57dc7a;
   }
 
+  .black{
+    color: #6b6b6b;
+    border: 1px solid #6b6b6b;
+  }
+
   .error-msg {
     background-color: #fda5a5;
     display: flex;
@@ -182,6 +187,7 @@
       <button *ngIf="loadingSentSMS" class="btn-send sms">Sending...</button>
       <button *ngIf="!loadingSentWhatsApp" class="btn-send whatsapp" [disabled]="areButtonsDisabled || checkDate()" (click)="sendWhatsAppToAll()">Send WhatsApp To All</button>
       <button *ngIf="loadingSentWhatsApp" class="btn-send whatsapp">Sending...</button>
+      <button class="btn-send black" (click)="restoreAllPassengers()">Restore All Passengers</button>
     </div>
     <div *ngIf="checkDate()" class="error-msg">
       <i class="bi bi-exclamation-circle" style="color: #b63f3f"></i>
