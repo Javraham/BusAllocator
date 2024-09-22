@@ -51,7 +51,7 @@ export class TourOrganizerService {
     console.log(optionsResponse)
     const sortedOptions = optionsResponse.data.sort((optionA: any, optionB: any) => optionA.priority - optionB.priority).map((option: any) => option.abbrev)
     const getPickupAbbrev = (passenger: Passenger) => {
-      const pickupAbbrev = response.data.find((pickup: IPickup) => passenger.pickup.includes(pickup.name))?.abbreviation;
+      const pickupAbbrev = response.data.find((pickup: IPickup) => passenger.pickup.toLowerCase().includes(pickup.name.toLowerCase()))?.abbreviation;
       return pickupAbbrev ? ` (${pickupAbbrev}) ` : '';
     }
 

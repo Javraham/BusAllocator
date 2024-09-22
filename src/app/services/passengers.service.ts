@@ -50,7 +50,7 @@ export class PassengersService {
       .map(pickup => {
         return {
           pickup,
-          ...result.data.find((location: any) => pickup.includes(location.name))
+          ...result.data.find((location: any) => pickup.toLowerCase().includes(location.name.toLowerCase()))
         }
       }).filter(abbrev => abbrev); // Filters out undefined values
   }

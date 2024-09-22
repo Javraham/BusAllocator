@@ -213,9 +213,9 @@ export class EmailContainerComponent{
     this.loadingAll = true
     try{
       await Promise.all([
-        this.sendEmail(),
         this.sendSMS('send-sms'),
-        this.sendWhatsApp('send-whatsapp')
+        this.sendWhatsApp('send-whatsapp'),
+        this.sendEmail()
       ])
       this.errorMsg = ""
       this.successMsg = "All Messages Sent Successfully"
