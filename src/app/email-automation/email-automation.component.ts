@@ -363,45 +363,7 @@ export class EmailAutomationComponent {
 
   async sendEmailToAll() {
     this.loadingSentMails = true;
-    const responses = this.emailContainers.toArray().map(container => container.sendEmail().catch(err => {
-      console.error(err)
-      return null
-    }))
-    try{
-      await Promise.all(responses)
-    }
-    catch (error){
-      console.error('Error in concurrent email sending:', error);    }
-    finally {
-      this.loadingSentMails = false;
-    }
-
-    // for (const child of this.emailContainers.toArray()) {
-    //   try {
-    //     await child.sendEmail();  // Wait for each SMS to complete
-    //   } catch (error) {
-    //     console.error('Error sending Email:', error);  // Handle the error and continue
-    //   }
-    // }
-    //
-    // this.loadingSentMails = false;
-  }
-
-  async sentAll() {
-    this.loadingAll = true
-    this.areButtonsDisabled = true
-    for (const child of this.emailContainers.toArray()) {
-      try {
-        await child.sendAll();  // Wait for each SMS to complete
-      } catch (error) {
-        console.error('Error sending Messages:', error);  // Handle the error and continue
-      }
-      finally {
-        this.loadingAll = false;
-        this.areButtonsDisabled = false
-      }
-    }
-    // const responses = this.emailContainers.toArray().map(container => container.sendAll().catch(err => {
+    // const responses = this.emailContainers.toArray().map(container => container.sendEmail().catch(err => {
     //   console.error(err)
     //   return null
     // }))
@@ -411,8 +373,46 @@ export class EmailAutomationComponent {
     // catch (error){
     //   console.error('Error in concurrent email sending:', error);    }
     // finally {
-    //   this.loadingAll = false;
-    //   this.areButtonsDisabled = false
+    //   this.loadingSentMails = false;
+    // }
+
+    for (const child of this.emailContainers.toArray()) {
+      try {
+        await child.sendEmail();  // Wait for each SMS to complete
+      } catch (error) {
+        console.error('Error sending Email:', error);  // Handle the error and continue
+      }
+    }
+
+    this.loadingSentMails = false;
+  }
+
+  async sentAll() {
+    this.loadingAll = true
+    this.areButtonsDisabled = true
+
+    try{
+      await this.sendSMSToAll();
+      await this.sendWhatsAppToAll()
+      await this.sendEmailToAll()
+    }
+    catch(err){
+      console.error('Error sending Messages:', err);  // Handle the error and continue
+    }
+    finally {
+      this.loadingAll = false;
+      this.areButtonsDisabled = false
+    }
+    // for (const child of this.emailContainers.toArray()) {
+    //   try {
+    //     await child.sendAll();  // Wait for each SMS to complete
+    //   } catch (error) {
+    //     console.error('Error sending Messages:', error);  // Handle the error and continue
+    //   }
+    //   finally {
+    //     this.loadingAll = false;
+    //     this.areButtonsDisabled = false
+    //   }
     // }
   }
 
