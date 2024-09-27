@@ -327,19 +327,19 @@ export class EmailAutomationComponent {
 
   }
 
-  async sendSMSToAll(){
-    this.loadingSentSMS = true;
-
-    for (const child of this.emailContainers.toArray()) {
-      try {
-        await child.sendSMS('send-sms');  // Wait for each SMS to complete
-      } catch (error) {
-        console.error('Error sending SMS:', error);  // Handle the error and continue
-      }
-    }
-
-    this.loadingSentSMS = false;
-  }
+  // async sendSMSToAll(){
+  //   this.loadingSentSMS = true;
+  //
+  //   for (const child of this.emailContainers.toArray()) {
+  //     try {
+  //       await child.sendSMS('send-sms');  // Wait for each SMS to complete
+  //     } catch (error) {
+  //       console.error('Error sending SMS:', error);  // Handle the error and continue
+  //     }
+  //   }
+  //
+  //   this.loadingSentSMS = false;
+  // }
 
   delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -392,7 +392,7 @@ export class EmailAutomationComponent {
     this.areButtonsDisabled = true
 
     try{
-      await this.sendSMSToAll();
+      // await this.sendSMSToAll();
       await this.sendWhatsAppToAll()
       await this.sendEmailToAll()
     }

@@ -183,8 +183,8 @@
       <button *ngIf="loadingAll" class="btn-send" [disabled]="true">Sending...</button>
       <button *ngIf="!loadingSentMails" class="btn-send email" [disabled]="areButtonsDisabled || checkDate()" (click)="sendEmailToAll()">Send Email To All</button>
       <button *ngIf="loadingSentMails" class="btn-send email">Sending...</button>
-      <button *ngIf="!loadingSentSMS" class="btn-send sms" [disabled]="areButtonsDisabled || checkDate()" (click)="sendSMSToAll()">Send SMS To All</button>
-      <button *ngIf="loadingSentSMS" class="btn-send sms">Sending...</button>
+<!--      <button *ngIf="!loadingSentSMS" class="btn-send sms" [disabled]="areButtonsDisabled || checkDate()" (click)="sendSMSToAll()">Send SMS To All</button>-->
+<!--      <button *ngIf="loadingSentSMS" class="btn-send sms">Sending...</button>-->
       <button *ngIf="!loadingSentWhatsApp" class="btn-send whatsapp" [disabled]="areButtonsDisabled || checkDate()" (click)="sendWhatsAppToAll()">Send WhatsApp To All</button>
       <button *ngIf="loadingSentWhatsApp" class="btn-send whatsapp">Sending...</button>
       <button class="btn-send black" (click)="restoreAllPassengers()">Restore All Passengers</button>

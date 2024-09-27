@@ -62,45 +62,45 @@ export class EmailContainerComponent{
     return (target < twoDaysAgo || target > threeDaysFromNow);
   }
 
-  sendSMS(endpoint: string, event?: any): Promise<any> {
-    if(event) event.preventDefault(); // Prevent form submission
-
-    const message = this.form.value.body + '\n\n **NO REPLY** \n' +
-      'We can be contacted at book@tourstoniagarafalls.com or +1 416-792-7968'
-
-    return new Promise((resolve, reject) => {
-      if (this.form.invalid || this.passengers.length === 0) {
-        this.form.markAllAsTouched();
-        reject(undefined)
-        return;
-      }
-      this.loadingSentSMS = true;
-      this.emailService.sendSMS({
-        passengers: this.passengers,
-        message,
-        date: this.emailInfo.date,
-        location: this.emailInfo.location,
-        tourTime: this.tourTime
-      },endpoint).subscribe({
-        next: (response) => {
-          this.errorMsg = ""
-          this.successMsg = response.message
-          this.loadingSentSMS = false;
-          console.log(response.data)
-          this.updateSentMessages.emit([response.data, "sms", this.pickupPlace])
-          resolve(undefined)
-        },
-        error: (error) => {
-          console.error(error)
-          this.successMsg = ""
-          console.log(error)
-          this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
-          this.loadingSentSMS = false;
-          reject(undefined)
-        },
-      })
-    })
-  }
+  // sendSMS(endpoint: string, event?: any): Promise<any> {
+  //   if(event) event.preventDefault(); // Prevent form submission
+  //
+  //   const message = this.form.value.body + '\n\n **NO REPLY** \n' +
+  //     'We can be contacted at book@tourstoniagarafalls.com or +1 416-792-7968'
+  //
+  //   return new Promise((resolve, reject) => {
+  //     if (this.form.invalid || this.passengers.length === 0) {
+  //       this.form.markAllAsTouched();
+  //       reject(undefined)
+  //       return;
+  //     }
+  //     this.loadingSentSMS = true;
+  //     this.emailService.sendSMS({
+  //       passengers: this.passengers,
+  //       message,
+  //       date: this.emailInfo.date,
+  //       location: this.emailInfo.location,
+  //       tourTime: this.tourTime
+  //     },endpoint).subscribe({
+  //       next: (response) => {
+  //         this.errorMsg = ""
+  //         this.successMsg = response.message
+  //         this.loadingSentSMS = false;
+  //         console.log(response.data)
+  //         this.updateSentMessages.emit([response.data, "sms", this.pickupPlace])
+  //         resolve(undefined)
+  //       },
+  //       error: (error) => {
+  //         console.error(error)
+  //         this.successMsg = ""
+  //         console.log(error)
+  //         this.errorMsg = error.message == undefined ? "Failed to connect to server." : error.message;
+  //         this.loadingSentSMS = false;
+  //         reject(undefined)
+  //       },
+  //     })
+  //   })
+  // }
 
   sendWhatsApp(endpoint: string, event?: any): Promise<any> {
     if(event) event.preventDefault(); // Prevent form submission
@@ -213,7 +213,7 @@ export class EmailContainerComponent{
     this.loadingAll = true
     try{
       await Promise.all([
-        this.sendSMS('send-sms'),
+        // this.sendSMS('send-sms'),
         this.sendWhatsApp('send-whatsapp'),
         this.sendEmail()
       ])
