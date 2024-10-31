@@ -28,7 +28,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
     NgForOf,
     NgIf,
     PassengerComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    Clipboard
   ],
   templateUrl: './bus-automation.component.html',
   styleUrl: './bus-automation.component.css'
