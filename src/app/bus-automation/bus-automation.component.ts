@@ -17,7 +17,6 @@ import {PickupsService} from "../services/pickups.service";
 import {lastValueFrom} from "rxjs";
 import {IPickup} from "../typings/ipickup";
 import {ActivatedRoute, Router} from "@angular/router";
-import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-bus-automation',
@@ -92,7 +91,6 @@ export class BusAutomationComponent implements OnInit{
               private passengerService: PassengersService,
               private busService: BusService,
               private pickupsService: PickupsService,
-               private clipboard: Clipboard
             )
             {
             }
@@ -326,24 +324,24 @@ export class BusAutomationComponent implements OnInit{
     return tempElement.innerText; // Get plain text
   }
 
-  copyText() {
-    // Use Clipboard API to write HTML directly
-    const htmlString = this.sanitizer.sanitize(SecurityContext.HTML, this.htmlContent) || '';
-    const plainText = this.extractPlainText(htmlString);
-
-    // Create a ClipboardItem for HTML content
-    const clipboardItem = new ClipboardItem({
-      "text/html": new Blob([htmlString], { type: "text/html" }),
-      "text/plain": new Blob([plainText], { type: "text/plain" })
-    });
-
-    // Use the Clipboard API to write the HTML and plain text
-    navigator.clipboard.write([clipboardItem])
-      .then(() => {
-        console.log('Content copied to clipboard');
-      })
-      .catch(err => {
-        console.error('Failed to copy: ', err);
-      });
-  }
+  // copyText() {
+  //   // Use Clipboard API to write HTML directly
+  //   const htmlString = this.sanitizer.sanitize(SecurityContext.HTML, this.htmlContent) || '';
+  //   const plainText = this.extractPlainText(htmlString);
+  //
+  //   // Create a ClipboardItem for HTML content
+  //   const clipboardItem = new ClipboardItem({
+  //     "text/html": new Blob([htmlString], { type: "text/html" }),
+  //     "text/plain": new Blob([plainText], { type: "text/plain" })
+  //   });
+  //
+  //   // Use the Clipboard API to write the HTML and plain text
+  //   navigator.clipboard.write([clipboardItem])
+  //     .then(() => {
+  //       console.log('Content copied to clipboard');
+  //     })
+  //     .catch(err => {
+  //       console.error('Failed to copy: ', err);
+  //     });
+  // }
 }
