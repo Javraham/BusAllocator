@@ -1,4 +1,4 @@
-import {Component, OnInit, SecurityContext} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {BusSelectionButtonsComponent} from "../bus-selection-buttons/bus-selection-buttons.component";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
@@ -17,6 +17,7 @@ import {PickupsService} from "../services/pickups.service";
 import {lastValueFrom} from "rxjs";
 import {IPickup} from "../typings/ipickup";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Clipboard} from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-bus-automation',
@@ -91,6 +92,7 @@ export class BusAutomationComponent implements OnInit{
               private passengerService: PassengersService,
               private busService: BusService,
               private pickupsService: PickupsService,
+               private clipboard: Clipboard
             )
             {
             }
@@ -343,5 +345,6 @@ export class BusAutomationComponent implements OnInit{
     //   .catch(err => {
     //     console.error('Failed to copy: ', err);
     //   });
+    this.clipboard.copy('Alphonso');
   }
 }
