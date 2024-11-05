@@ -318,40 +318,19 @@ export class BusAutomationComponent implements OnInit{
     console.log(this.passengerToBusMap)
   }
 
-  extractPlainText(safeValue: any): string {
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = safeValue;
-    return tempElement.innerText; // Get plain text
-  }
-
   copyText() {
-    // Use Clipboard API to write HTML directly
-    // const htmlString = this.sanitizer.sanitize(SecurityContext.HTML, this.htmlContent) || '';
-    // const plainText = this.extractPlainText(htmlString);
-    //
-    // // Create a ClipboardItem for HTML content
-    // const clipboardItem = new ClipboardItem({
-    //   "text/html": new Blob([htmlString], { type: "text/html" }),
-    //   "text/plain": new Blob([plainText], { type: "text/plain" })
-    // });
-    //
-    // // Use the Clipboard API to write the HTML and plain text
-    // navigator.clipboard.write([clipboardItem])
-    //   .then(() => {
-    //     console.log('Content copied to clipboard');
-    //   })
-    //   .catch(err => {
-    //     console.error('Failed to copy: ', err);
-    //   });
-    const textToCopy = document.getElementById('generated-txt')?.innerText || '';
+    const htmlToCopy = document.getElementById('generated-txt')?.innerHTML || '';
 
-    if (textToCopy) {
-      navigator.clipboard.writeText(textToCopy)
+    if (htmlToCopy) {
+      const blob = new Blob([htmlToCopy], { type: 'text/html' });
+      const clipboardItem = new ClipboardItem({ 'text/html': blob });
+
+      navigator.clipboard.write([clipboardItem])
         .then(() => {
-          console.log('Text copied to clipboard successfully!');
+          console.log('HTML copied to clipboard successfully!');
         })
         .catch((err) => {
-          console.log('Failed to copy text to clipboard', err);
+          console.log('Failed to copy HTML to clipboard', err);
         });
     }
   }
