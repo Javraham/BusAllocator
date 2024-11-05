@@ -345,7 +345,6 @@ export class BusAutomationComponent implements OnInit{
     //   .catch(err => {
     //     console.error('Failed to copy: ', err);
     //   });
-
     const textToCopy = document.getElementById('generated-txt')?.innerText || '';
 
     if (textToCopy) {
