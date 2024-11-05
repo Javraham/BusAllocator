@@ -17,7 +17,6 @@ import {PickupsService} from "../services/pickups.service";
 import {lastValueFrom} from "rxjs";
 import {IPickup} from "../typings/ipickup";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Clipboard} from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-bus-automation',
@@ -92,7 +91,6 @@ export class BusAutomationComponent implements OnInit{
               private passengerService: PassengersService,
               private busService: BusService,
               private pickupsService: PickupsService,
-               private clipboard: Clipboard
             )
             {
             }
@@ -346,6 +344,5 @@ export class BusAutomationComponent implements OnInit{
     //     console.error('Failed to copy: ', err);
     //   });
     console.log('Alphonso');
-    this.clipboard.copy('Alphonso');
   }
 }
