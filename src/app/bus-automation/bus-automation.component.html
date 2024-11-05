@@ -241,7 +241,7 @@
   </div>
   <div style="margin-top: 20px" class="">
     <button class="styled-button" (click)="getHTML()">Generate List</button>
-    <button [cdkCopyToClipboard]="'Hello'" style="margin-left: 10px" class="styled-button" (click)="copyText()">Copy Text</button>
+    <button style="margin-left: 10px" class="styled-button" (click)="copyText()">Copy Text</button>
     <div class="text-area" id="generated-txt" contenteditable="true" [innerHTML]="htmlContent">
     </div>
   </div>

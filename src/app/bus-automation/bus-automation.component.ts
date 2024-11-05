@@ -345,6 +345,17 @@ export class BusAutomationComponent implements OnInit{
     //   .catch(err => {
     //     console.error('Failed to copy: ', err);
     //   });
-    console.log('Alphonso');
+
+    const textToCopy = document.getElementById('generated-txt')?.innerText || '';
+
+    if (textToCopy) {
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          console.log('Text copied to clipboard successfully!');
+        })
+        .catch((err) => {
+          console.log('Failed to copy text to clipboard', err);
+        });
+    }
   }
 }
