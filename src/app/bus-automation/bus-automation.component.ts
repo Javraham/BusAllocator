@@ -345,6 +345,7 @@ export class BusAutomationComponent implements OnInit{
     //   .catch(err => {
     //     console.error('Failed to copy: ', err);
     //   });
+    console.log('Alphonso');
     this.clipboard.copy('Alphonso');
   }
 }
