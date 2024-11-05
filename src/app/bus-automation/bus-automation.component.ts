@@ -17,7 +17,6 @@ import {PickupsService} from "../services/pickups.service";
 import {lastValueFrom} from "rxjs";
 import {IPickup} from "../typings/ipickup";
 import {ActivatedRoute, Router} from "@angular/router";
-import {CdkCopyToClipboard} from "@angular/cdk/clipboard";
 
 @Component({
   selector: 'app-bus-automation',
@@ -29,7 +28,6 @@ import {CdkCopyToClipboard} from "@angular/cdk/clipboard";
     NgIf,
     PassengerComponent,
     ReactiveFormsModule,
-    CdkCopyToClipboard
   ],
   templateUrl: './bus-automation.component.html',
   styleUrl: './bus-automation.component.css'
