@@ -5,6 +5,8 @@ import {Passenger} from "../typings/passenger";
 import {IBookingOptions} from "../typings/IBookingOptions";
 import {OptionsService} from "./options.service";
 import {lastValueFrom} from "rxjs";
+import {ExperiencesService} from "./experiences.service";
+import {IExperience} from "../typings/ipickup";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,7 @@ export class ApiService {
     httpMethod: "POST",
   };
 
-  constructor(private optionsService: OptionsService) { }
+  constructor(private optionsService: OptionsService, private experiencesService: ExperiencesService) { }
 
   generateBokunSignature(date: string, accessKey: string, httpMethod: string, path: string, secretKey: string): string {
     // Concatenate the required values
@@ -95,7 +97,7 @@ export class ApiService {
 
     try {
       const jsonData = await this.fetchBokunData(fetchOptions);
-
+      console.log(jsonData)
       const data: Passenger[] = await jsonData.items
         .filter((val: any) => val.productBookings[0].status !== "CANCELLED")
         .map((val: any) => {
@@ -147,6 +149,10 @@ export class ApiService {
   }
 
   async getPassengersFromProductBookings(date: string, fetchOptions: FetchBookingDataOptions): Promise<Passenger[]> {
+
+    const experiences = await lastValueFrom(this.experiencesService.getExperiences())
+
+    console.log(experiences);
     // Prepare the two fetch options
     const confirmedFetchOptions = {
       ...fetchOptions,
@@ -201,8 +207,17 @@ export class ApiService {
       const combinedResults = [...jsonArrivedData.results, ...jsonConfirmedData.results, ...jsonNoShowData.results];
       const result = await lastValueFrom(this.optionsService.getOptions());
 
+      console.log(combinedResults)
       return combinedResults
-        .filter((val: any) => val.status !== "CANCELLED")
+        .filter((val: any) => {
+          const experienceFound = experiences.data.find((exp: IExperience) => exp.experienceId === val.productExternalId)
+          console.log(experienceFound)
+          if(!experienceFound){
+            return val.status !== "CANCELLED"
+          }
+
+          return val.status !== "CANCELLED" && experienceFound.isSelected
+        })
         .map((val: any) => {
           const productBooking = val.fields;
           const numOfPassengers = val.totalParticipants;
@@ -232,6 +247,7 @@ export class ApiService {
         });
 
     } catch (e) {
+      console.error(e)
       throw new Error("Problem with authentication: Please double check your access and secret keys");
     }
   }

@@ -1,0 +1,87 @@
+<style>
+  .add-button{
+    border: 1px solid #4B7FCC;
+    background: none;
+    border-radius: 5px;
+    color: #4B7FCC;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  button{
+    border: none;
+    background: none;
+  }
+
+  .content{
+    padding: 1.1em;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: white;
+    border-right: 10px solid #4B7FCC;
+  }
+
+  p{
+    margin: 0;
+  }
+
+  .form > div{
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .form-buttons button{
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    color: white;
+    border: none;
+  }
+
+  .add-bus{
+    background-color: #4B7FCC;
+  }
+
+  .delete-bus{
+    background-color: crimson;
+  }
+
+  h4{
+    margin-top: 20px;
+    color: grey;
+  }
+</style>
+
+
+<h4>Experience Management</h4>
+<button class="add-button" (click)="openNewExperienceForm()"><i class="bi bi-plus"></i> Add Experience</button>
+<form [formGroup]="experienceForm" *ngIf="isExperienceFormOpen" (ngSubmit)="isEditingExperience ? updateExperience() : addExperience($event)" class="form-group" style="margin-top: 10px">
+  <div class="row form" style="margin: 0">
+    <div class="input-group col-lg-4 col-md-6 col-sm-6">
+      <span class="input-group-addon">Experience ID</span>
+      <input class="form-control" formControlName="experienceId" type="text" required/>
+    </div>
+  </div>
+  <ng-container *ngIf="errorMsg">
+    <p style="color: #FC5923; font-weight: 500">{{errorMsg}}</p>
+  </ng-container>
+  <div class="form-buttons" style="display: flex; gap: 10px">
+    <button type="submit" class="add-bus">Save</button>
+    <button *ngIf="isEditingExperience" (click)="deleteExperience()" type="button" class="delete-bus">Delete Experience</button>
+    <button type="button" class="add-bus" (click)="cancelExperience()">Cancel</button>
+  </div>
+</form>
+<div class="row">
+  <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let experience of experiences">
+    <div class="content" >
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <button (click)="editExperience(experience)"><i class="bi bi-pencil"></i></button>
+          <p><strong>Experience ID:</strong> {{experience.experienceId}}</p>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" (change)="changeSelection($event, experience)" [(ngModel)]="experience.isSelected" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

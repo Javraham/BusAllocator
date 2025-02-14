@@ -13,6 +13,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {BusSettingsPageComponent} from "../bus-settings-page/bus-settings-page.component";
 import {OptionsSettingsPageComponent} from "../options-settings-page/options-settings-page.component";
 import {PickupsSettingsComponent} from "../pickups-settings/pickups-settings.component";
+import {ExperienceSettingsPageComponent} from "../experience-settings-page/experience-settings-page.component";
 
 @Component({
   selector: 'app-settings-page',
@@ -27,12 +28,13 @@ import {PickupsSettingsComponent} from "../pickups-settings/pickups-settings.com
     BusSettingsPageComponent,
     OptionsSettingsPageComponent,
     PickupsSettingsComponent,
+    ExperienceSettingsPageComponent,
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.css'
 })
 export class SettingsPageComponent implements OnInit{
-  navOptions = ["Buses", "Pickups", "Options"];
+  navOptions = ["Buses", "Pickups", "Options", "Experiences"];
   selectOption = "Buses"
   pickupLocations !: IPickup[];
 

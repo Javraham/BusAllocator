@@ -5,6 +5,12 @@ export interface IPickup {
   emailTemplate: IEmailTemplate
 }
 
+export interface IExperience {
+  docId?: string,
+  experienceId: string,
+  isSelected: boolean
+}
+
 export interface IEmailTemplate {
   subject?: string,
   body: string
