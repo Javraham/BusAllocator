@@ -1,8 +1,8 @@
 export interface ISettingOptionsInput{
   nameLabel: string,
-  abbreviationLabel: string,
+  abbreviationLabel?: string,
   name: string,
-  abbreviation: string,
+  abbreviation?: string,
   emailTemplateBody?: string,
   docId: string | undefined,
   priority?: number

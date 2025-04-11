@@ -25,7 +25,7 @@
   <button (click)="openEditOptionForm()"><i class="bi bi-pencil"></i></button>
   <div>
     <p><strong>{{optionsInput.nameLabel}}:</strong> {{optionsInput.name}}</p>
-    <p><strong>{{optionsInput.abbreviationLabel}}:</strong> {{optionsInput.abbreviation}}</p>
+    <p *ngIf="optionsInput.abbreviationLabel"><strong>{{optionsInput.abbreviationLabel}}:</strong> {{optionsInput.abbreviation}}</p>
     <p *ngIf="optionsInput.priority"><strong>Priority:</strong> {{optionsInput.priority}}</p>
   </div>
 </div>
