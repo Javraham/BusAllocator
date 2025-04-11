@@ -189,6 +189,13 @@
       <button *ngIf="loadingSentWhatsApp" class="btn-send whatsapp">Sending...</button>
       <button class="btn-send black" (click)="restoreAllPassengers()">Restore All Passengers</button>
     </div>
+    <div class="mb-3 mt-3">
+      <label class="fw-bolder fs-4">Email Template</label>
+      <select class="form-select form-select-lg" style="max-width: 400px" [(ngModel)]="chosenEmailTemplate" (change)="setEmailTemplate($event)">
+        <option value="tour reminder" selected>Tour reminder</option>
+        <option *ngFor="let template of emailTemplates" [value]="template.email">{{template.name}}</option>
+      </select>
+    </div>
     <div *ngIf="checkDate()" class="error-msg">
       <i class="bi bi-exclamation-circle" style="color: #b63f3f"></i>
       <p class="error-text">Cannot send messages with the given date!</p>

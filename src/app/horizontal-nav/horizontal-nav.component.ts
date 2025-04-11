@@ -4,6 +4,7 @@ import {PickupsService} from "../services/pickups.service";
 import {BusService} from "../services/bus.service";
 import {OptionsService} from "../services/options.service";
 import {ExperiencesService} from "../services/experiences.service";
+import {EmailTemplatesService} from "../services/email-templates.service";
 
 @Component({
   selector: 'app-horizontal-nav',
@@ -20,7 +21,7 @@ export class HorizontalNavComponent {
   @ViewChild('navList', { static: false }) navList!: ElementRef;
   menuList = document.getElementById("navList") as HTMLElement;
 
-  constructor(private renderer: Renderer2, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService, private experienceService: ExperiencesService) {
+  constructor(private renderer: Renderer2, private templateService: EmailTemplatesService, private pickupService: PickupsService, private busService: BusService, private optionService: OptionsService, private experienceService: ExperiencesService) {
   }
 
   ngAfterViewInit() {
@@ -35,6 +36,7 @@ export class HorizontalNavComponent {
     this.busService.setBuses()
     this.optionService.setOptions()
     this.experienceService.setExperiences();
+    this.templateService.setEmailTemplates();
   }
 
   toggleMenu() {

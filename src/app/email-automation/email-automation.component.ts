@@ -1,8 +1,8 @@
-import {Component, QueryList, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, QueryList, ViewChildren} from '@angular/core';
 import {Passenger} from "../typings/passenger";
 import {ApiService} from "../services/api.service";
 import {PassengersService} from "../services/passengers.service";
-import {IPickup} from "../typings/ipickup";
+import {EmailTemplate, IPickup} from "../typings/ipickup";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {ExpandableSectionComponent} from "../expandable-section/expandable-section.component";
@@ -11,6 +11,7 @@ import {IEmail} from "../typings/IEmail";
 import {MessageService} from "../services/message.service";
 import {ISentMessageResponse} from "../typings/ISentEmailResonse";
 import {ActivatedRoute, Router} from "@angular/router";
+import {EmailTemplatesService} from "../services/email-templates.service";
 
 @Component({
   selector: 'app-email-automation',
@@ -45,9 +46,40 @@ export class EmailAutomationComponent {
   errorMsg: string = "";
   pickupAbbrevs: any[] = [];
   dataMap !: any;
-  unsentMessagesMap: any = []
+  unsentMessagesMap: any = [];
+  emailTemplates!: EmailTemplate[];
+  chosenEmailTemplate: string = 'tour reminder';
 
-  constructor(private route: ActivatedRoute, private router: Router, private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
+  constructor(private route: ActivatedRoute, private templateService: EmailTemplatesService, private router: Router, private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
+  }
+
+  getEmailObject(location: IPickup, time: string): IEmail {
+    const dateObject = new Date(this.date)
+    const day = dateObject.getUTCDate();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const dayOfWeekNames = [
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    ];
+    const formattedDate = `${dayOfWeekNames[dateObject.getUTCDay()]}, ${monthNames[dateObject.getUTCMonth()]} ${day}`;
+    const passengers = this.getPassengersByLocation(location.name, time)
+    const subject = location.emailTemplate.subject + ' ' + formattedDate
+    console.log(this.chosenEmailTemplate)
+    const body = this.chosenEmailTemplate === 'tour reminder' ? location.emailTemplate.body : this.chosenEmailTemplate;
+    return {
+      passengers,
+      subject,
+      body,
+      formattedDate,
+      date: this.date,
+      location: location.abbreviation
+    }
+  }
+
+  setEmailTemplate(event: any){
+    this.chosenEmailTemplate = event.target.value;
   }
 
   onDateChange(event: any) {
@@ -116,9 +148,23 @@ export class EmailAutomationComponent {
         this.date = `${year}-${month}-${day}`;
       }
       if (this.isAuthorized) {
-        this.loadPassengers();
+        Promise.all([
+          this.loadPassengers(),
+          this.getEmailTemplates(),
+        ])
       }
     });
+  }
+
+  async getEmailTemplates(){
+    this.templateService.getEmailTemplates().subscribe({
+      next: response => {
+        this.emailTemplates = response.data
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
   }
 
   updateSentMessageLocations(event: [any, string, string]) {
@@ -269,29 +315,7 @@ export class EmailAutomationComponent {
     return (target < twoDaysAgo || target > threeDaysFromNow);
   }
 
-  getEmailObject(location: IPickup, time: string): IEmail {
-    const dateObject = new Date(this.date)
-    const day = dateObject.getUTCDate();
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-    const dayOfWeekNames = [
-      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-    ];
-    const formattedDate = `${dayOfWeekNames[dateObject.getUTCDay()]}, ${monthNames[dateObject.getUTCMonth()]} ${day}`;
-    const passengers = this.getPassengersByLocation(location.name, time)
-    const subject = location.emailTemplate.subject + ' ' + formattedDate
-    const body = location.emailTemplate.body
-    return {
-      passengers,
-      subject,
-      body,
-      formattedDate,
-      date: this.date,
-      location: location.abbreviation
-    }
-  }
+
 
   getPrevDayPassengers() {
     const [year, month, day] = this.date.split('-').map(Number);
