@@ -40,7 +40,8 @@ export class EmailContainerComponent implements OnInit, OnChanges{
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['emailInfo'] && changes['emailInfo'].currentValue) {
-      this.setupEmailForm();
+      console.log(changes)
+      this.form.patchValue({body: this.emailInfo.body, subject: this.emailInfo.subject})
     }
   }
 

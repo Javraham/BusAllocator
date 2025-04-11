@@ -65,7 +65,7 @@ export class EmailAutomationComponent {
     ];
     const formattedDate = `${dayOfWeekNames[dateObject.getUTCDay()]}, ${monthNames[dateObject.getUTCMonth()]} ${day}`;
     const passengers = this.getPassengersByLocation(location.name, time)
-    const subject = location.emailTemplate.subject + ' ' + formattedDate
+    const subject = this.chosenEmailTemplate === 'tour reminder' ? location.emailTemplate.subject + ' ' + formattedDate : this.emailTemplates.find(template => template.email == this.chosenEmailTemplate)?.name || "";
     console.log(this.chosenEmailTemplate)
     const body = this.chosenEmailTemplate === 'tour reminder' ? location.emailTemplate.body : this.chosenEmailTemplate;
     return {
