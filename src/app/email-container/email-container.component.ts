@@ -158,7 +158,6 @@ export class EmailContainerComponent implements OnInit, OnChanges{
     })
   }
 
-
     onSubmit() {
     // This will handle the generic form submission if needed
     console.log('Form Submitted');
