@@ -15,7 +15,7 @@ import {Passenger} from "../typings/passenger";
   templateUrl: './email-container.component.html',
   styleUrl: './email-container.component.css'
 })
-export class EmailContainerComponent implements OnInit, OnChanges{
+export class EmailContainerComponent implements OnInit{
   @Input() emailInfo !: IEmail;
   @Input() pickupPlace !: string;
   @Input() pickupAbbrev !: string;
@@ -40,12 +40,11 @@ export class EmailContainerComponent implements OnInit, OnChanges{
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['emailInfo'] && changes['emailInfo'].currentValue) {
-      console.log(changes)
-      this.form.patchValue({body: this.emailInfo.body, subject: this.emailInfo.subject})
+      this.form.patchValue({body: this.getNewBody(), subject: this.emailInfo.subject})
     }
   }
 
-  setupEmailForm() {
+  getNewBody(): string {
     let currentBody = this.emailInfo.body;
     const mapLinkIndex = currentBody.indexOf("Map link:");
 
@@ -53,9 +52,26 @@ export class EmailContainerComponent implements OnInit, OnChanges{
       currentBody = currentBody.slice(0, mapLinkIndex) + "Tour Date: " + this.emailInfo.formattedDate + '\n\n' + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(mapLinkIndex);
     }
 
+    else if(!currentBody){
+      currentBody = "Hi there! We are just confirming your pick-up details for your Niagara tour! \n\n"
+        + "Tour Date: " + this.emailInfo.formattedDate
+        + '\n\n'
+        + "Location: "
+        + this.pickupPlace + '\n\n' + 'Please arrive 10 minutes early because the bus will depart by the posted time. We will be in a white minibus that says "QUEEN" on the front. We have a few buses on the road, so a different QUEEN bus might pass you, but don\'t worry, your bus will stop at the right spot. Our office number is +1 416-792-7968 if you need help in the morning. \n' +
+        '\n' +
+        '*if you want to add attractions to your tour make sure you bring CAD or USD cash as only cash is accepted on the bus.*\n' +
+        '\n' +
+        'Enjoy your day :)'
+    }
+
+    return currentBody
+  }
+
+  setupEmailForm() {
+
     this.form = new FormGroup({
       subject: new FormControl(this.emailInfo.subject, [Validators.required]),
-      body: new FormControl(currentBody, [Validators.required]),
+      body: new FormControl(this.getNewBody(), [Validators.required]),
     });
 
     this.passengers = this.getPassengersWithUnsentEmails(this.emailInfo.passengers);
