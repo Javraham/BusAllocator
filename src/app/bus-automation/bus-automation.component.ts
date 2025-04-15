@@ -83,7 +83,7 @@ export class BusAutomationComponent implements OnInit{
     this.organizePassengers(filteredBuses, filteredPassengers)
   }
 
-  constructor( private router: Router,
+  constructor(private router: Router,
               private route: ActivatedRoute,
               private sanitizer: DomSanitizer,
               private apiService: ApiService,

@@ -11,6 +11,12 @@ export interface IExperience {
   isSelected: boolean
 }
 
+export interface EmailTemplate {
+  docId?: string,
+  name: string,
+  email: string
+}
+
 export interface IEmailTemplate {
   subject?: string,
   body: string
@@ -35,7 +41,7 @@ export const pickups: IPickup[] = [
         "*if you want to add attractions to your tour make sure you bring CAD or USD cash as only cash is accepted on the bus.*\n" +
         "\n" +
         "Enjoy your day :)"
-    }
+    },
   },
   {
     name: "Courtyard",

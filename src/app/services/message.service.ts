@@ -80,8 +80,7 @@ export class MessageService {
       'Content-Type': 'application/json',
       'x-api-key': 'hjkuwnndjw23=dkl'
     });
-    const emailAddresses = emailObject.passengers.map(passenger => passenger.email)
-    console.log(emailObject.passengers.map(passenger => passenger.email))
+    const emailAddresses = emailObject.passengers.map(passenger => passenger.email).filter(email => email != null || email != undefined)
     const body = {
       passengerEmailAddresses: emailAddresses,
       body: emailObject.body,

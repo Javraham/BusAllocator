@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {IEmail} from "../typings/IEmail";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MessageService} from "../services/message.service";
@@ -15,7 +15,7 @@ import {Passenger} from "../typings/passenger";
   templateUrl: './email-container.component.html',
   styleUrl: './email-container.component.css'
 })
-export class EmailContainerComponent{
+export class EmailContainerComponent implements OnInit, OnChanges{
   @Input() emailInfo !: IEmail;
   @Input() pickupPlace !: string;
   @Input() pickupAbbrev !: string;
@@ -34,20 +34,33 @@ export class EmailContainerComponent{
   constructor(private emailService: MessageService) {
   }
 
-
   ngOnInit() {
+    this.setupEmailForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['emailInfo'] && changes['emailInfo'].currentValue) {
+      console.log(changes)
+      this.form.patchValue({body: this.emailInfo.body, subject: this.emailInfo.subject})
+    }
+  }
+
+  setupEmailForm() {
     let currentBody = this.emailInfo.body;
     const mapLinkIndex = currentBody.indexOf("Map link:");
 
     if (mapLinkIndex !== -1) {
       currentBody = currentBody.slice(0, mapLinkIndex) + "Tour Date: " + this.emailInfo.formattedDate + '\n\n' + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(mapLinkIndex);
     }
+
     this.form = new FormGroup({
       subject: new FormControl(this.emailInfo.subject, [Validators.required]),
-      body: new FormControl(currentBody, [Validators.required])
+      body: new FormControl(currentBody, [Validators.required]),
     });
-    this.passengers = this.getPassengersWithUnsentEmails(this.emailInfo.passengers)
+
+    this.passengers = this.getPassengersWithUnsentEmails(this.emailInfo.passengers);
   }
+
 
   checkDate() {
     const now = new Date(); // Get the current date
@@ -144,7 +157,6 @@ export class EmailContainerComponent{
       })
     })
   }
-
 
     onSubmit() {
     // This will handle the generic form submission if needed
