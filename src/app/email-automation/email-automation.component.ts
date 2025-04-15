@@ -308,7 +308,7 @@ export class EmailAutomationComponent {
     twoDaysAgo.setDate(now.getDate() - 2);
 
     // Add three days to the current date
-    threeDaysFromNow.setDate(now.getDate() + 3);
+    threeDaysFromNow.setDate(now.getDate() + 5);
 
     const target = new Date(this.date);
 
