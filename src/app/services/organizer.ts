@@ -86,16 +86,39 @@ export class TourOrganizer {
     return result.sort((a, b) => b[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0) - a[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0))
   }
 
-  allocatePassengers(passengerToBusList: ([string, string])[], sortedLocations = this.getSortedLocation(), numOfTries: number = 0, isSplit: boolean = false ): [boolean, boolean] {
+  allocatePassengers(passengerToBusList: ([string, string])[], pickupToBusList: ([string, string])[], sortedLocations = this.getSortedLocation(), numOfTries: number = 0, isSplit: boolean = false ): [boolean, boolean] {
     try {
       const totalCapacities = this.buses.reduce((bus, currentBus) => bus + currentBus.capacity, 0)
       const totalPassengers = sortedLocations.reduce((val, current) => {
         return val + current[1].reduce((passenger, currentPassenger) => passenger + currentPassenger.numOfPassengers, 0)
       }, 0)
-      console.log(totalPassengers, totalCapacities)
+      console.log(sortedLocations)
 
       if(totalCapacities < totalPassengers || numOfTries == this.getSortedLocation()[0][1].length){
         return [false, false]
+      }
+
+      const addedPassengers: Set<string> = new Set<string>();
+
+      for (const [pickupLocation, busId] of pickupToBusList) {
+        const bus = this.buses.find(bus => bus.busId === busId) as Bus;
+        const passengersWithLocation = sortedLocations.find(([pickup, _]) =>
+          pickup.includes(pickupLocation)
+        );
+
+        if (passengersWithLocation) {
+          const passengers = passengersWithLocation[1];
+
+          for(const passenger of passengers){
+            if (passenger) {
+              if(!bus.addPassenger(passenger)){
+                return [false, false]
+              }
+
+              addedPassengers.add(passenger.confirmationCode);
+            }
+          }
+        }
       }
 
       for (const [passengerCode, busId] of passengerToBusList) {
@@ -112,6 +135,9 @@ export class TourOrganizer {
             if(!bus.addPassenger(passenger)){
               return [false, false]
             }
+
+            addedPassengers.add(passenger.confirmationCode);
+
           }
         }
       }
@@ -129,9 +155,9 @@ export class TourOrganizer {
 
         let [location, passengers] = sortedLocations[index];
 
-        if(passengerToBusList.length){
-          passengers = passengers.filter(passenger => !passengerToBusList.map(item => item[0]).includes(passenger.confirmationCode))
-          console.log("Passengers: ", passengers)
+        if(addedPassengers.size){
+          console.log("Passengers: ", passengers.filter(passenger => addedPassengers.has(passenger.confirmationCode)))
+          passengers = passengers.filter(passenger => !addedPassengers.has(passenger.confirmationCode))
         }
 
         const availableBuses = this.buses.filter(bus =>
@@ -156,7 +182,7 @@ export class TourOrganizer {
 
       if (!success) {
         console.error("Unable to allocate all passengers.");
-        return this.allocatePassengers(passengerToBusList, this.getSplitSortedLocation(numOfTries), numOfTries+1, true)
+        return this.allocatePassengers(passengerToBusList, pickupToBusList, this.getSplitSortedLocation(numOfTries), numOfTries+1, true)
       }
 
       return [success, isSplit];

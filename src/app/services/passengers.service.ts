@@ -13,7 +13,7 @@ export class PassengersService {
 
   constructor(private pickupService: PickupsService, private optionService: OptionsService) { }
 
-  getPassengersByTime(passengers: Passenger[]) {
+  getPassengersByTime(passengers: Passenger[]): Map<string, Passenger[]> {
     const map: Map<string, Passenger[]> = new Map<string, Passenger[]>();
     for(const passenger of passengers){
       if(map.has(passenger.startTime)){
@@ -53,6 +53,28 @@ export class PassengersService {
           ...result.data.find((location: any) => pickup.toLowerCase().includes(location.name.toLowerCase()))
         }
       }).filter(abbrev => abbrev); // Filters out undefined values
+  }
+
+  getPickupLocationsFromPassengers(passengers: Passenger[], pickupAbbrevs: any) {
+    const map = this.getPassengersByTime(passengers);
+    const pickupMap: Map<string, string[]> = new Map<string, string[]>
+
+    for(const [key, passengers] of map.entries()){
+      const set: Set<string> = new Set();
+      for(const passenger of passengers){
+        for(const pickup of pickupAbbrevs){
+          if(passenger.pickup.includes(pickup.name)){
+            set.add(pickup.name)
+          }
+        }
+      }
+
+      pickupMap.set(key, Array.from(set));
+    }
+
+    console.log(pickupMap)
+
+    return pickupMap
   }
 
 

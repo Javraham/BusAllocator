@@ -49,6 +49,8 @@ export class BusAutomationComponent implements OnInit{
   canEdit: boolean = false;
   allBuses !: IBus[];
   passengerToBusMap = new Map<string, string>();
+  pickupToBusMap = new Map<string, string>();
+  scheduleMap = new Map<string, Map<string, string>>();
 
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
@@ -80,7 +82,7 @@ export class BusAutomationComponent implements OnInit{
     const filteredBuses = this.allBuses.filter(val => event[0].includes(val.busId))
     console.log(filteredBuses, filteredPassengers)
     console.log(this.usedBuses)
-    this.organizePassengers(filteredBuses, filteredPassengers)
+    this.organizePassengers(filteredBuses, filteredPassengers, Array.from(this.scheduleMap.get(event[1]) || new Map()))
   }
 
   constructor(private router: Router,
@@ -150,11 +152,13 @@ export class BusAutomationComponent implements OnInit{
     this.passengerToBusMap = new Map<string, string>()
   }
 
-  organizePassengers(busInfoList: IBus[], passengers: Passenger[]) {
+  organizePassengers(busInfoList: IBus[], passengers: Passenger[], pickupToBusMap: [string, string][]) {
+    console.log(this.passengerToBusMap);
     const passengerToBusList = Array.from(this.passengerToBusMap).filter(item => busInfoList.map(bus => bus.busId).includes(item[1]))
+    console.log(passengerToBusList)
     const organizer = new TourOrganizer(busInfoList)
     organizer.loadData(passengers)
-    const isAllocated = organizer.allocatePassengers(passengerToBusList)
+    const isAllocated = organizer.allocatePassengers(passengerToBusList, pickupToBusMap)
     if(isAllocated[0]){
       console.log(isAllocated)
       organizer.buses.forEach(bus => {
@@ -246,6 +250,7 @@ export class BusAutomationComponent implements OnInit{
       this.resetBusSelection()
       this.tourBusOrganizer.resetBuses();
       this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+      console.log(this.passengerService.getPickupLocationsFromPassengers(passengers, this.pickupAbbrevs));
     }
     catch (e: any){
       this.loading = false
@@ -253,6 +258,10 @@ export class BusAutomationComponent implements OnInit{
       this.loadContent = false
     }
 
+  }
+
+  getPickupAbbrevByTime(time: string) {
+    return this.passengerService.getPickupLocationsFromPassengers(this.passengers, this.pickupAbbrevs).get(time);
   }
 
   Authorize() {
@@ -306,6 +315,19 @@ export class BusAutomationComponent implements OnInit{
   updatePassengerBusList(event: [Passenger, IBus]) {
     this.passengerToBusMap.set(event[0].confirmationCode, event[1].busId)
     console.log(this.passengerToBusMap)
+  }
+
+  updatePickupBusList(pickup: string, busId: string, time: string){
+    const map = this.scheduleMap.get(time) || new Map<string, string>
+    map.set(pickup, busId)
+    this.scheduleMap.set(time, map)
+    console.log(this.scheduleMap)
+  }
+
+  removePickup(pickup: string, time: string) {
+    const map = this.scheduleMap.get(time) || new Map<string, string>
+    map.delete(pickup)
+    console.log(this.scheduleMap)
   }
 
   updateAllowEditBus(event: Passenger) {

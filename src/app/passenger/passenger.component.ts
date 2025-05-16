@@ -82,7 +82,7 @@ export class PassengerComponent {
 
   getPickupAbbrev(passenger: Passenger) {
     const pickupAbbrev = this.pickupAbbrevs.find((pickup: IPickup) => passenger.pickup?.includes(pickup.name))?.abbreviation;
-    return pickupAbbrev ? ` (${pickupAbbrev}) ` : 'No Location';
+    return pickupAbbrev ? ` (${pickupAbbrev}) ` : ' (No Location) ';
   }
 
   onBusChange(bus: IBus) {

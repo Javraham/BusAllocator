@@ -28,10 +28,6 @@ export class TourOrganizerService {
     this.TimeToPassengersMap = map;
   }
 
-  getAllBuses(){
-    return this.buses
-  }
-
   getBusesByTime(time: string) {
     return this.buses.get(time);
   }
@@ -47,6 +43,7 @@ export class TourOrganizerService {
 
   async printResult() {
     const response = await lastValueFrom(this.pickupService.getPickupLocations())
+    console.log(response)
     const optionsResponse = await lastValueFrom(this.optionsService.getOptions())
     console.log(optionsResponse)
     const sortedOptions = optionsResponse.data.sort((optionA: any, optionB: any) => optionA.priority - optionB.priority).map((option: any) => option.abbrev)

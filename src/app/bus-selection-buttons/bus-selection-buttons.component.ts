@@ -61,6 +61,7 @@ export class BusSelectionButtonsComponent implements OnInit{
   }
 
   onCheckboxChange(event: any) {
+    event.preventDefault();
     const value = event.target.value;
     const optionsForTime = this.selectedOptions.get(this.time) || [];
 
