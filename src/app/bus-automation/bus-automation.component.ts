@@ -50,7 +50,7 @@ export class BusAutomationComponent implements OnInit{
   allBuses !: IBus[];
   passengerToBusMap = new Map<string, string>();
   scheduleMap = new Map<string, Map<string, string>>();
-  isPickupToBusOpen = false;
+  isPickupToBusOpen = new Map<string, boolean>;
   form = new FormGroup({
     accessKey: new FormControl('', Validators.required),
     secretKey: new FormControl('', [Validators.required, Validators.email])

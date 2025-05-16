@@ -212,8 +212,8 @@
       [buses]="allBuses"
     >
     </app-bus-selection-buttons>
-    <button class="btn btn-info" (click)="isPickupToBusOpen = !isPickupToBusOpen">Map Pickup to Bus</button>
-    <ng-container *ngIf="isPickupToBusOpen">
+    <button class="btn btn-info" (click)="isPickupToBusOpen.set(time[0], !isPickupToBusOpen.get(time[0]))">Map Pickup to Bus</button>
+    <ng-container *ngIf="isPickupToBusOpen.get(time[0])">
       <h5 class="mb-0">Set pickup location to specific bus</h5>
       <h6 class="mt-1 fs-4">Must choose buses first in order to appear below</h6>
       <div class="row m-0 g-3">
