@@ -237,7 +237,7 @@ export class BusAutomationComponent implements OnInit{
       const result = await lastValueFrom(this.pickupsService.getPickupLocations())
       const busesResult = await lastValueFrom(this.busService.getBuses())
       this.allBuses = busesResult.data.sort((a: any, b: any) => {
-        return parseInt(a.busId.substring(1)) - parseInt(b.busId.substring(1));
+        return a.sortOrder - b.sortOrder;
       });
       this.pickupAbbrevs = result.data;
       this.loading = false

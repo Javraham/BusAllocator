@@ -4,5 +4,6 @@ export interface IBus {
   docId?: string,
   busId: string,
   capacity: number,
+  sortOrder?: number,
   color?: string
 }

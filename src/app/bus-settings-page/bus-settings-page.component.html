@@ -50,6 +50,10 @@
       <span class="input-group-addon">Color</span>
       <input class="form-control" formControlName="color" type="text"/>
     </div>
+    <div class="input-group col-lg-2 col-md-3 col-sm-6">
+      <span class="input-group-addon">Sort Order</span>
+      <input class="form-control" formControlName="sortOrder" min="1" type="number"/>
+    </div>
   </div>
   <ng-container *ngIf="errorMsg">
     <p style="color: #FC5923; font-weight: 500">{{errorMsg}}</p>

@@ -22,6 +22,7 @@ export class BusSettingsPageComponent {
   busForm: FormGroup = new FormGroup<any>({
     busId: new FormControl('', [Validators.required]),
     capacity: new FormControl('', [Validators.required]),
+    sortOrder: new FormControl('', [Validators.required]),
     color: new FormControl('')
   })
   errorMsg = '';
@@ -43,12 +44,12 @@ export class BusSettingsPageComponent {
   insertSorted(list: IBus[], item: IBus): IBus[] {
     let low = 0;
     let high = list.length;
-    const itemNumber = parseInt(item.busId.substring(1), 10); // Extract the number part from the item
+    const itemNumber = item.sortOrder || 0; // Extract the number part from the item
 
     // Binary search to find the correct insertion point
     while (low < high) {
       const mid = Math.floor((low + high) / 2);
-      const midNumber = parseInt(list[mid].busId.substring(1), 10); // Extract the number part from the list item
+      const midNumber = list[mid].sortOrder || 0; // Extract the number part from the list item
       if (midNumber < itemNumber) {
         low = mid + 1;
       } else {
@@ -64,7 +65,7 @@ export class BusSettingsPageComponent {
     this.busService.getBuses().subscribe({
       next: (response) => {
         this.buses = response.data.sort((a: any, b: any) => {
-          return parseInt(a.busId.substring(1)) - parseInt(b.busId.substring(1));
+          return a.sortOrder - b.sortOrder;
         });
         console.log(this.buses);
       },
@@ -75,7 +76,7 @@ export class BusSettingsPageComponent {
   addBus(event: any) {
     if(this.busForm.valid){
       this.errorMsg = "";
-      this.busService.addBus({color: this.busForm.value.color, busId: this.busForm.value.busId, capacity: this.busForm.value.capacity}).subscribe({
+      this.busService.addBus({color: this.busForm.value.color, busId: this.busForm.value.busId, capacity: this.busForm.value.capacity, sortOrder: this.busForm.value.sortOrder}).subscribe({
         next: response => {
           this.buses = this.insertSorted(this.buses, response.data)
           this.isBusFormOpen = false
@@ -93,19 +94,20 @@ export class BusSettingsPageComponent {
   updateBus() {
     if(this.busForm.valid){
       this.errorMsg = "";
-      this.busService.updateBus({docId: this.busDocId, color: this.busForm.value.color, busId: this.busForm.value.busId, capacity: this.busForm.value.capacity}).subscribe({
+      this.busService.updateBus({docId: this.busDocId, color: this.busForm.value.color, busId: this.busForm.value.busId, capacity: this.busForm.value.capacity, sortOrder: this.busForm.value.sortOrder}).subscribe({
         next: response => {
           const busFound = this.buses.find(bus => response.data.docId === bus.docId)
           if(busFound){
             busFound.busId = response.data.busId;
             busFound.capacity = response.data.capacity;
+            busFound.sortOrder = response.data.sortOrder;
             if(response.data.color){
               busFound.color = response.data.color
             }
           }
           this.isBusFormOpen = false
           this.buses.sort((a: any, b: any) => {
-            return parseInt(a.busId.substring(1)) - parseInt(b.busId.substring(1));
+            return a.sortOrder - b.sortOrder;
           });
           console.log(response.data)
         },
@@ -114,7 +116,7 @@ export class BusSettingsPageComponent {
       this.busForm.reset()
     }
     else{
-      this.errorMsg = "! Please fill in the Bus ID and Capacity fields"
+      this.errorMsg = "! Please fill in the Bus ID, Capacity and SortOrder fields"
       console.log('not valid')
     }
   }
@@ -133,7 +135,8 @@ export class BusSettingsPageComponent {
     this.busForm.patchValue({
       busId: busObject.busId,
       capacity: busObject.capacity,
-      color: busObject.color
+      color: busObject.color,
+      sortOrder: busObject.sortOrder
     });
   }
 
