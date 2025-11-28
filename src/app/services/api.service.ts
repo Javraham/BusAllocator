@@ -81,10 +81,10 @@ export class ApiService {
       "bookingStatuses": [
         "CONFIRMED",
       //   // "CART",
-      //   // "REQUESTED",
-      //   // "RESERVED",
-      //   // "ARRIVED",
-      //   // "NO_SHOW",
+        // "REQUESTED",
+        "RESERVED",
+        "ARRIVED",
+        "NO_SHOW",
       //   // "REJECTED"
       ],
       "startDateRange": {
@@ -92,7 +92,9 @@ export class ApiService {
         "includeLower": true,
         "includeUpper": true,
         "to": date
-      }
+      },
+      "page": 1,
+      "pageSize": 5,
     }
 
     try {
@@ -153,59 +155,47 @@ export class ApiService {
     const experiences = await lastValueFrom(this.experiencesService.getExperiences())
 
     console.log(experiences);
-    // Prepare the two fetch options
-    const confirmedFetchOptions = {
-      ...fetchOptions,
-      body: {
-        ...fetchOptions.body,
-        "bookingStatuses": ["CONFIRMED"],
-        "startDateRange": {
-          "from": date,
-          "includeLower": true,
-          "includeUpper": true,
-          "to": date
-        }
-      }
-    };
-
-    const arrivedFetchOptions = {
-      ...fetchOptions,
-      body: {
-        ...fetchOptions.body,
-        "bookingStatuses": ["ARRIVED"],
-        "startDateRange": {
-          "from": date,
-          "includeLower": true,
-          "includeUpper": true,
-          "to": date
-        }
-      }
-    };
-
-    const noShowFetchOptions = {
-      ...fetchOptions,
-      body: {
-        ...fetchOptions.body,
-        "bookingStatuses": ["NO_SHOW"],
-        "startDateRange": {
-          "from": date,
-          "includeLower": true,
-          "includeUpper": true,
-          "to": date
-        }
-      }
-    };
 
     try {
-      // Execute both fetch calls in parallel
-      const [jsonConfirmedData, jsonArrivedData, jsonNoShowData] = await Promise.all([
-        this.fetchBokunData(confirmedFetchOptions),
-        this.fetchBokunData(arrivedFetchOptions),
-        this.fetchBokunData(noShowFetchOptions)
-      ]);
+      const baseBody = {
+        ...(fetchOptions.body ?? {}),
+        "bookingStatuses": ["CONFIRMED", "ARRIVED", "NO_SHOW", "RESERVED", "NOT_SET", "PENDING"],
+        "startDateRange": {
+          "from": date,
+          "includeLower": true,
+          "includeUpper": true,
+          "to": date
+        }
+      };
 
-      const combinedResults = [...jsonArrivedData.results, ...jsonConfirmedData.results, ...jsonNoShowData.results];
-      const result = await lastValueFrom(this.optionsService.getOptions());
+      const combinedResults: any[] = [];
+      let currentPage = 1;
+
+      // Keep requesting additional pages until the API returns no results
+      while (true) {
+        const paginatedFetchOptions = {
+          ...fetchOptions,
+          body: {
+            ...baseBody,
+            "page": currentPage,
+          }
+        };
+
+        const jsonConfirmedData = await this.fetchBokunData(paginatedFetchOptions);
+
+        if (!jsonConfirmedData || !Array.isArray(jsonConfirmedData.results)) {
+          throw new Error("Unexpected response from Bokun API");
+        }
+
+        if (!jsonConfirmedData.results.length) {
+          break;
+        }
+
+        combinedResults.push(...jsonConfirmedData.results);
+        currentPage += 1;
+      }
+
+      const result = await lastValueFrom(this.optionsService.getOptions()); // Get the options
 
       console.log(combinedResults)
       return combinedResults
