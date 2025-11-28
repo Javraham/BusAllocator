@@ -86,7 +86,7 @@ export class TourOrganizer {
     return result.sort((a, b) => b[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0) - a[1].reduce((total, currentValue) => total + currentValue.numOfPassengers, 0))
   }
 
-  allocatePassengers(
+  allocatePassengersV2(
     passengerToBusList: ([string, string])[], 
     pickupToBusList: ([string, string])[], 
     sortedLocations = this.getSortedLocation(), 
@@ -365,27 +365,91 @@ export class TourOrganizer {
     }
   }
   
-
-  
-
-  allocatePassengersBackup(): boolean {
+  allocatePassengers(passengerToBusList: ([string, string])[], pickupToBusList: ([string, string])[], sortedLocations = this.getSortedLocation(), numOfTries: number = 0, isSplit: boolean = false ): [boolean, boolean] {
     try {
-      const sortedLocations = Array.from(this.pickupLocations).sort((a, b) => {
-        return this.getNumOfPassengersByPickup(b[0]) - this.getNumOfPassengersByPickup(a[0]);
-      });
+      const totalCapacities = this.buses.reduce((bus, currentBus) => bus + currentBus.capacity, 0)
+      const totalPassengers = sortedLocations.reduce((val, current) => {
+        return val + current[1].reduce((passenger, currentPassenger) => passenger + currentPassenger.numOfPassengers, 0)
+      }, 0)
+      console.log(sortedLocations)
+
+      if(totalCapacities < totalPassengers){
+        return [false, false]
+      }
+      else if(numOfTries == this.getSortedLocation()[0][1].length){
+        console.log("Splitting the largest pickup location")
+        return this.allocatePassengersV2(passengerToBusList, pickupToBusList, sortedLocations, 0, isSplit)
+      }
+
+      const addedPassengers: Set<string> = new Set<string>();
+
+      for (const [pickupLocation, busId] of pickupToBusList) {
+        const bus = this.buses.find(bus => bus.busId === busId) as Bus;
+        const passengersWithLocation = sortedLocations.find(([pickup, _]) =>
+          pickup.includes(pickupLocation)
+        );
+
+        if (passengersWithLocation) {
+          const passengers = passengersWithLocation[1];
+
+          for(const passenger of passengers){
+            if (passenger) {
+              if(!bus.addPassenger(passenger)){
+                return [false, false]
+              }
+
+              addedPassengers.add(passenger.confirmationCode);
+            }
+          }
+        }
+      }
+
+      for (const [passengerCode, busId] of passengerToBusList) {
+        const bus = this.buses.find(bus => bus.busId === busId) as Bus;
+        const locationWithPassenger = sortedLocations.find(([_, passengers]) =>
+          passengers.some(passenger => passenger.confirmationCode === passengerCode)
+        );
+
+        if (locationWithPassenger) {
+          const passengers = locationWithPassenger[1];
+          const passenger = passengers.find(p => p.confirmationCode === passengerCode);
+
+          if (passenger) {
+            if(!bus.addPassenger(passenger)){
+              return [false, false]
+            }
+
+            addedPassengers.add(passenger.confirmationCode);
+
+          }
+        }
+      }
+      const shuffle = (array: any[]) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      };
 
       const allocate = (index: number): boolean => {
         if (index >= sortedLocations.length) {
           return true;
         }
 
-        const [location, passengers] = sortedLocations[index];
+        let [location, passengers] = sortedLocations[index];
+
+        if(addedPassengers.size){
+          console.log("Passengers: ", passengers.filter(passenger => addedPassengers.has(passenger.confirmationCode)))
+          passengers = passengers.filter(passenger => !addedPassengers.has(passenger.confirmationCode))
+        }
+
         const availableBuses = this.buses.filter(bus =>
-          bus.getCurrentLoad() + this.getNumOfPassengersByPickup(location) <= bus.capacity)
-          .sort((a, b) => a.getCurrentLoad() - b.getCurrentLoad() || a.capacity - b.capacity);
+          bus.getCurrentLoad() + passengers.reduce((total, currentValue) => total+currentValue.numOfPassengers, 0) <= bus.capacity);
+
+        shuffle(availableBuses); // Shuffle the available buses
 
         for (const bus of availableBuses) {
-          if (bus.getCurrentLoad() + this.getNumOfPassengersByPickup(location) <= bus.capacity) {
+          if (bus.getCurrentLoad() + passengers.reduce((total, currentValue) => total+currentValue.numOfPassengers, 0) <= bus.capacity) {
             passengers.forEach(passenger => bus.addPassenger(passenger));
             if (allocate(index + 1)) {
               return true;
@@ -393,21 +457,24 @@ export class TourOrganizer {
             passengers.forEach(passenger => bus.removePassenger(passenger)); // Backtrack
           }
         }
-        return false;
-      };
+
+        return false
+      }
 
       const success = allocate(0);
 
       if (!success) {
         console.error("Unable to allocate all passengers.");
-        return false
+        return this.allocatePassengers(passengerToBusList, pickupToBusList, this.getSplitSortedLocation(numOfTries), numOfTries+1, true)
       }
 
-      return success;
+      return [success, isSplit];
     } catch (error) {
       console.error(error);
-      return false;
+      return [false, false];
     }
   }
+
+
 
 }
