@@ -53,6 +53,15 @@ export class EmailAutomationComponent {
   constructor(private route: ActivatedRoute, private templateService: EmailTemplatesService, private router: Router, private apiService: ApiService, private passengerService: PassengersService, private emailService: MessageService) {
   }
 
+  getWhatsAppTemplate(pickup: IPickup): string | undefined {
+    if (this.chosenEmailTemplate === 'tour reminder') {
+      return pickup.whatsappTemplate;
+    } else {
+      const template = this.emailTemplates?.find(template => template.email === this.chosenEmailTemplate);
+      return template?.whatsappTemplate;
+    }
+  }
+
   getEmailObject(location: IPickup, time: string): IEmail {
     const dateObject = new Date(this.date)
     const day = dateObject.getUTCDate();

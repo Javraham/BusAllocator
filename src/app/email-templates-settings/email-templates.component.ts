@@ -27,7 +27,8 @@ export class EmailTemplatesComponent implements OnInit{
   emailTemplates !: EmailTemplate[];
   templateForm: FormGroup = new FormGroup<any>({
     name: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.required)
+    email: new FormControl('', Validators.required),
+    whatsappTemplate: new FormControl('')
   })
 
   errorMsg = '';
@@ -51,7 +52,7 @@ export class EmailTemplatesComponent implements OnInit{
     if(this.templateForm.valid){
       console.log(this.templateForm.value)
       this.errorMsg = "";
-      this.emailTemplatesService.addTemplate({email: this.templateForm.value.email, name: this.templateForm.value.name}).subscribe({
+      this.emailTemplatesService.addTemplate({email: this.templateForm.value.email, name: this.templateForm.value.name, whatsappTemplate: this.templateForm.value.whatsappTemplate}).subscribe({
         next: response => {
           this.emailTemplates.push(response.data)
           this.isTemplateFormOpen = false
@@ -82,12 +83,13 @@ export class EmailTemplatesComponent implements OnInit{
   updateTemplate() {
     if(this.templateForm.valid){
       this.errorMsg = "";
-      this.emailTemplatesService.updateTemplate({docId: this.templateDocId, name: this.templateForm.value.name, email: this.templateForm.value.email}).subscribe({
+      this.emailTemplatesService.updateTemplate({docId: this.templateDocId, name: this.templateForm.value.name, email: this.templateForm.value.email, whatsappTemplate: this.templateForm.value.whatsappTemplate}).subscribe({
         next: response => {
           const templateFound = this.emailTemplates.find(template => response.data.docId === template.docId)
           if(templateFound){
             templateFound.name = response.data.name;
-            templateFound.email = response.data.email
+            templateFound.email = response.data.email;
+            templateFound.whatsappTemplate = response.data.whatsappTemplate
           }
           this.isTemplateFormOpen = false
           this.templateForm.reset()
@@ -112,9 +114,11 @@ export class EmailTemplatesComponent implements OnInit{
     this.isTemplateFormOpen = true;
     this.isEditingTemplate = true;
 
+    const template = this.emailTemplates.find(t => t.docId === templateObject.docId);
     this.templateForm.patchValue({
       name: templateObject.name,
-      email: templateObject.emailTemplateBody
+      email: templateObject.emailTemplateBody,
+      whatsappTemplate: template?.whatsappTemplate || ''
     });
   }
   constructor(private emailTemplatesService: EmailTemplatesService) {

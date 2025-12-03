@@ -15,7 +15,8 @@ export interface IExperience {
 export interface EmailTemplate {
   docId?: string,
   name: string,
-  email: string
+  email: string,
+  whatsappTemplate?: string
 }
 
 export interface IEmailTemplate {
