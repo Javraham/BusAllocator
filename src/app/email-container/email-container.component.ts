@@ -49,9 +49,9 @@ export class EmailContainerComponent implements OnInit{
     let currentBody = this.emailInfo.body;
     const mapLinkIndex = currentBody.indexOf("Map link:");
 
-    // if (mapLinkIndex !== -1) {
-    //   currentBody = currentBody.slice(0, mapLinkIndex) + "Tour Date: " + this.emailInfo.formattedDate + '\n\n' + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(mapLinkIndex);
-    // }
+    if (mapLinkIndex !== -1) {
+      currentBody = currentBody.slice(0, mapLinkIndex) + "Tour Date: " + this.emailInfo.formattedDate + '\n\n' + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(mapLinkIndex);
+    }
 
     if(!currentBody){
       currentBody = "Hi there! We are just confirming your pick-up details for your Niagara tour! \n\n"
