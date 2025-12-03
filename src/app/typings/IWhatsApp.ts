@@ -7,4 +7,5 @@ export interface IWhatsApp{
   date: string,
   location: string,
   tourTime?: string,
+  whatsappTemplate?: string
 }

@@ -43,7 +43,6 @@ export class ExpandableSectionComponent{
   }
 
   getUnsentEmailsPassengerNames() {
-    console.log(this.EmailSentLocations)
     const filteredPassengers = this.passengers.filter(passenger => !this.EmailSentLocations?.sentTo.includes(passenger.email))
     return filteredPassengers.map(passenger => passenger.firstName + " " + passenger.lastName)
   }

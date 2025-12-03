@@ -2,7 +2,8 @@ export interface IPickup {
   docId?: string,
   name: string,
   abbreviation: string,
-  emailTemplate: IEmailTemplate
+  emailTemplate: IEmailTemplate,
+  whatsappTemplate?: string
 }
 
 export interface IExperience {

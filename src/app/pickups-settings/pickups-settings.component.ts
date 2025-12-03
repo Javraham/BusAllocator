@@ -27,6 +27,7 @@ export class PickupsSettingsComponent implements OnInit{
   pickupsForm: FormGroup = new FormGroup<any>({
     name: new FormControl('', Validators.required),
     abbreviation: new FormControl('', Validators.required),
+    whatsappTemplate: new FormControl(''),
     body: new FormControl('', Validators.required)
   })
   errorMsg = '';
@@ -51,7 +52,7 @@ export class PickupsSettingsComponent implements OnInit{
     if(this.pickupsForm.valid){
       console.log(this.pickupsForm.value)
       this.errorMsg = "";
-      this.pickupsService.addPickupLocation({emailTemplate: {body: this.pickupsForm.value.body}, name: this.pickupsForm.value.name, abbreviation: this.pickupsForm.value.abbreviation}).subscribe({
+      this.pickupsService.addPickupLocation({emailTemplate: {body: this.pickupsForm.value.body}, name: this.pickupsForm.value.name, abbreviation: this.pickupsForm.value.abbreviation, whatsappTemplate: this.pickupsForm.value.whatsappTemplate}).subscribe({
         next: response => {
           this.pickupLocations.push(response.data)
           this.isPickupFormOpen = false
@@ -83,13 +84,14 @@ export class PickupsSettingsComponent implements OnInit{
   updatePickup() {
     if(this.pickupsForm.valid){
       this.errorMsg = "";
-      this.pickupsService.updatePickupLocation({docId: this.pickupDocId, name: this.pickupsForm.value.name, abbreviation: this.pickupsForm.value.abbreviation, emailTemplate: {body: this.pickupsForm.value.body}}).subscribe({
+      this.pickupsService.updatePickupLocation({docId: this.pickupDocId, name: this.pickupsForm.value.name, abbreviation: this.pickupsForm.value.abbreviation, emailTemplate: {body: this.pickupsForm.value.body}, whatsappTemplate: this.pickupsForm.value.whatsappTemplate}).subscribe({
         next: response => {
           const pickupFound = this.pickupLocations.find(pickup => response.data.docId === pickup.docId)
           if(pickupFound){
             pickupFound.name = response.data.name;
             pickupFound.abbreviation = response.data.abbreviation;
-            pickupFound.emailTemplate = response.data.emailTemplate
+            pickupFound.emailTemplate = response.data.emailTemplate;
+            pickupFound.whatsappTemplate = response.data.whatsappTemplate
           }
           this.isPickupFormOpen = false
           this.pickupsForm.reset()
@@ -114,10 +116,12 @@ export class PickupsSettingsComponent implements OnInit{
     this.isPickupFormOpen = true;
     this.isEditingPickup = true;
 
+    const pickup = this.pickupLocations.find(p => p.docId === pickupObject.docId);
     this.pickupsForm.patchValue({
       name: pickupObject.name,
       abbreviation: pickupObject.abbreviation,
-      body: pickupObject.emailTemplateBody
+      body: pickupObject.emailTemplateBody,
+      whatsappTemplate: pickup?.whatsappTemplate || ''
     });
   }
   constructor(private pickupsService: PickupsService) {

@@ -21,6 +21,7 @@ export class EmailContainerComponent implements OnInit{
   @Input() pickupAbbrev !: string;
   @Input() tourTime !: string;
   @Input() EmailSentLocations !: any;
+  @Input() whatsappTemplate?: string;
   form: FormGroup = new FormGroup<any>({});
   passengers: Passenger[] = []
   successMsg: string = '';
@@ -48,11 +49,11 @@ export class EmailContainerComponent implements OnInit{
     let currentBody = this.emailInfo.body;
     const mapLinkIndex = currentBody.indexOf("Map link:");
 
-    if (mapLinkIndex !== -1) {
-      currentBody = currentBody.slice(0, mapLinkIndex) + "Tour Date: " + this.emailInfo.formattedDate + '\n\n' + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(mapLinkIndex);
-    }
+    // if (mapLinkIndex !== -1) {
+    //   currentBody = currentBody.slice(0, mapLinkIndex) + "Tour Date: " + this.emailInfo.formattedDate + '\n\n' + "Location: " + this.pickupPlace + '\n\n' + currentBody.slice(mapLinkIndex);
+    // }
 
-    else if(!currentBody){
+    if(!currentBody){
       currentBody = "Hi there! We are just confirming your pick-up details for your Niagara tour! \n\n"
         + "Tour Date: " + this.emailInfo.formattedDate
         + '\n\n'
@@ -131,7 +132,7 @@ export class EmailContainerComponent implements OnInit{
   //   })
   // }
 
-  sendWhatsApp(endpoint: string, event?: any): Promise<any> {
+  sendWhatsApp(endpoint: string, event?: any) : Promise<any> {
     if(event) event.preventDefault(); // Prevent form submission
 
     const regex = /(https?:\/\/[^\s]+)/g;
@@ -152,7 +153,8 @@ export class EmailContainerComponent implements OnInit{
         mapLink,
         date: this.emailInfo.date,
         location: this.emailInfo.location,
-        tourTime: this.tourTime
+        tourTime: this.tourTime,
+        whatsappTemplate: this.whatsappTemplate
       },endpoint).subscribe({
         next: (response) => {
           this.errorMsg = ""

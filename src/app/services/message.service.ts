@@ -9,7 +9,7 @@ import {IWhatsApp} from "../typings/IWhatsApp";
   providedIn: 'root'
 })
 export class MessageService {
-  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
+  url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
   getSentMessages(date: string, collection: string): Observable<any>{
@@ -63,8 +63,11 @@ export class MessageService {
       mapLink: WhatsAppObject.mapLink,
       location: WhatsAppObject.location,
       date: WhatsAppObject.date,
-      tourTime: WhatsAppObject.tourTime
+      tourTime: WhatsAppObject.tourTime,
+      whatsappTemplate: WhatsAppObject.whatsappTemplate
     }
+
+    console.log(body)
 
     return this.http.post(`${this.url}${endpoint}`, body, {headers, responseType: 'json'}).pipe(
       catchError(error => {
