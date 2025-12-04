@@ -73,7 +73,7 @@ export class OptionsSettingsPageComponent implements OnInit{
       this.optionsForm.reset()
     }
     else{
-      this.errorMsg = "! Please fill in the Bokun Name and Custome Name"
+      this.errorMsg = "! Please fill in the Rate ID and Custom Name"
       console.log('not valid')
     }
   }
@@ -119,7 +119,7 @@ export class OptionsSettingsPageComponent implements OnInit{
       this.optionsForm.reset()
     }
     else{
-      this.errorMsg = "! Please fill in the Bokun Name and Custom Name"
+      this.errorMsg = "! Please fill in the Rate ID and Custom Name"
       console.log('not valid')
     }
   }
