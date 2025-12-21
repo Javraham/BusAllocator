@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable} from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
 import { IExperience } from "../typings/ipickup";
 
 @Injectable({
@@ -9,7 +9,7 @@ import { IExperience } from "../typings/ipickup";
 
 export class ExperiencesService {
   experiences: IExperience[] = []
-  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
+  url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
   setExperiences() {
@@ -17,7 +17,7 @@ export class ExperiencesService {
       'Content-Type': 'application/json',
     });
 
-    const response = this.http.get<any>(`${this.url}experiences/getExperiences`, {headers})
+    const response = this.http.get<any>(`${this.url}experiences/getExperiences`, { headers })
     response.subscribe({
       next: (response) => {
         this.experiences = response.data
@@ -31,7 +31,7 @@ export class ExperiencesService {
       'Content-Type': 'application/json',
     });
 
-    return this.http.post<any>(`${this.url}experiences/addExperience`, newExperience, {headers})
+    return this.http.post<any>(`${this.url}experiences/addExperience`, newExperience, { headers })
   }
 
   deleteExperience(docId: string): Observable<any> {
@@ -42,7 +42,7 @@ export class ExperiencesService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-    return this.http.put<any>(`${this.url}experiences/updateExperience`, body, {headers})
+    return this.http.put<any>(`${this.url}experiences/updateExperience`, body, { headers })
   }
 
   getExperiences(): Observable<any> {
@@ -50,6 +50,6 @@ export class ExperiencesService {
       'Content-Type': 'application/json',
     });
 
-    return this.http.get<any>(`${this.url}experiences/getExperiences`, {headers})
+    return this.http.get<any>(`${this.url}experiences/getExperiences`, { headers })
   }
 }

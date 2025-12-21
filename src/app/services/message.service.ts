@@ -1,27 +1,27 @@
 import { Injectable } from '@angular/core';
-import {IEmail} from "../typings/IEmail";
-import {ISMS} from "../typings/ISMS";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {catchError, Observable, throwError} from "rxjs";
-import {IWhatsApp} from "../typings/IWhatsApp";
+import { IEmail } from "../typings/IEmail";
+import { ISMS } from "../typings/ISMS";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { catchError, Observable, throwError } from "rxjs";
+import { IWhatsApp } from "../typings/IWhatsApp";
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
-  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
+  url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
-  getSentMessages(date: string, collection: string): Observable<any>{
+  getSentMessages(date: string, collection: string): Observable<any> {
     let params = new HttpParams().set('date', date).set('collection', collection);
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
 
-    return this.http.get(`${this.url}getMessagesByDate`, {params, headers})
+    return this.http.get(`${this.url}getMessagesByDate`, { params, headers })
   }
 
-  sendSMS(SMSObject: ISMS, endpoint: string): Observable<any>{
+  sendSMS(SMSObject: ISMS, endpoint: string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'x-api-key': 'hjkuwnndjw23=dkl'
@@ -39,7 +39,7 @@ export class MessageService {
       tourTime: SMSObject.tourTime
     }
 
-    return this.http.post(`${this.url}${endpoint}`, body, {headers, responseType: 'json'}).pipe(
+    return this.http.post(`${this.url}${endpoint}`, body, { headers, responseType: 'json' }).pipe(
       catchError(error => {
         console.error('Error occurred:', error.error);
         return throwError(() => new Error(error.error.message));
@@ -47,7 +47,7 @@ export class MessageService {
     );
   }
 
-  sendWhatsApp(WhatsAppObject: IWhatsApp, endpoint: string): Observable<any>{
+  sendWhatsApp(WhatsAppObject: IWhatsApp, endpoint: string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'x-api-key': 'hjkuwnndjw23=dkl'
@@ -69,7 +69,7 @@ export class MessageService {
 
     console.log(body)
 
-    return this.http.post(`${this.url}${endpoint}`, body, {headers, responseType: 'json'}).pipe(
+    return this.http.post(`${this.url}${endpoint}`, body, { headers, responseType: 'json' }).pipe(
       catchError(error => {
         console.error('Error occurred:', error.error);
         return throwError(() => new Error(error.error.message));
@@ -92,7 +92,7 @@ export class MessageService {
       location: emailObject.location,
       tourTime: emailObject.tourTime
     }
-    return this.http.post(`${this.url}send-email`, body, {headers, responseType: 'json'}).pipe(
+    return this.http.post(`${this.url}send-email`, body, { headers, responseType: 'json' }).pipe(
       catchError(error => {
         console.error('Error occurred:', error);
         return throwError(() => new Error(error.error.message));

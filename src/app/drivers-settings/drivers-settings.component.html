@@ -1,0 +1,66 @@
+<style>
+    .add-button {
+        border: 1px solid #4B7FCC;
+        background: none;
+        border-radius: 5px;
+        color: #4B7FCC;
+        font-weight: bold;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+
+    .form>div {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .form-buttons button {
+        padding: 5px 10px 5px 10px;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .add-driver {
+        background-color: #4B7FCC;
+    }
+
+    .delete-driver {
+        background-color: crimson;
+    }
+
+    h4 {
+        margin-top: 20px;
+        color: grey;
+    }
+</style>
+
+<h4>Bus Drivers</h4>
+<button class="add-button" (click)="openNewDriverForm()"><i class="bi bi-plus"></i> Add Driver</button>
+<form [formGroup]="driverForm" *ngIf="isDriverFormOpen" (ngSubmit)="isEditingDriver ? updateDriver() : addDriver()"
+    class="form-group" style="margin-top: 10px">
+    <div class="row form" style="margin: 0">
+        <div class="input-group col-lg-3 col-md-4 col-sm-6">
+            <span class="input-group-addon">Name</span>
+            <input class="form-control" formControlName="name" type="text" required />
+        </div>
+        <div class="input-group col-lg-3 col-md-4 col-sm-6">
+            <span class="input-group-addon">PIN</span>
+            <input class="form-control" formControlName="pin" type="text" required />
+        </div>
+    </div>
+    <ng-container *ngIf="errorMsg">
+        <p style="color: #FC5923; font-weight: 500">{{errorMsg}}</p>
+    </ng-container>
+    <div class="form-buttons" style="display: flex; gap: 10px">
+        <button type="submit" class="add-driver">Save</button>
+        <button *ngIf="isEditingDriver" (click)="deleteDriver()" type="button" class="delete-driver">Delete
+            Driver</button>
+        <button type="button" class="add-driver" (click)="cancelDriver()">Cancel</button>
+    </div>
+</form>
+<div class="row">
+    <app-driver-object (editDriver)="editDriver($event)" class="col-lg-4 col-md-6 col-sm-12"
+        *ngFor="let driver of drivers" [driverObject]="driver"></app-driver-object>
+</div>

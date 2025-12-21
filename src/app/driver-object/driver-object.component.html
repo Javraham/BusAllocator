@@ -1,0 +1,28 @@
+<style>
+  button {
+    border: none;
+    background: none;
+  }
+
+  .content {
+    padding: 1.1em;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  p {
+    margin: 0;
+  }
+</style>
+
+<div class="content">
+  <button (click)="sendDriverObjectToParent()"><i class="bi bi-pencil"></i></button>
+  <div>
+    <p><strong>Name:</strong> {{driverObject.name}}</p>
+    <p><strong>PIN:</strong> {{driverObject.pin}}</p>
+  </div>
+</div>

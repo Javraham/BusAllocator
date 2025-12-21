@@ -1,24 +1,25 @@
 <style>
-  h3{
+  h3 {
     font-weight: 500;
     font-size: 2em;
   }
 
-  p{
+  p {
     font-size: 0.8em;
   }
 
-  #container > * {
+  #container>* {
     margin-bottom: 10px;
   }
 
-  #sub-header{
+  #sub-header {
     color: #818181;
     font-weight: 500;
   }
 
   .settings-nav {
-    flex-wrap: wrap; /* Allows items to wrap if they don't fit in one row */
+    flex-wrap: wrap;
+    /* Allows items to wrap if they don't fit in one row */
   }
 
   .nav-item {
@@ -32,16 +33,16 @@
     font-size: 1em;
   }
 
-  button.active{
+  button.active {
     background-color: white;
   }
 
-  h4{
+  h4 {
     margin-top: 20px;
     color: grey;
   }
 
-  .add-button{
+  .add-button {
     border: 1px solid #4B7FCC;
     background: none;
     border-radius: 5px;
@@ -50,41 +51,45 @@
     margin-top: 10px;
   }
 
-  .form > div{
+  .form>div {
     margin-right: 10px;
     margin-bottom: 10px;
   }
 
-  .form-buttons button{
+  .form-buttons button {
     padding: 5px 10px 5px 10px;
     border-radius: 5px;
     color: white;
     border: none;
   }
 
-  .add-bus{
+  .add-bus {
     background-color: #4B7FCC;
   }
 
-  .delete-bus{
+  .delete-bus {
     background-color: crimson;
   }
-
 </style>
 
 <div id="container">
   <h3>Settings</h3>
   <p id="sub-header">Manage your settings and configurations here</p>
   <div class="settings-nav">
-    <button class="nav-item" *ngFor="let option of navOptions" (click)="changeSelectedOption(option)" [ngClass]="{'active': selectOption == option}">
+    <button class="nav-item" *ngFor="let option of navOptions" (click)="changeSelectedOption(option)"
+      [ngClass]="{'active': selectOption == option}">
       {{option}}
     </button>
   </div>
-  <hr style="width: 100%; height: 1px; background-color: black"/>
+  <hr style="width: 100%; height: 1px; background-color: black" />
   <div class="content">
 
     <ng-container *ngIf="selectOption === 'Buses'">
       <app-bus-settings-page></app-bus-settings-page>
+    </ng-container>
+
+    <ng-container *ngIf="selectOption === 'Bus Drivers'">
+      <app-drivers-settings></app-drivers-settings>
     </ng-container>
 
     <ng-container *ngIf="selectOption === 'Pickups'">

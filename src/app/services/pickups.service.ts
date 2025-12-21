@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {IPickup} from "../typings/ipickup";
-import {Observable} from "rxjs";
-import {IBookingOptions} from "../typings/IBookingOptions";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { IPickup } from "../typings/ipickup";
+import { Observable } from "rxjs";
+import { IBookingOptions } from "../typings/IBookingOptions";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import {IBookingOptions} from "../typings/IBookingOptions";
 
 export class PickupsService {
   pickupLocations: IPickup[] = []
-  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
+  url: string = 'http://localhost:3000/'
   constructor(private http: HttpClient) { }
 
   setPickupLocations() {
@@ -18,7 +18,7 @@ export class PickupsService {
       'Content-Type': 'application/json',
     });
 
-    const locationsResponse = this.http.get<any>(`${this.url}pickups/getPickupLocations`, {headers})
+    const locationsResponse = this.http.get<any>(`${this.url}pickups/getPickupLocations`, { headers })
     locationsResponse.subscribe({
       next: (response) => {
         this.pickupLocations = response.data
@@ -32,7 +32,7 @@ export class PickupsService {
       'Content-Type': 'application/json',
     });
     console.log(newPickupLocation)
-    return this.http.post<any>(`${this.url}pickups/addPickupLocation`, newPickupLocation, {headers})
+    return this.http.post<any>(`${this.url}pickups/addPickupLocation`, newPickupLocation, { headers })
   }
 
   deletePickupLocation(docId: string): Observable<any> {
@@ -44,7 +44,7 @@ export class PickupsService {
       'Content-Type': 'application/json',
     });
     console.log(body)
-    return this.http.put<any>(`${this.url}pickups/updatePickupLocation`, body, {headers})
+    return this.http.put<any>(`${this.url}pickups/updatePickupLocation`, body, { headers })
   }
 
   getPickupLocations(): Observable<any> {
@@ -52,6 +52,6 @@ export class PickupsService {
       'Content-Type': 'application/json',
     });
 
-    return this.http.get<any>(`${this.url}pickups/getPickupLocations`, {headers})
+    return this.http.get<any>(`${this.url}pickups/getPickupLocations`, { headers })
   }
 }
