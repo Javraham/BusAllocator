@@ -1,22 +1,26 @@
-import {Component, OnInit} from '@angular/core';
-import {BusSelectionButtonsComponent} from "../bus-selection-buttons/bus-selection-buttons.component";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
-import {PassengerComponent} from "../passenger/passenger.component";
-import {FetchBookingDataOptions} from "../typings/fetch-data-booking-options";
-import {Passenger} from "../typings/passenger";
-import {Bus} from "../services/bus";
-import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
-import {IBus} from "../typings/BusSelection";
-import {ApiService} from "../services/api.service";
-import {TourOrganizerService} from "../services/tour-organizer.service";
-import {PassengersService} from "../services/passengers.service";
-import {TourOrganizer} from "../services/organizer";
-import {BusService} from "../services/bus.service";
-import {PickupsService} from "../services/pickups.service";
-import {lastValueFrom} from "rxjs";
-import {IPickup} from "../typings/ipickup";
-import {ActivatedRoute, Router} from "@angular/router";
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { BusSelectionButtonsComponent } from "../bus-selection-buttons/bus-selection-buttons.component";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { NgForOf, NgIf } from "@angular/common";
+import { PassengerComponent } from "../passenger/passenger.component";
+import { FetchBookingDataOptions } from "../typings/fetch-data-booking-options";
+import { Passenger } from "../typings/passenger";
+import { Bus } from "../services/bus";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { IBus } from "../typings/BusSelection";
+import { ApiService } from "../services/api.service";
+import { TourOrganizerService } from "../services/tour-organizer.service";
+import { PassengersService } from "../services/passengers.service";
+import { TourOrganizer } from "../services/organizer";
+import { BusService } from "../services/bus.service";
+import { PickupsService } from "../services/pickups.service";
+import { lastValueFrom } from "rxjs";
+import { IPickup } from "../typings/ipickup";
+import { ActivatedRoute, Router } from "@angular/router";
+import { DriversService } from "../services/drivers.service";
+import { IDriver } from "../typings/IDriver";
+import { PublishedAssignmentsService } from "../services/published-assignments.service";
+import { IPublishedAssignment, IBusAssignment, IAssignedPassenger } from "../typings/IPublishedAssignment";
 
 @Component({
   selector: 'app-bus-automation',
@@ -32,7 +36,7 @@ import {ActivatedRoute, Router} from "@angular/router";
   templateUrl: './bus-automation.component.html',
   styleUrl: './bus-automation.component.css'
 })
-export class BusAutomationComponent implements OnInit{
+export class BusAutomationComponent implements OnInit {
   passengers: Passenger[] = [];
   date: string = '';
   busList: Bus[] = [];
@@ -45,7 +49,7 @@ export class BusAutomationComponent implements OnInit{
   loadContent: boolean = false;
   isAuthorized: boolean = localStorage.getItem('access') != null && localStorage.getItem('secret') != null;
   errorMsg: string = "";
-  loading:boolean = false;
+  loading: boolean = false;
   canEdit: boolean = false;
   allBuses !: IBus[];
   passengerToBusMap = new Map<string, string>();
@@ -57,8 +61,16 @@ export class BusAutomationComponent implements OnInit{
   });
   pickupAbbrevs !: IPickup[];
 
+  // Driver assignment properties
+  drivers: IDriver[] = [];
+  busToDriverMap = new Map<string, string>();  // busId -> driverId
+  publishMessage: string = '';
+  publishError: string = '';
+  isPublishing: boolean = false;
+  openDropdowns = new Map<string, boolean>(); // Track which dropdowns are open
 
-  trackByConfirmationID(index: number, passenger: Passenger){
+
+  trackByConfirmationID(index: number, passenger: Passenger) {
     return passenger.confirmationCode
   }
 
@@ -66,9 +78,9 @@ export class BusAutomationComponent implements OnInit{
     const prevValue = this.busSelections.get(event[1]) || []
 
     this.busSelections.set(event[1], event[0])
-    for(const key of this.passengerToBusMap.keys()){
+    for (const key of this.passengerToBusMap.keys()) {
       console.log(event[0], this.passengerToBusMap.get(key))
-      if(!event[0].includes(<string>this.passengerToBusMap.get(key)) && this.passengerService.getPassengerByConfirmationID(this.passengers, key)?.startTime === event[1]){
+      if (!event[0].includes(<string>this.passengerToBusMap.get(key)) && this.passengerService.getPassengerByConfirmationID(this.passengers, key)?.startTime === event[1]) {
         this.passengerToBusMap.set(key, "No Bus Selected")
       }
     }
@@ -85,16 +97,18 @@ export class BusAutomationComponent implements OnInit{
   }
 
   constructor(private router: Router,
-              private route: ActivatedRoute,
-              private sanitizer: DomSanitizer,
-              private apiService: ApiService,
-              private tourBusOrganizer: TourOrganizerService,
-              private passengerService: PassengersService,
-              private busService: BusService,
-              private pickupsService: PickupsService,
-            )
-            {
-            }
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private apiService: ApiService,
+    private tourBusOrganizer: TourOrganizerService,
+    private passengerService: PassengersService,
+    private busService: BusService,
+    private pickupsService: PickupsService,
+    private driversService: DriversService,
+    private publishedAssignmentsService: PublishedAssignmentsService,
+    private eRef: ElementRef
+  ) {
+  }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -123,21 +137,21 @@ export class BusAutomationComponent implements OnInit{
     this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(printedResult);
   }
 
-  onDateChange(event: any){
+  onDateChange(event: any) {
     this.date = event.target.value;
     this.router.navigate([], { queryParams: { date: this.date } });
   }
 
-  getBusesByTime(time: string){
+  getBusesByTime(time: string) {
     return this.tourBusOrganizer.getBusesByTime(time)
   }
 
-  resetBusesForTime(event: [string, number]){
+  resetBusesForTime(event: [string, number]) {
     this.usedBuses.delete(event[0]);
     this.successMap.delete(event[0]);
     this.busSelections.delete(event[0]);
-    for(const key of this.passengerToBusMap.keys()){
-      if(this.passengerService.getPassengerByConfirmationID(this.passengers, key)?.startTime === event[0]){
+    for (const key of this.passengerToBusMap.keys()) {
+      if (this.passengerService.getPassengerByConfirmationID(this.passengers, key)?.startTime === event[0]) {
         this.passengerToBusMap.delete(key)
       }
     }
@@ -158,7 +172,7 @@ export class BusAutomationComponent implements OnInit{
     const organizer = new TourOrganizer(busInfoList)
     organizer.loadData(passengers)
     const isAllocated = organizer.allocatePassengers(passengerToBusList, pickupToBusMap)
-    if(isAllocated[0]){
+    if (isAllocated[0]) {
       console.log(isAllocated)
       organizer.buses.forEach(bus => {
         console.log(bus, bus.getCurrentLoad())
@@ -167,7 +181,7 @@ export class BusAutomationComponent implements OnInit{
       this.tourBusOrganizer.setBuses(passengers[0].startTime, organizer.buses);
       this.successMap.set(passengers[0].startTime, isAllocated)
     }
-    else{
+    else {
       this.successMap.set(passengers[0].startTime, isAllocated)
     }
 
@@ -177,13 +191,13 @@ export class BusAutomationComponent implements OnInit{
   getNumOfPassengersByTime() {
     const passengers = this.passengers.filter(passenger => this.excludedPassengers.filter(val => passenger.confirmationCode == val.confirmationCode).length == 0)
     const map: Map<string, number> = new Map<string, number>();
-    for(const passenger of this.passengers){
-      if(map.has(passenger.startTime)){
+    for (const passenger of this.passengers) {
+      if (map.has(passenger.startTime)) {
         let passengers = map.get(passenger.startTime) as number
         passengers += this.excludedPassengers.find(val => val.confirmationCode == passenger.confirmationCode) == undefined ? passenger.numOfPassengers : 0;
         map.set(passenger.startTime, passengers)
       }
-      else{
+      else {
         map.set(passenger.startTime, this.excludedPassengers.find(val => val.confirmationCode == passenger.confirmationCode) == undefined ? passenger.numOfPassengers : 0)
       }
     }
@@ -200,11 +214,11 @@ export class BusAutomationComponent implements OnInit{
   }
 
   updatePassengerExclusionList(event: Passenger) {
-    if(this.excludedPassengers.filter(val => val.confirmationCode == event.confirmationCode).length != 0){
+    if (this.excludedPassengers.filter(val => val.confirmationCode == event.confirmationCode).length != 0) {
       const index = this.excludedPassengers.findIndex(val => val.confirmationCode == event.confirmationCode);
       this.excludedPassengers.splice(index, 1)
     }
-    else{
+    else {
       this.excludedPassengers.push(event)
     }
     console.log(this.excludedPassengersMap)
@@ -230,12 +244,17 @@ export class BusAutomationComponent implements OnInit{
   }
 
   async loadPassengers() {
-    try{
+    try {
       this.errorMsg = "";
       this.loading = true;
       const passengers = await this.apiService.getPassengersFromProductBookings(this.date, this.apiService.fetchOptions)
       const result = await lastValueFrom(this.pickupsService.getPickupLocations())
       const busesResult = await lastValueFrom(this.busService.getBuses())
+
+      // Load drivers
+      const driversResult = await lastValueFrom(this.driversService.getDrivers())
+      this.drivers = driversResult.data || [];
+
       this.allBuses = busesResult.data.sort((a: any, b: any) => {
         return a.sortOrder - b.sortOrder;
       });
@@ -246,12 +265,15 @@ export class BusAutomationComponent implements OnInit{
       this.canEdit = false
       this.usedBuses = new Map<string, string[]>();
       this.successMap = new Map<string, [boolean, boolean]>();
+      this.busToDriverMap = new Map<string, string>();  // Reset driver assignments
+      this.publishMessage = '';
+      this.publishError = '';
       this.resetBusSelection()
       this.tourBusOrganizer.resetBuses();
       this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
       console.log(this.passengerService.getPickupLocationsFromPassengers(passengers, this.pickupAbbrevs));
     }
-    catch (e: any){
+    catch (e: any) {
       this.loading = false
       this.errorMsg = e.message;
       this.loadContent = false
@@ -264,7 +286,7 @@ export class BusAutomationComponent implements OnInit{
   }
 
   Authorize() {
-    if(!this.isAuthorized){
+    if (!this.isAuthorized) {
       this.apiService.setKeys(this.form.value);
       this.form.reset();
       this.form.get('accessKey')?.disable();
@@ -272,7 +294,7 @@ export class BusAutomationComponent implements OnInit{
       this.loadPassengers()
     }
 
-    else{
+    else {
       this.apiService.clearKeys();
       this.form.get('accessKey')?.enable();
       this.form.get('secretKey')?.enable();
@@ -305,7 +327,7 @@ export class BusAutomationComponent implements OnInit{
   editCapacity(busId: string, event: any) {
     console.log(event)
     this.allBuses.forEach(bus => {
-      if(bus.busId === busId){
+      if (bus.busId === busId) {
         bus.capacity = parseInt(event.target.value)
       }
     })
@@ -316,7 +338,7 @@ export class BusAutomationComponent implements OnInit{
     console.log(this.passengerToBusMap)
   }
 
-  updatePickupBusList(pickup: string, busId: string, time: string){
+  updatePickupBusList(pickup: string, busId: string, time: string) {
     const map = this.scheduleMap.get(time) || new Map<string, string>
     map.set(pickup, busId)
     this.scheduleMap.set(time, map)
@@ -330,10 +352,10 @@ export class BusAutomationComponent implements OnInit{
   }
 
   updateAllowEditBus(event: Passenger) {
-    if(this.passengerToBusMap.has(event.confirmationCode)){
+    if (this.passengerToBusMap.has(event.confirmationCode)) {
       this.passengerToBusMap.delete(event.confirmationCode)
     }
-    else{
+    else {
       this.passengerToBusMap.set(event.confirmationCode, "Bus Not Chosen")
     }
     console.log(this.passengerToBusMap)
@@ -353,6 +375,145 @@ export class BusAutomationComponent implements OnInit{
         .catch((err) => {
           console.log('Failed to copy HTML to clipboard', err);
         });
+    }
+  }
+  // Driver assignment methods
+  onDriverAssigned(event: { busId: string, driverId: string, time: string }) {
+    this.busToDriverMap.set(`${event.busId}-${event.time}`, event.driverId);
+    console.log('Driver assigned:', event, this.busToDriverMap);
+  }
+
+  getDriverById(driverId: string): IDriver | undefined {
+    return this.drivers.find(d => d.docId === driverId);
+  }
+
+  getSelectedDriver(busId: string, time: string): string {
+    return this.busToDriverMap.get(`${busId}-${time}`) || '';
+  }
+
+  isDriverAssignedElsewhere(driverId: string, currentBusId: string, time: string): boolean {
+    // Only check for conflicts within the SAME time slot
+    const busesInTime = this.usedBuses.get(time) || [];
+
+    for (const busId of busesInTime) {
+      if (busId !== currentBusId) {
+        const assignedDriver = this.busToDriverMap.get(`${busId}-${time}`);
+        if (assignedDriver === driverId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  // Custom dropdown methods
+  toggleDropdown(busId: string, time: string) {
+    const key = `${busId}-${time}`;
+    const isOpen = this.openDropdowns.get(key) || false;
+    // Close all other dropdowns
+    this.openDropdowns.clear();
+    // Toggle this one
+    if (!isOpen) {
+      this.openDropdowns.set(key, true);
+    }
+  }
+
+  selectDriver(busId: string, driverId: string, time: string) {
+    this.onDriverAssigned({ busId, driverId, time });
+    this.openDropdowns.set(`${busId}-${time}`, false);
+  }
+
+  getDriverNameById(driverId: string): string {
+    const driver = this.drivers.find(d => d.docId === driverId);
+    return driver?.name || '-- Select Driver --';
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: any) {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.openDropdowns.clear();
+    } else {
+      // If the click is inside the component, we still need to check if it's inside a dropdown
+      // This is a simplified check. A more robust one checks if the target is within a .custom-dropdown
+      // However, since toggleDropdown stops propagation or handles its own logic, we just need to handle clicks *elsewhere* in the component if needed.
+      // Actually, the easiest way for "click outside" specific dropdowns is:
+      const isDropdownClick = event.target.closest('.custom-dropdown');
+      if (!isDropdownClick) {
+        this.openDropdowns.clear();
+      }
+    }
+  }
+
+  // Check if all used buses have drivers assigned
+  allBusesHaveDrivers(): boolean {
+    for (const [time, buses] of this.usedBuses.entries()) {
+      for (const busId of buses) {
+        if (!this.busToDriverMap.has(`${busId}-${time}`) || !this.busToDriverMap.get(`${busId}-${time}`)) {
+          return false;
+        }
+      }
+    }
+    return this.usedBuses.size > 0;  // Must have at least some buses
+  }
+
+  // Publish assignments to driver portal
+  async publishToDriverPortal() {
+    this.publishMessage = '';
+    this.publishError = '';
+
+    // Validate all buses have drivers
+    if (!this.allBusesHaveDrivers()) {
+      this.publishError = 'Please assign a driver to each bus before publishing.';
+      return;
+    }
+
+    this.isPublishing = true;
+
+    try {
+      const assignments: IBusAssignment[] = [];
+
+      for (const [time, buses] of this.usedBuses.entries()) {
+        for (const busId of buses) {
+          const driverId = this.busToDriverMap.get(`${busId}-${time}`) || '';
+          const driver = this.getDriverById(driverId);
+
+          // Get passengers for this bus
+          const busPassengers = this.tourBusOrganizer.getBusesByTime(time)
+            ?.find(b => b.busId === busId)
+            ?.getPassengers() || [];
+
+          const assignedPassengers: IAssignedPassenger[] = busPassengers.map((p: Passenger) => ({
+            confirmationCode: p.confirmationCode,
+            firstName: p.firstName,
+            lastName: p.lastName,
+            pickup: p.pickup,
+            numOfPassengers: p.numOfPassengers,
+            numOfChildren: p.numOfChildren,
+            phoneNumber: p.phoneNumber,
+          }));
+
+          assignments.push({
+            busId,
+            driverId,
+            driverName: driver?.name || 'Unknown',
+            time,
+            passengers: assignedPassengers,
+          });
+        }
+      }
+
+      const publishedAssignment: IPublishedAssignment = {
+        date: this.date,
+        publishedAt: new Date().toISOString(),
+        assignments,
+      };
+
+      await lastValueFrom(this.publishedAssignmentsService.publishAssignment(publishedAssignment));
+      this.publishMessage = 'Successfully published to Driver Portal!';
+      this.isPublishing = false;
+    } catch (e: any) {
+      this.publishError = `Failed to publish: ${e.message || 'Unknown error'}`;
+      this.isPublishing = false;
     }
   }
 }

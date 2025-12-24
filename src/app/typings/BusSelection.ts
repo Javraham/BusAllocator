@@ -5,5 +5,7 @@ export interface IBus {
   busId: string,
   capacity: number,
   sortOrder?: number,
-  color?: string
+  color?: string,
+  assignedDriverId?: string  // Reference to driver for current assignment
 }
+

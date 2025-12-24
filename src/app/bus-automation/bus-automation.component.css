@@ -1,0 +1,155 @@
+/* Driver Assignment Section */
+.driver-section {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    scroll-behavior: auto;
+    position: relative;
+    contain: layout;
+}
+
+.driver-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.driver-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+}
+
+.driver-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    position: relative;
+    /* Ensure z-index works locally if needed */
+}
+
+/* Remove contain: layout as it creates a stacking context trap for fixed/absolute children */
+.driver-section {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 20;
+    /* Removed contain: layout; */
+}
+
+.chip-label {
+    background-color: #4169E0;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+.driver-select {
+    border: 1px solid #e2e8f0;
+    background: white;
+    width: 100%;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    overflow-anchor: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Prevent scroll anchoring on parent elements */
+.driver-grid,
+.driver-row {
+    overflow-anchor: none;
+}
+
+.driver-select:focus {
+    color: #4169E0;
+    border-color: #4169E0;
+}
+
+/* Custom dropdown wrapper */
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.custom-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+.custom-dropdown-trigger:hover {
+    border-color: #4169E0;
+}
+
+.custom-dropdown-trigger.open {
+    border-color: #4169E0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.custom-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #4169E0;
+    border-top: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.custom-dropdown-option {
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.custom-dropdown-option:hover {
+    background-color: #f0f4ff;
+}
+
+.custom-dropdown-option.selected {
+    background-color: #4169E0;
+    color: white;
+}
+
+.custom-dropdown-option.disabled {
+    color: #999;
+    cursor: not-allowed;
+}

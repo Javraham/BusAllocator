@@ -1,5 +1,4 @@
 <style>
-
   h4 {
     margin: 0;
     font-weight: 500;
@@ -17,7 +16,8 @@
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.3s ease;
-    outline: none; /* Remove default outline */
+    outline: none;
+    /* Remove default outline */
   }
 
   .styled-button:hover {
@@ -30,10 +30,11 @@
     background: linear-gradient(135deg, #FC5923 0%, #4169E0 100%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transform: translateY(0);
-    color: white; /* Ensure text color stays white */
+    color: white;
+    /* Ensure text color stays white */
   }
 
-  #content{
+  #content {
     padding: 3em;
   }
 
@@ -48,16 +49,16 @@
     border: 5px solid rgb(239 246 255);
   }
 
-  .date{
+  .date {
     margin-bottom: 20px;
     margin-top: 10px;
   }
 
-  h1{
+  h1 {
     color: black;
   }
 
-  h5{
+  h5 {
     font-weight: bold;
     font-size: 20px;
     padding-top: 10px;
@@ -77,7 +78,7 @@
     border-radius: 5px;
   }
 
-  .error-text{
+  .error-text {
     color: #b63f3f;
     margin: 0;
     font-weight: 600;
@@ -87,9 +88,11 @@
     display: flex;
     position: absolute;
     flex-direction: column;
-    gap: 10px; /* Space between loading lines */
+    gap: 10px;
+    /* Space between loading lines */
     width: 50%;
-    margin: 20px auto; /* Center the placeholder */
+    margin: 20px auto;
+    /* Center the placeholder */
   }
 
   .loading-title,
@@ -101,12 +104,14 @@
   }
 
   .loading-title {
-    width: 60%; /* Adjust width for title */
+    width: 60%;
+    /* Adjust width for title */
     height: 20px;
   }
 
   .loading-line {
-    width: 100%; /* Full width for content lines */
+    width: 100%;
+    /* Full width for content lines */
     height: 15px;
   }
 
@@ -114,26 +119,28 @@
     0% {
       background-position: -200% 0;
     }
+
     100% {
       background-position: 200% 0;
     }
   }
 
   .edit-button {
-    background: #FC5923FF; /* Blue background */
+    background: #FC5923FF;
+    /* Blue background */
     color: white;
     border: none;
     border-radius: 5px;
     margin-bottom: 10px;
   }
 
-  #sub-header{
+  #sub-header {
     color: #818181;
     font-weight: 500;
     font-size: 0.8em;
   }
 
-  h3{
+  h3 {
     font-weight: 500;
     font-size: 2em;
   }
@@ -146,31 +153,36 @@
     <div class="">
       <div class="input-group">
         <span class="input-group-addon">AccessKey</span>
-        <input class="form-control" formControlName="accessKey" name="access-key" type="text" required/>
+        <input class="form-control" formControlName="accessKey" name="access-key" type="text" required />
       </div>
     </div>
     <div class="">
       <div class="input-group">
         <span class="input-group-addon">SecretKey</span>
-        <input class="form-control" formControlName="secretKey" name="secret-key" type="text" required/>
+        <input class="form-control" formControlName="secretKey" name="secret-key" type="text" required />
       </div>
     </div>
     <div class="">
-      <button *ngIf="!isAuthorized; else notAuthorized" type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-lock-fill" style="color: white"></i> Authorize</button>
+      <button *ngIf="!isAuthorized; else notAuthorized" type="submit" class="btn"
+        style="background-color: #FC5923; color: white"><i class="bi bi-lock-fill" style="color: white"></i>
+        Authorize</button>
       <ng-template #notAuthorized>
-        <button type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-unlock-fill" style="color: white"></i> Logout</button>
+        <button type="submit" class="btn" style="background-color: #FC5923; color: white"><i class="bi bi-unlock-fill"
+            style="color: white"></i> Logout</button>
       </ng-template>
     </div>
   </form>
 </div>
 <div class="date" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
-    <div class="input-group" style="flex-grow: 0; width: auto">
-      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-      <input id="date" type="date" class="form-control" [value]="date" (change)="onDateChange($event)" />
-    </div>
+  <div class="input-group" style="flex-grow: 0; width: auto">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+    <input id="date" type="date" class="form-control" [value]="date" (change)="onDateChange($event)" />
+  </div>
   <div>
-    <button class="btn btn-primary" style="background-color: #4169E0; color: white; margin-right: 10px" (click)="getPrevDayPassengers()">Previous day</button>
-    <button class="btn btn-primary" style="background-color: #4169E0; color: white" (click)="getNextDayPassengers()">Next day</button>
+    <button type="button" class="btn btn-primary" style="background-color: #4169E0; color: white; margin-right: 10px"
+      (click)="getPrevDayPassengers()">Previous day</button>
+    <button type="button" class="btn btn-primary" style="background-color: #4169E0; color: white"
+      (click)="getNextDayPassengers()">Next day</button>
   </div>
 </div>
 <div *ngIf="errorMsg.length > 0" class="error-msg col-md-6">
@@ -184,35 +196,24 @@
   <div class="loading-line"></div>
 </div>
 <div *ngIf="loadContent && !loading">
-  <button class="edit-button btn" (click)="toggleEditCapacities()">Edit Bus Capacities</button>
+  <button type="button" class="edit-button btn" (click)="toggleEditCapacities()">Edit Bus Capacities</button>
   <div class="row" *ngIf="canEdit">
     <div *ngFor="let bus of allBuses" class="form-group col-lg-1 col-md-2 col-sm-4">
-      <label [for] = "'input' + '-' + bus.busId" style="font-size: 1.1em" class="">{{ bus.busId }}</label>
-      <input
-        role="switch"
-        type="number"
-        class="form-control"
-        [value]="bus.capacity"
-        [id] = "'input' + '-' + bus.busId"
-        (change)="editCapacity(bus.busId, $event)"
-      />
+      <label [for]="'input' + '-' + bus.busId" style="font-size: 1.1em" class="">{{ bus.busId }}</label>
+      <input role="switch" type="number" class="form-control" [value]="bus.capacity" [id]="'input' + '-' + bus.busId"
+        (change)="editCapacity(bus.busId, $event)" />
     </div>
   </div>
   <h4>Passenger List</h4>
   <div *ngFor="let time of getNumOfPassengersByTime()">
     <h5>{{time[0][0] === "0" ? time[0].slice(1) : time[0]}} - {{time[1]}} Passengers</h5>
-    <app-bus-selection-buttons
-      (removeBuses)="resetBusesForTime($event)"
-      [time]="time[0]"
-      [usedBuses]="usedBuses"
-      (updatedUsedBuses)="updateUsedBuses($event)"
-      (updateCheckList)="updateBusSelections($event)"
-      [successMap]="successMap"
-      [selectedOptions]="busSelections"
-      [buses]="allBuses"
-    >
+    <app-bus-selection-buttons (removeBuses)="resetBusesForTime($event)" [time]="time[0]" [usedBuses]="usedBuses"
+      (updatedUsedBuses)="updateUsedBuses($event)" (updateCheckList)="updateBusSelections($event)"
+      [successMap]="successMap" [selectedOptions]="busSelections" [buses]="allBuses" [drivers]="drivers"
+      [busToDriverMap]="busToDriverMap" (driverAssigned)="onDriverAssigned($event)">
     </app-bus-selection-buttons>
-    <button class="btn btn-info" (click)="isPickupToBusOpen.set(time[0], !isPickupToBusOpen.get(time[0]))">Map Pickup to Bus</button>
+    <button type="button" class="btn btn-info" style="margin-top: 15px;"
+      (click)="isPickupToBusOpen.set(time[0], !isPickupToBusOpen.get(time[0]))">Map Pickup to Bus</button>
     <ng-container *ngIf="isPickupToBusOpen.get(time[0])">
       <h5 class="mb-0">Set pickup location to specific bus</h5>
       <h6 class="mt-1 fs-4">Must choose buses first in order to appear below</h6>
@@ -221,15 +222,17 @@
           <div class="">
             {{pickup}}
             <div class="radio-buttons">
-              <label [for]="'any - ' + pickup + '-' + time[0]" class="radio-inline" >
-                <input [checked]="!scheduleMap.get(time[0])?.has(pickup)" [id]="'any - ' + pickup + '-' + time[0]" type="radio" [value]="" (change)="removePickup(pickup, time[0])"/>
+              <label [for]="'any - ' + pickup + '-' + time[0]" class="radio-inline">
+                <input [checked]="!scheduleMap.get(time[0])?.has(pickup)" [id]="'any - ' + pickup + '-' + time[0]"
+                  type="radio" [value]="" (change)="removePickup(pickup, time[0])" />
                 any
               </label>
               <ng-container *ngFor="let bus of busSelections.get(time[0])">
-                <label [for]="bus + '-' + pickup + '-' + time[0]" class="radio-inline" >
-                  <input [id]="bus + '-' + pickup + '-' + time[0]" type="radio" [name]="'busGroup-' + pickup + '-' + time[0]"
-                         [value]="bus" [checked]="bus === scheduleMap.get(time[0])?.get(pickup)" (change)="updatePickupBusList(pickup, bus, time[0])"
-                  />
+                <label [for]="bus + '-' + pickup + '-' + time[0]" class="radio-inline">
+                  <input [id]="bus + '-' + pickup + '-' + time[0]" type="radio"
+                    [name]="'busGroup-' + pickup + '-' + time[0]" [value]="bus"
+                    [checked]="bus === scheduleMap.get(time[0])?.get(pickup)"
+                    (change)="updatePickupBusList(pickup, bus, time[0])" />
                   {{ bus }}
                 </label>
               </ng-container>
@@ -238,38 +241,122 @@
         </div>
       </div>
     </ng-container>
+
+
+    <!-- Driver Assignment (Moved from child component) -->
+    <div class="driver-section" *ngIf="successMap.get(time[0])?.[0] && drivers.length > 0">
+      <div class="driver-title">
+        <i class="bi bi-person-badge"></i>
+        <span>Assign Drivers to Sorted Buses</span>
+      </div>
+
+      <div class="driver-grid">
+        <div class="driver-row" *ngFor="let busId of usedBuses.get(time[0])">
+          <span class="chip-label">{{ busId }}</span>
+          <!-- Custom dropdown to avoid native select scroll issues -->
+          <div class="custom-dropdown">
+            <div class="custom-dropdown-trigger" [class.open]="openDropdowns.get(busId + '-' + time[0])"
+              (click)="toggleDropdown(busId, time[0])">
+              <span>{{ getDriverNameById(getSelectedDriver(busId, time[0])) }}</span>
+              <i class="bi bi-chevron-down"></i>
+            </div>
+            <div class="custom-dropdown-menu" *ngIf="openDropdowns.get(busId + '-' + time[0])">
+              <div class="custom-dropdown-option" (click)="selectDriver(busId, '', time[0])">
+                -- Select Driver --
+              </div>
+              <div *ngFor="let driver of drivers" class="custom-dropdown-option"
+                [class.selected]="getSelectedDriver(busId, time[0]) === driver.docId"
+                [class.disabled]="isDriverAssignedElsewhere(driver.docId || '', busId, time[0])"
+                (click)="!isDriverAssignedElsewhere(driver.docId || '', busId, time[0]) && selectDriver(busId, driver.docId || '', time[0])">
+                {{ driver.name }}
+              </div>
+            </div>
+          </div>
+          <i class="bi bi-check-circle-fill" style="color: #10b981;" *ngIf="getSelectedDriver(busId, time[0])"></i>
+        </div>
+      </div>
+    </div>
     <h5 class="mb-0" *ngIf="!getBusesByTime(time[0])">Passengers</h5>
     <div *ngIf="getBusesByTime(time[0]); then isAllocated else isNotAllocated"></div>
     <ng-template #isAllocated>
       <div *ngFor="let bus of getBusesByTime(time[0])">
         <h5>Bus ({{bus.busId}}) - {{bus.getCurrentLoad()}} Passengers</h5>
         <div class="row">
-          <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of bus.getPassengers(); trackBy: trackByConfirmationID">
-            <app-passenger [selectedPassengerBus]="passengerToBusMap" (updateAllowEditBus)="updateAllowEditBus($event)" (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections" [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="bus.color"></app-passenger>
+          <div class="col-lg-4 col-md-6 col-sm-12"
+            *ngFor="let passenger of bus.getPassengers(); trackBy: trackByConfirmationID">
+            <app-passenger [selectedPassengerBus]="passengerToBusMap" (updateAllowEditBus)="updateAllowEditBus($event)"
+              (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections"
+              [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers"
+              (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger"
+              [busColor]="bus.color"></app-passenger>
           </div>
         </div>
       </div>
       <div *ngIf="excludedPassengersMap.has(time[0]) && (excludedPassengersMap.get(time[0])?.length || 0) > 0">
         <h5>Excluded Passengers</h5>
         <div class="row">
-          <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let passenger of excludedPassengersMap.get(time[0]); trackBy: trackByConfirmationID">
-            <app-passenger (updateAllowEditBus)="updateAllowEditBus($event)" [selectedPassengerBus]="passengerToBusMap"  (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections" [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4169E0'"></app-passenger>
+          <div class="col-lg-4 col-md-6 col-sm-12"
+            *ngFor="let passenger of excludedPassengersMap.get(time[0]); trackBy: trackByConfirmationID">
+            <app-passenger (updateAllowEditBus)="updateAllowEditBus($event)" [selectedPassengerBus]="passengerToBusMap"
+              (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections"
+              [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers"
+              (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger"
+              [busColor]="'#4169E0'"></app-passenger>
           </div>
         </div>
       </div>
     </ng-template>
     <ng-template #isNotAllocated>
       <div class="row">
-        <div *ngFor="let passenger of getPassengersByTime(time[0]); trackBy: trackByConfirmationID" class="col-lg-4 col-md-6 col-sm-12">
-          <app-passenger (updateAllowEditBus)="updateAllowEditBus($event)" [selectedPassengerBus]="passengerToBusMap" (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections" [buses]="allBuses" [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers" (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger" [busColor]="'#4169E0'"></app-passenger>
+        <div *ngFor="let passenger of getPassengersByTime(time[0]); trackBy: trackByConfirmationID"
+          class="col-lg-4 col-md-6 col-sm-12">
+          <app-passenger (updateAllowEditBus)="updateAllowEditBus($event)" [selectedPassengerBus]="passengerToBusMap"
+            (updatePassengerBusList)="updatePassengerBusList($event)" [selectedBuses]="busSelections" [buses]="allBuses"
+            [pickupAbbrevs]="pickupAbbrevs" [excludedPassengers]="excludedPassengers"
+            (updatePassengerExclusionList)="updatePassengerExclusionList($event)" [passengerInfo]="passenger"
+            [busColor]="'#4169E0'"></app-passenger>
         </div>
       </div>
     </ng-template>
   </div>
   <div style="margin-top: 20px" class="">
-    <button class="styled-button" (click)="getHTML()">Generate List</button>
-    <button style="margin-left: 10px" class="styled-button" (click)="copyText()">Copy Text</button>
+    <button type="button" class="styled-button" (click)="getHTML()">Generate List</button>
+    <button type="button" style="margin-left: 10px" class="styled-button" (click)="copyText()">Copy Text</button>
     <div class="text-area" id="generated-txt" contenteditable="true" [innerHTML]="htmlContent">
     </div>
+  </div>
+
+  <!-- Publish to Driver Portal Section -->
+  <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
+    <h4 style="margin-bottom: 15px;"><i class="bi bi-send" style="margin-right: 8px;"></i>Publish to Driver Portal</h4>
+    <p style="color: #666; margin-bottom: 15px;">Once you've sorted passengers and assigned drivers, publish the list so
+      drivers can view it in the driver portal.</p>
+
+    <div *ngIf="publishError"
+      style="background-color: #fda5a5; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+      <i class="bi bi-exclamation-circle" style="color: #b63f3f; margin-right: 5px;"></i>
+      <span style="color: #b63f3f; font-weight: 600;">{{ publishError }}</span>
+    </div>
+
+    <div *ngIf="publishMessage"
+      style="background-color: #d1ffbd; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+      <i class="bi bi-check-circle" style="color: #0ab937; margin-right: 5px;"></i>
+      <span style="color: #0ab937; font-weight: 600;">{{ publishMessage }}</span>
+    </div>
+
+    <button type="button" class="styled-button" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);"
+      (click)="publishToDriverPortal()" [disabled]="isPublishing || usedBuses.size === 0">
+      <span *ngIf="!isPublishing"><i class="bi bi-cloud-upload" style="margin-right: 5px;"></i>Publish to Driver
+        Portal</span>
+      <span *ngIf="isPublishing">Publishing...</span>
+    </button>
+
+    <p *ngIf="usedBuses.size === 0" style="color: #999; font-size: 12px; margin-top: 10px;">
+      Sort passengers into buses first before publishing.
+    </p>
+    <p *ngIf="usedBuses.size > 0 && !allBusesHaveDrivers()" style="color: #e67e22; font-size: 12px; margin-top: 10px;">
+      <i class="bi bi-exclamation-triangle" style="margin-right: 5px;"></i>
+      Please assign a driver to each bus before publishing.
+    </p>
   </div>
 </div>

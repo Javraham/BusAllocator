@@ -1,5 +1,5 @@
 <style>
-  .passenger-container{
+  .passenger-container {
     border-radius: 5px;
     border-left: 10px solid black;
     padding: 1.1em;
@@ -10,7 +10,7 @@
     overflow: hidden;
   }
 
-  span{
+  span {
     font-weight: 700;
     font-size: 1.2rem;
     margin: 0;
@@ -18,13 +18,14 @@
     overflow-wrap: break-word;
   }
 
-  .bi{
+  .bi {
     font-size: 1.4em;
   }
 
-  p{
+  p {
     font-size: 0.9em;
   }
+
   button {
     font-size: 1.2rem;
     background-color: white;
@@ -37,12 +38,12 @@
     padding: 50px;
   }
 
-  .info-container{
+  .info-container {
     /*display: flex;*/
     /*gap: 10px;*/
   }
 
-  .edit{
+  .edit {
     cursor: pointer;
     position: relative;
     padding: 0 5px 0 0;
@@ -55,18 +56,23 @@
 
 <div class="passenger-container" [ngStyle]="getStyles()">
   <div class="info-container">
-    <i class="bi bi-pencil fs-5 edit" *ngIf="!selectedPassengerBus.get(passengerInfo.confirmationCode)" (click)="toggleEditBus()"></i>
-    <i class="bi bi-x-circle fs-5 edit" *ngIf="selectedPassengerBus.get(passengerInfo.confirmationCode)" (click)="toggleEditBus()"></i>
+    <i class="bi bi-pencil fs-5 edit" *ngIf="!selectedPassengerBus.get(passengerInfo.confirmationCode)"
+      (click)="toggleEditBus()"></i>
+    <i class="bi bi-x-circle fs-5 edit" *ngIf="selectedPassengerBus.get(passengerInfo.confirmationCode)"
+      (click)="toggleEditBus()"></i>
     <span>{{passengerInfo.firstName}} {{passengerInfo.lastName}}</span>
     <span>{{getPickupAbbrev(passengerInfo)}}</span>
-    <span style="font-weight: 400; white-space: nowrap">{{passengerInfo.numOfPassengers}} {{passengerInfo.numOfPassengers === 1 ? "Passenger" : "Passengers"}} </span>
-    <span style="font-weight: 400; white-space: nowrap" *ngIf="passengerInfo.numOfChildren !== 0">{{passengerInfo.numOfChildren}} {{passengerInfo.numOfChildren === 1 ? "Child" : "Children"}}</span>
+    <span style="font-weight: 400; white-space: nowrap">{{passengerInfo.numOfPassengers}}
+      {{passengerInfo.numOfPassengers === 1 ? "Passenger" : "Passengers"}} </span>
+    <span style="font-weight: 400; white-space: nowrap"
+      *ngIf="passengerInfo.numOfChildren !== 0">{{passengerInfo.numOfChildren}} {{passengerInfo.numOfChildren === 1 ?
+      "Child" : "Children"}}</span>
     <div class="radio-buttons" *ngIf="selectedPassengerBus.get(passengerInfo.confirmationCode);">
       <ng-container *ngFor="let bus of getSelectedBuses(); trackBy: trackByBusId">
         <label [for]="bus.busId + '-' + passengerInfo.confirmationCode" class="radio-inline">
-          <input [id]="bus.busId + '-' + passengerInfo.confirmationCode" type="radio" name="busGroup-{{passengerInfo.confirmationCode}}"
-                 [value]="bus.busId" (change)="onBusChange(bus)" [checked]="isChecked(bus.busId)"
-          />
+          <input [id]="bus.busId + '-' + passengerInfo.confirmationCode" type="radio"
+            name="busGroup-{{passengerInfo.confirmationCode}}" [value]="bus.busId" (change)="onBusChange(bus)"
+            [checked]="isChecked(bus.busId)" />
           {{ bus.busId }}
         </label>
       </ng-container>
@@ -74,5 +80,6 @@
     </div>
   </div>
 
-  <button [ngClass]="{'active': isActive}" [ngStyle]="getButtonStyles()" (click)="toggleButton()">Exclude</button>
+  <button type="button" [ngClass]="{'active': isActive}" [ngStyle]="getButtonStyles()"
+    (click)="toggleButton()">Exclude</button>
 </div>

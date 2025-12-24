@@ -1,0 +1,131 @@
+/* ================================
+   Bus Selection - Chips UI
+   ================================ */
+
+.bus-selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Bus Chip Grid */
+.bus-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Base Chip Style */
+.bus-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid #e0e0e0;
+    background-color: white;
+    color: #555;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+/* Hover State */
+.bus-chip:hover:not(.disabled):not(.selected) {
+    border-color: #4169E0;
+    color: #4169E0;
+    transform: translateY(-1px);
+}
+
+/* Keep selected chips white on hover */
+.bus-chip.selected:hover {
+    color: white;
+}
+
+/* Selected State */
+.bus-chip.selected {
+    background-color: #4169E0;
+    border-color: #4169E0;
+    color: white;
+    box-shadow: 0 2px 6px rgba(65, 105, 224, 0.3);
+}
+
+/* Disabled State */
+.bus-chip.disabled {
+    background-color: #f5f5f5;
+    border-color: #eeeeee;
+    color: #bdbdbd;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Check Icon inside Chip */
+.bus-chip .check-icon {
+    margin-left: 6px;
+    font-size: 12px;
+}
+
+/* Buttons */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: #4169E0;
+    color: white;
+    border-color: #4169E0;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-outline {
+    background-color: white;
+    color: #4169E0;
+    border-color: #4169E0;
+}
+
+.btn-outline:hover {
+    background-color: #f0f4ff;
+}
+
+/* Messages */
+.status-msg {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.status-msg.success {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #d1fae5;
+}
+
+.status-msg.error {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fee2e2;
+}
