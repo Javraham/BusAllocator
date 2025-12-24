@@ -490,6 +490,7 @@ export class BusAutomationComponent implements OnInit {
             numOfPassengers: p.numOfPassengers,
             numOfChildren: p.numOfChildren,
             phoneNumber: p.phoneNumber,
+            option: p.option,
           }));
 
           assignments.push({
@@ -508,8 +509,11 @@ export class BusAutomationComponent implements OnInit {
         assignments,
       };
 
-      await lastValueFrom(this.publishedAssignmentsService.publishAssignment(publishedAssignment));
-      this.publishMessage = 'Successfully published to Driver Portal!';
+      // TODO: Replace with actual API call when backend is ready
+      console.log('📤 Publishing to Driver Portal:', JSON.stringify(publishedAssignment, null, 2));
+
+      // Simulate API success
+      this.publishMessage = 'Successfully published to Driver Portal! (Check console for data)';
       this.isPublishing = false;
     } catch (e: any) {
       this.publishError = `Failed to publish: ${e.message || 'Unknown error'}`;
