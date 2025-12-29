@@ -38,7 +38,7 @@ export class PublishedAssignmentsService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
         });
-        return this.http.get<any>(`${this.url}assignments/byDriver/${driverId}/${date}`, { headers });
+        return this.http.get<any>(`${this.url}assignments/${date}/driver/${driverId}`, { headers });
     }
 
     /**

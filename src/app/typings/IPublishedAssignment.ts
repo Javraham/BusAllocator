@@ -6,7 +6,7 @@ import { Passenger } from './passenger';
 export interface IPublishedAssignment {
     docId?: string;
     date: string;                    // e.g., "2025-12-23"
-    publishedAt: string;             // ISO timestamp
+    publishedAt?: string;             // ISO timestamp
     assignments: IBusAssignment[];   // Array of bus-driver-passengers
 }
 

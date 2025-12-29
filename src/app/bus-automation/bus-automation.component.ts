@@ -486,7 +486,7 @@ export class BusAutomationComponent implements OnInit {
             confirmationCode: p.confirmationCode,
             firstName: p.firstName,
             lastName: p.lastName,
-            pickup: p.pickup,
+            pickup: this.getPickupAbbreviation(p.pickup),  // Use abbreviation
             numOfPassengers: p.numOfPassengers,
             numOfChildren: p.numOfChildren,
             phoneNumber: p.phoneNumber,
@@ -509,15 +509,22 @@ export class BusAutomationComponent implements OnInit {
         assignments,
       };
 
-      // TODO: Replace with actual API call when backend is ready
-      console.log('📤 Publishing to Driver Portal:', JSON.stringify(publishedAssignment, null, 2));
+      // Call the backend API
+      await lastValueFrom(this.publishedAssignmentsService.publishAssignment(publishedAssignment));
 
-      // Simulate API success
-      this.publishMessage = 'Successfully published to Driver Portal! (Check console for data)';
+      console.log('✅ Successfully published to backend!', publishedAssignment);
+      this.publishMessage = 'Successfully published to Driver Portal!';
       this.isPublishing = false;
     } catch (e: any) {
+      console.error('❌ Publish failed:', e);
       this.publishError = `Failed to publish: ${e.message || 'Unknown error'}`;
       this.isPublishing = false;
     }
+  }
+
+  // Helper method to get pickup abbreviation
+  getPickupAbbreviation(pickupName: string): string {
+    const pickup = this.pickupAbbrevs?.find(p => pickupName.includes(p.name));
+    return pickup?.abbreviation || pickupName;
   }
 }
