@@ -491,6 +491,7 @@ export class BusAutomationComponent implements OnInit {
             numOfChildren: p.numOfChildren,
             phoneNumber: p.phoneNumber,
             option: p.option,
+            status: "not-set"
           }));
 
           assignments.push({

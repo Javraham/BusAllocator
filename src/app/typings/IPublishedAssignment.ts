@@ -33,4 +33,5 @@ export interface IAssignedPassenger {
     numOfChildren: number;
     phoneNumber: string;
     option: string;
+    status: string;
 }
