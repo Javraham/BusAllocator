@@ -52,6 +52,29 @@
     border: 5px solid rgb(239 246 255);
   }
 
+  .status-msg {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .status-msg.success {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #d1fae5;
+  }
+
+  .status-msg.error {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fee2e2;
+  }
+
   .date {
     margin-bottom: 20px;
     margin-top: 10px;
@@ -324,22 +347,33 @@
   </div>
   <div style="margin-top: 20px" class="">
     <!-- Messages Section -->
-    <div *ngIf="publishError"
-      style="background-color: #fda5a5; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
-      <i class="bi bi-exclamation-circle" style="color: #b63f3f; margin-right: 5px;"></i>
-      <span style="color: #b63f3f; font-weight: 600;">{{ publishError }}</span>
+    <div class="status-msg success" *ngIf="publishMessage">
+      <i class="bi bi-check-circle-fill"></i>
+      <span>{{publishMessage}}</span>
     </div>
 
-    <div *ngIf="publishMessage"
-      style="background-color: #d1ffbd; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
-      <i class="bi bi-check-circle" style="color: #0ab937; margin-right: 5px;"></i>
-      <span style="color: #0ab937; font-weight: 600;">{{ publishMessage }}</span>
+    <div class="status-msg error" *ngIf="publishError">
+      <i class="bi bi-exclamation-circle-fill"></i>
+      <span>{{publishError}}</span>
+    </div>
+
+    <div class="status-msg success" *ngIf="emailMessage">
+      <i class="bi bi-check-circle-fill"></i>
+      <span>{{emailMessage}}</span>
+    </div>
+
+    <div class="status-msg error" *ngIf="emailError">
+      <i class="bi bi-exclamation-circle-fill"></i>
+      <span>{{emailError}}</span>
     </div>
 
     <!-- Buttons Row -->
     <div class="action-buttons-container">
       <div class="left-buttons">
-        <button type="button" class="styled-button" (click)="getHTML()">Generate List</button>
+        <button type="button" class="styled-button" (click)="getHTML()" [disabled]="sendingEmail">
+          <span *ngIf="!sendingEmail">Generate List</span>
+          <span *ngIf="sendingEmail">Generating & Sending...</span>
+        </button>
         <button type="button" class="styled-button copy-btn" (click)="copyText()">Copy Text</button>
       </div>
       <div class="right-buttons">

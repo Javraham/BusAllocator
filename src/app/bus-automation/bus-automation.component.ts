@@ -9,6 +9,7 @@ import { Bus } from "../services/bus";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { IBus } from "../typings/BusSelection";
 import { ApiService } from "../services/api.service";
+import { MessageService } from "../services/message.service";
 import { TourOrganizerService } from "../services/tour-organizer.service";
 import { PassengersService } from "../services/passengers.service";
 import { TourOrganizer } from "../services/organizer";
@@ -69,6 +70,11 @@ export class BusAutomationComponent implements OnInit {
   isPublishing: boolean = false;
   openDropdowns = new Map<string, boolean>(); // Track which dropdowns are open
 
+  // Email sending properties
+  sendingEmail: boolean = false;
+  emailMessage: string = '';
+  emailError: string = '';
+
 
   trackByConfirmationID(index: number, passenger: Passenger) {
     return passenger.confirmationCode
@@ -106,6 +112,7 @@ export class BusAutomationComponent implements OnInit {
     private pickupsService: PickupsService,
     private driversService: DriversService,
     private publishedAssignmentsService: PublishedAssignmentsService,
+    private messageService: MessageService,
     private eRef: ElementRef
   ) {
   }
@@ -135,6 +142,31 @@ export class BusAutomationComponent implements OnInit {
   async getHTML() {
     const printedResult = await this.tourBusOrganizer.printResult()
     this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(printedResult);
+
+    await this.sendListToEmail(printedResult);
+  }
+
+  async sendListToEmail(htmlContent: string) {
+    this.sendingEmail = true;
+    this.emailMessage = '';
+    this.emailError = '';
+
+    try {
+
+      const emailData = {
+        htmlContent: htmlContent,
+        subject: `Bus Assignments for ${this.date}`,
+        date: this.date
+      };
+
+      await lastValueFrom(this.messageService.sendAdminEmail(emailData));
+      this.emailMessage = 'List successfully sent to your email!';
+    } catch (error: any) {
+      console.error('Failed to send email:', error);
+      this.emailError = `Failed to send email: ${error.message || 'Unknown error'}`;
+    } finally {
+      this.sendingEmail = false;
+    }
   }
 
   onDateChange(event: any) {

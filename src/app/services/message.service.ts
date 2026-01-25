@@ -99,4 +99,17 @@ export class MessageService {
       })
     );
   }
+
+  sendAdminEmail(emailData: { htmlContent: string, subject: string, date: string }): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.http.post(`${this.url}send-admin-email`, emailData, { headers, responseType: 'json' }).pipe(
+      catchError(error => {
+        console.error('Error occurred:', error);
+        return throwError(() => new Error(error.error?.message || 'Failed to send email'));
+      })
+    );
+  }
 }
