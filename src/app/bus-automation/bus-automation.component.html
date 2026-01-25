@@ -6,7 +6,6 @@
   }
 
   .styled-button {
-    background: linear-gradient(135deg, #FC5923 0%, #4169E0 100%);
     color: white;
     border: none;
     border-radius: 25px;
@@ -18,6 +17,10 @@
     transition: all 0.3s ease;
     outline: none;
     /* Remove default outline */
+  }
+
+  .left-buttons button {
+    background: linear-gradient(135deg, #FC5923 0%, #4169E0 100%);
   }
 
   .styled-button:hover {
@@ -320,18 +323,7 @@
     </ng-template>
   </div>
   <div style="margin-top: 20px" class="">
-    <button type="button" class="styled-button" (click)="getHTML()">Generate List</button>
-    <button type="button" style="margin-left: 10px" class="styled-button" (click)="copyText()">Copy Text</button>
-    <div class="text-area" id="generated-txt" contenteditable="true" [innerHTML]="htmlContent">
-    </div>
-  </div>
-
-  <!-- Publish to Driver Portal Section -->
-  <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
-    <h4 style="margin-bottom: 15px;"><i class="bi bi-send" style="margin-right: 8px;"></i>Publish to Driver Portal</h4>
-    <p style="color: #666; margin-bottom: 15px;">Once you've sorted passengers and assigned drivers, publish the list so
-      drivers can view it in the driver portal.</p>
-
+    <!-- Messages Section -->
     <div *ngIf="publishError"
       style="background-color: #fda5a5; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
       <i class="bi bi-exclamation-circle" style="color: #b63f3f; margin-right: 5px;"></i>
@@ -344,19 +336,22 @@
       <span style="color: #0ab937; font-weight: 600;">{{ publishMessage }}</span>
     </div>
 
-    <button type="button" class="styled-button" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);"
-      (click)="publishToDriverPortal()" [disabled]="isPublishing || usedBuses.size === 0">
-      <span *ngIf="!isPublishing"><i class="bi bi-cloud-upload" style="margin-right: 5px;"></i>Publish to Driver
-        Portal</span>
-      <span *ngIf="isPublishing">Publishing...</span>
-    </button>
+    <!-- Buttons Row -->
+    <div class="action-buttons-container">
+      <div class="left-buttons">
+        <button type="button" class="styled-button" (click)="getHTML()">Generate List</button>
+        <button type="button" class="styled-button copy-btn" (click)="copyText()">Copy Text</button>
+      </div>
+      <div class="right-buttons">
+        <button type="button" class="styled-button publish-btn" (click)="publishToDriverPortal()"
+          [disabled]="isPublishing || usedBuses.size === 0">
+          <span *ngIf="!isPublishing"><i class="bi bi-cloud-upload" style="margin-right: 5px; "></i>Save &
+            Publish</span>
+          <span *ngIf="isPublishing">Publishing...</span>
+        </button>
+      </div>
+    </div>
 
-    <p *ngIf="usedBuses.size === 0" style="color: #999; font-size: 12px; margin-top: 10px;">
-      Sort passengers into buses first before publishing.
-    </p>
-    <p *ngIf="usedBuses.size > 0 && !allBusesHaveDrivers()" style="color: #e67e22; font-size: 12px; margin-top: 10px;">
-      <i class="bi bi-exclamation-triangle" style="margin-right: 5px;"></i>
-      Please assign a driver to each bus before publishing.
-    </p>
+    <div class="text-area" id="generated-txt" contenteditable="true" [innerHTML]="htmlContent">
+    </div>
   </div>
-</div>

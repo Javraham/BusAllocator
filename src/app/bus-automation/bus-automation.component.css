@@ -153,3 +153,59 @@
     color: #999;
     cursor: not-allowed;
 }
+
+/* Action Buttons Layout */
+.action-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+
+.left-buttons,
+.right-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.publish-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.publish-btn:hover {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+}
+
+.publish-btn:active {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .action-buttons-container {
+        flex-direction: column;
+        align-items: stretch;
+        /* Stretch to full width */
+        gap: 10px;
+    }
+
+    .left-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .right-buttons {
+        width: 100%;
+    }
+
+    .styled-button {
+        width: 100%;
+        /* Make all buttons full width on mobile */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
