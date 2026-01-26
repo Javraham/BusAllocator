@@ -75,6 +75,10 @@ export class BusAutomationComponent implements OnInit {
   emailMessage: string = '';
   emailError: string = '';
 
+  // Saved assignment properties
+  savedAssignment: IPublishedAssignment | null = null;
+  unsortedPassengers: Passenger[] = [];
+
 
   trackByConfirmationID(index: number, passenger: Passenger) {
     return passenger.confirmationCode
@@ -302,7 +306,25 @@ export class BusAutomationComponent implements OnInit {
       this.publishError = '';
       this.resetBusSelection()
       this.tourBusOrganizer.resetBuses();
-      this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+      this.unsortedPassengers = [];
+      this.savedAssignment = null;
+
+      // Fetch saved assignments for this date
+      try {
+        const savedResult = await lastValueFrom(this.publishedAssignmentsService.getAssignmentsByDate(this.date));
+        if (savedResult && savedResult.data) {
+          this.savedAssignment = savedResult.data;
+          this.reconcileAssignments(passengers, savedResult.data);
+        } else {
+          // No saved assignment, all passengers are unsorted
+          this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+        }
+      } catch (e) {
+        // No saved assignment found, proceed normally
+        console.log('No saved assignment for this date');
+        this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
+      }
+
       console.log(this.passengerService.getPickupLocationsFromPassengers(passengers, this.pickupAbbrevs));
     }
     catch (e: any) {
@@ -310,7 +332,104 @@ export class BusAutomationComponent implements OnInit {
       this.errorMsg = e.message;
       this.loadContent = false
     }
+  }
 
+  /**
+   * Reconcile saved assignments with fresh passenger data from API.
+   * - Passengers in saved assignment that exist in fresh data: restore to their bus
+   * - Passengers in saved assignment that don't exist in fresh data: removed (skip)
+   * - Passengers in fresh data not in saved assignment: add to unsortedPassengers
+   */
+  reconcileAssignments(freshPassengers: Passenger[], savedAssignment: IPublishedAssignment) {
+    // Create a map of confirmationCode -> Passenger for quick lookup
+    const freshPassengerMap = new Map<string, Passenger>();
+    for (const passenger of freshPassengers) {
+      freshPassengerMap.set(passenger.confirmationCode, passenger);
+    }
+
+    // Track which passengers have been assigned
+    const assignedCodes = new Set<string>();
+
+    // Group assignments by time slot
+    const timeToAssignments = new Map<string, IBusAssignment[]>();
+    for (const assignment of savedAssignment.assignments) {
+      if (!timeToAssignments.has(assignment.time)) {
+        timeToAssignments.set(assignment.time, []);
+      }
+      timeToAssignments.get(assignment.time)!.push(assignment);
+    }
+
+    // Process each time slot
+    for (const [time, assignments] of timeToAssignments.entries()) {
+      const busesForTime: Bus[] = [];
+      const busIdsUsed: string[] = [];
+
+      for (const assignment of assignments) {
+        // Find the bus configuration
+        const busConfig = this.allBuses.find(b => b.busId === assignment.busId);
+        if (!busConfig) continue;
+
+        const bus = new Bus(assignment.busId, busConfig.capacity, busConfig.color || 'black');
+
+        // Add passengers that still exist in fresh data
+        for (const savedPassenger of assignment.passengers) {
+          const freshPassenger = freshPassengerMap.get(savedPassenger.confirmationCode);
+          if (freshPassenger) {
+            // Passenger still exists - add with fresh data (may have been modified)
+            bus.passengers.push(freshPassenger);
+            assignedCodes.add(savedPassenger.confirmationCode);
+          }
+          // If passenger doesn't exist in fresh data, they were removed - skip
+        }
+
+        busesForTime.push(bus);
+        busIdsUsed.push(assignment.busId);
+
+        // Restore driver assignment
+        if (assignment.driverId) {
+          this.busToDriverMap.set(`${assignment.busId}-${time}`, assignment.driverId);
+        }
+      }
+
+      // Set the buses in the tour organizer service
+      if (busesForTime.length > 0) {
+        this.tourBusOrganizer.setBuses(time, busesForTime);
+        this.usedBuses.set(time, busIdsUsed);
+        this.busSelections.set(time, busIdsUsed);
+        this.successMap.set(time, [true, false]); // Mark as successfully allocated
+      }
+    }
+
+    // Find passengers that were not in any saved assignment (new passengers)
+    this.unsortedPassengers = [];
+    for (const passenger of freshPassengers) {
+      if (!assignedCodes.has(passenger.confirmationCode)) {
+        this.unsortedPassengers.push(passenger);
+      }
+    }
+
+    // Also put unsorted passengers in excludedPassengers for compatibility
+    this.excludedPassengers = [...this.unsortedPassengers];
+
+    // Group unsorted passengers by time and add to excludedPassengersMap
+    const unsortedByTime = new Map<string, Passenger[]>();
+    for (const passenger of this.unsortedPassengers) {
+      if (!unsortedByTime.has(passenger.startTime)) {
+        unsortedByTime.set(passenger.startTime, []);
+      }
+      unsortedByTime.get(passenger.startTime)!.push(passenger);
+    }
+    this.excludedPassengersMap = unsortedByTime;
+
+    // Set the time to passengers map for any time slots without saved assignments
+    this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers));
+
+    console.log('Reconciliation complete:', {
+      totalPassengers: freshPassengers.length,
+      assignedPassengers: assignedCodes.size,
+      unsortedPassengers: this.unsortedPassengers.length,
+      restoredTimeSlots: timeToAssignments.size
+    });
   }
 
   getPickupAbbrevByTime(time: string) {
