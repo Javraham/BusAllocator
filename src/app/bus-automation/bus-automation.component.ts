@@ -250,14 +250,50 @@ export class BusAutomationComponent implements OnInit {
   }
 
   updatePassengerExclusionList(event: Passenger) {
-    if (this.excludedPassengers.filter(val => val.confirmationCode == event.confirmationCode).length != 0) {
-      const index = this.excludedPassengers.findIndex(val => val.confirmationCode == event.confirmationCode);
-      this.excludedPassengers.splice(index, 1)
+    const time = event.startTime;
+    const busesForTime = this.tourBusOrganizer.getBusesByTime(time);
+
+    // Check if this passenger is currently in a sorted bus
+    let isInBus = false;
+    if (busesForTime) {
+      for (const bus of busesForTime) {
+        if (bus.passengers.find(p => p.confirmationCode === event.confirmationCode)) {
+          isInBus = true;
+          break;
+        }
+      }
     }
-    else {
-      this.excludedPassengers.push(event)
+
+    if (isInBus) {
+      // Passenger is in a bus - move them to unsorted section
+      this.movePassengerToUnsorted(event);
+    } else {
+      // Passenger is either unsorted or pre-sort - toggle exclusion for the sort algorithm
+      if (this.excludedPassengers.filter(val => val.confirmationCode == event.confirmationCode).length != 0) {
+        const index = this.excludedPassengers.findIndex(val => val.confirmationCode == event.confirmationCode);
+        this.excludedPassengers.splice(index, 1);
+
+        // Also remove from unsortedPassengers if there
+        const unsortedIdx = this.unsortedPassengers.findIndex(p => p.confirmationCode === event.confirmationCode);
+        if (unsortedIdx !== -1) {
+          this.unsortedPassengers.splice(unsortedIdx, 1);
+        }
+
+        // Also remove from excludedPassengersMap
+        const timeExcluded = this.excludedPassengersMap.get(time);
+        if (timeExcluded) {
+          const idx = timeExcluded.findIndex(p => p.confirmationCode === event.confirmationCode);
+          if (idx !== -1) {
+            timeExcluded.splice(idx, 1);
+            this.excludedPassengersMap.set(time, timeExcluded);
+          }
+        }
+      }
+      else {
+        this.excludedPassengers.push(event);
+      }
     }
-    console.log(this.excludedPassengersMap)
+    console.log('Exclusion list updated:', this.excludedPassengersMap);
   }
 
   getNextDayPassengers() {
@@ -485,8 +521,108 @@ export class BusAutomationComponent implements OnInit {
   }
 
   updatePassengerBusList(event: [Passenger, IBus]) {
-    this.passengerToBusMap.set(event[0].confirmationCode, event[1].busId)
-    console.log(this.passengerToBusMap)
+    const passenger = event[0];
+    const targetBus = event[1];
+
+    // Immediately move the passenger to the target bus
+    this.movePassengerToBus(passenger, targetBus.busId, passenger.startTime);
+
+    // Clear the edit mode for this passenger
+    this.passengerToBusMap.delete(passenger.confirmationCode);
+  }
+
+  /**
+   * Move a passenger from their current location (unsorted or another bus) to a target bus
+   */
+  movePassengerToBus(passenger: Passenger, targetBusId: string, time: string) {
+    // Get all buses for this time slot
+    const busesForTime = this.tourBusOrganizer.getBusesByTime(time);
+
+    if (!busesForTime) {
+      console.error('No buses found for time:', time);
+      return;
+    }
+
+    // Find the target bus
+    const targetBus = busesForTime.find(b => b.busId === targetBusId);
+    if (!targetBus) {
+      console.error('Target bus not found:', targetBusId);
+      return;
+    }
+
+    // Remove passenger from unsorted list if they're there
+    const unsortedIndex = this.unsortedPassengers.findIndex(p => p.confirmationCode === passenger.confirmationCode);
+    if (unsortedIndex !== -1) {
+      this.unsortedPassengers.splice(unsortedIndex, 1);
+    }
+
+    // Remove from excludedPassengers for compatibility
+    const excludedIndex = this.excludedPassengers.findIndex(p => p.confirmationCode === passenger.confirmationCode);
+    if (excludedIndex !== -1) {
+      this.excludedPassengers.splice(excludedIndex, 1);
+    }
+
+    // Remove from excludedPassengersMap
+    const timeExcluded = this.excludedPassengersMap.get(time);
+    if (timeExcluded) {
+      const idx = timeExcluded.findIndex(p => p.confirmationCode === passenger.confirmationCode);
+      if (idx !== -1) {
+        timeExcluded.splice(idx, 1);
+        this.excludedPassengersMap.set(time, timeExcluded);
+      }
+    }
+
+    // Remove passenger from any other bus they might be in
+    for (const bus of busesForTime) {
+      const passengerIndex = bus.passengers.findIndex(p => p.confirmationCode === passenger.confirmationCode);
+      if (passengerIndex !== -1) {
+        bus.passengers.splice(passengerIndex, 1);
+      }
+    }
+
+    // Add passenger to target bus
+    targetBus.passengers.push(passenger);
+
+    console.log(`Moved ${passenger.firstName} ${passenger.lastName} to bus ${targetBusId}`);
+  }
+
+  /**
+   * Move a passenger from their current bus to the unsorted section
+   */
+  movePassengerToUnsorted(passenger: Passenger) {
+    const time = passenger.startTime;
+
+    // Get all buses for this time slot
+    const busesForTime = this.tourBusOrganizer.getBusesByTime(time);
+
+    if (busesForTime) {
+      // Remove passenger from any bus they're in
+      for (const bus of busesForTime) {
+        const passengerIndex = bus.passengers.findIndex(p => p.confirmationCode === passenger.confirmationCode);
+        if (passengerIndex !== -1) {
+          bus.passengers.splice(passengerIndex, 1);
+        }
+      }
+    }
+
+    // Add to unsorted if not already there
+    if (!this.unsortedPassengers.find(p => p.confirmationCode === passenger.confirmationCode)) {
+      this.unsortedPassengers.push(passenger);
+    }
+
+    // Also add to excludedPassengers for compatibility
+    if (!this.excludedPassengers.find(p => p.confirmationCode === passenger.confirmationCode)) {
+      this.excludedPassengers.push(passenger);
+    }
+
+    // Update excludedPassengersMap
+    const timeExcluded = this.excludedPassengersMap.get(time) || [];
+    if (!timeExcluded.find(p => p.confirmationCode === passenger.confirmationCode)) {
+      timeExcluded.push(passenger);
+      this.excludedPassengersMap.set(time, timeExcluded);
+    }
+
+    console.log(`Moved ${passenger.firstName} ${passenger.lastName} to unsorted`);
   }
 
   updatePickupBusList(pickup: string, busId: string, time: string) {

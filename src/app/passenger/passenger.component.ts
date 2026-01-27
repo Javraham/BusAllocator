@@ -1,14 +1,14 @@
-import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
-import {TourOrganizerService} from "../services/tour-organizer.service";
-import {TourOrganizer} from "../services/organizer";
-import {Passenger} from "../typings/passenger";
-import {Input} from "@angular/core";
-import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
-import {PickupsService} from "../services/pickups.service";
-import {lastValueFrom} from "rxjs";
-import {IPickup} from "../typings/ipickup";
-import {FormsModule} from "@angular/forms";
-import {IBus} from "../typings/BusSelection";
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { TourOrganizerService } from "../services/tour-organizer.service";
+import { TourOrganizer } from "../services/organizer";
+import { Passenger } from "../typings/passenger";
+import { Input } from "@angular/core";
+import { NgClass, NgForOf, NgIf, NgStyle } from "@angular/common";
+import { PickupsService } from "../services/pickups.service";
+import { lastValueFrom } from "rxjs";
+import { IPickup } from "../typings/ipickup";
+import { FormsModule } from "@angular/forms";
+import { IBus } from "../typings/BusSelection";
 
 
 @Component({
@@ -36,8 +36,9 @@ export class PassengerComponent {
   @Output() updatePassengerBusList = new EventEmitter<[Passenger, IBus]>();
   @Output() updateAllowEditBus = new EventEmitter<Passenger>();
   @Input() selectedPassengerBus !: Map<string, string>;
+  @Input() isInUnsortedSection: boolean = false; // True when in unsorted section after sorting
 
-  trackByBusId(index: number, bus: IBus){
+  trackByBusId(index: number, bus: IBus) {
     return bus.busId
   }
 
@@ -51,7 +52,7 @@ export class PassengerComponent {
     console.log(this.excludedPassengers)
   }
 
-  getSelectedBuses(){
+  getSelectedBuses() {
     return this.buses.filter(bus => this.selectedBuses.get(this.passengerInfo.startTime)?.includes(bus.busId))
   }
 
@@ -59,10 +60,10 @@ export class PassengerComponent {
     return this.excludedPassengers.filter(val => this.passengerInfo.confirmationCode == val.confirmationCode).length == 0 ? {
       "border": "1px solid " + this.busColor,
       "color": this.busColor,
-        "background-color": this.busColor + 9,
+      "background-color": this.busColor + 9,
       "font-weight": "600"
-      }
-    :
+    }
+      :
       {
         "border": "1px solid " + this.busColor,
         "color": "white",

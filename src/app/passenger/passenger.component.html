@@ -80,6 +80,6 @@
     </div>
   </div>
 
-  <button type="button" [ngClass]="{'active': isActive}" [ngStyle]="getButtonStyles()"
-    (click)="toggleButton()">Exclude</button>
+  <button type="button" *ngIf="!isInUnsortedSection" [ngClass]="{'active': isActive}" [ngStyle]="getButtonStyles()"
+    (click)="toggleButton()">{{ busColor === '#4169E0' ? 'Exclude' : 'Remove' }}</button>
 </div>
