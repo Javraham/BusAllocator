@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {NgForOf, NgIf} from "@angular/common";
-import {OptionObjectComponent} from "../option-object/option-object.component";
-import {PickupsService} from "../services/pickups.service";
-import {IPickup} from "../typings/ipickup";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {OptionsService} from "../services/options.service";
-import {IBookingOptions} from "../typings/IBookingOptions";
-import {ISettingOptionsInput} from "../typings/ISettingOptionsInput";
+import { Component, OnInit } from '@angular/core';
+import { NgForOf, NgIf } from "@angular/common";
+import { OptionObjectComponent } from "../option-object/option-object.component";
+import { PickupsService } from "../services/pickups.service";
+import { IPickup } from "../typings/ipickup";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { OptionsService } from "../services/options.service";
+import { IBookingOptions } from "../typings/IBookingOptions";
+import { ISettingOptionsInput } from "../typings/ISettingOptionsInput";
 
 @Component({
   selector: 'app-pickups-settings',
@@ -21,14 +21,15 @@ import {ISettingOptionsInput} from "../typings/ISettingOptionsInput";
   templateUrl: './pickups-settings.component.html',
   styleUrl: './pickups-settings.component.css'
 })
-export class PickupsSettingsComponent implements OnInit{
+export class PickupsSettingsComponent implements OnInit {
 
   pickupLocations !: IPickup[];
   pickupsForm: FormGroup = new FormGroup<any>({
     name: new FormControl('', Validators.required),
     abbreviation: new FormControl('', Validators.required),
     whatsappTemplate: new FormControl(''),
-    body: new FormControl('', Validators.required)
+    body: new FormControl('', Validators.required),
+    priority: new FormControl('', Validators.required)
   })
   errorMsg = '';
   isEditingPickup = false;
@@ -36,7 +37,7 @@ export class PickupsSettingsComponent implements OnInit{
   isPickupFormOpen: boolean = false;
 
 
-  openNewPickupForm(){
+  openNewPickupForm() {
     this.errorMsg = "";
     this.isPickupFormOpen = true
     this.isEditingPickup = false
@@ -49,10 +50,10 @@ export class PickupsSettingsComponent implements OnInit{
   }
 
   addNewPickup() {
-    if(this.pickupsForm.valid){
+    if (this.pickupsForm.valid) {
       console.log(this.pickupsForm.value)
       this.errorMsg = "";
-      this.pickupsService.addPickupLocation({emailTemplate: {body: this.pickupsForm.value.body}, name: this.pickupsForm.value.name, abbreviation: this.pickupsForm.value.abbreviation, whatsappTemplate: this.pickupsForm.value.whatsappTemplate}).subscribe({
+      this.pickupsService.addPickupLocation({ emailTemplate: { body: this.pickupsForm.value.body }, name: this.pickupsForm.value.name, abbreviation: this.pickupsForm.value.abbreviation, whatsappTemplate: this.pickupsForm.value.whatsappTemplate, priority: this.pickupsForm.value.priority }).subscribe({
         next: response => {
           this.pickupLocations.push(response.data)
           this.isPickupFormOpen = false
@@ -61,7 +62,7 @@ export class PickupsSettingsComponent implements OnInit{
       })
       this.pickupsForm.reset()
     }
-    else{
+    else {
       this.errorMsg = "! Please fill in the Bokun Name and Custome Name"
       console.log('not valid')
     }
@@ -72,7 +73,7 @@ export class PickupsSettingsComponent implements OnInit{
     this.pickupsService.deletePickupLocation(this.pickupDocId || "").subscribe({
       next: response => {
         const index = this.pickupLocations.findIndex(pickup => pickup.docId === response.docId);
-        if(index !== -1){
+        if (index !== -1) {
           this.pickupLocations.splice(index, 1)
         }
         this.isPickupFormOpen = false
@@ -82,17 +83,21 @@ export class PickupsSettingsComponent implements OnInit{
   }
 
   updatePickup() {
-    if(this.pickupsForm.valid){
+    if (this.pickupsForm.valid) {
       this.errorMsg = "";
-      this.pickupsService.updatePickupLocation({docId: this.pickupDocId, name: this.pickupsForm.value.name, abbreviation: this.pickupsForm.value.abbreviation, emailTemplate: {body: this.pickupsForm.value.body}, whatsappTemplate: this.pickupsForm.value.whatsappTemplate}).subscribe({
+      this.pickupsService.updatePickupLocation({ docId: this.pickupDocId, name: this.pickupsForm.value.name, abbreviation: this.pickupsForm.value.abbreviation, emailTemplate: { body: this.pickupsForm.value.body }, whatsappTemplate: this.pickupsForm.value.whatsappTemplate, priority: this.pickupsForm.value.priority }).subscribe({
         next: response => {
           const pickupFound = this.pickupLocations.find(pickup => response.data.docId === pickup.docId)
-          if(pickupFound){
+          if (pickupFound) {
             pickupFound.name = response.data.name;
             pickupFound.abbreviation = response.data.abbreviation;
             pickupFound.emailTemplate = response.data.emailTemplate;
-            pickupFound.whatsappTemplate = response.data.whatsappTemplate
+            pickupFound.whatsappTemplate = response.data.whatsappTemplate;
+            pickupFound.priority = response.data.priority;
           }
+          this.pickupLocations.sort((a: IPickup, b: IPickup) => {
+            return (a.priority || 0) - (b.priority || 0)
+          })
           this.isPickupFormOpen = false
           this.pickupsForm.reset()
           console.log(response.data)
@@ -104,7 +109,7 @@ export class PickupsSettingsComponent implements OnInit{
 
       })
     }
-    else{
+    else {
       this.errorMsg = "! Please fill in the Bokun Name and Custom Name"
       console.log('not valid')
     }
@@ -121,7 +126,8 @@ export class PickupsSettingsComponent implements OnInit{
       name: pickupObject.name,
       abbreviation: pickupObject.abbreviation,
       body: pickupObject.emailTemplateBody,
-      whatsappTemplate: pickup?.whatsappTemplate || ''
+      whatsappTemplate: pickup?.whatsappTemplate || '',
+      priority: pickupObject.priority
     });
   }
   constructor(private pickupsService: PickupsService) {
@@ -130,7 +136,9 @@ export class PickupsSettingsComponent implements OnInit{
   ngOnInit() {
     this.pickupsService.getPickupLocations().subscribe({
       next: (response) => {
-        this.pickupLocations = response.data
+        this.pickupLocations = response.data.sort((a: IPickup, b: IPickup) => {
+          return (a.priority || 0) - (b.priority || 0)
+        })
         console.log(response.data)
       },
       error: err => console.log(err)

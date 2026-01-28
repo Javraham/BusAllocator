@@ -3,7 +3,8 @@ export interface IPickup {
   name: string,
   abbreviation: string,
   emailTemplate: IEmailTemplate,
-  whatsappTemplate?: string
+  whatsappTemplate?: string,
+  priority?: number
 }
 
 export interface IExperience {
