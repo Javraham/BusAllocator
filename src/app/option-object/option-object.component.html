@@ -1,10 +1,10 @@
 <style>
-  button{
+  button {
     border: none;
     background: none;
   }
 
-  .content{
+  .content {
     padding: 1.1em;
     margin-top: 20px;
     border-radius: 5px;
@@ -15,17 +15,18 @@
     height: 100%;
   }
 
-  p{
+  p {
     margin: 0;
   }
-
 </style>
 
 <div class="content">
   <button (click)="openEditOptionForm()"><i class="bi bi-pencil"></i></button>
   <div>
     <p><strong>{{optionsInput.nameLabel}}:</strong> {{optionsInput.name}}</p>
-    <p *ngIf="optionsInput.abbreviationLabel"><strong>{{optionsInput.abbreviationLabel}}:</strong> {{optionsInput.abbreviation}}</p>
+    <p *ngIf="optionsInput.abbreviationLabel"><strong>{{optionsInput.abbreviationLabel}}:</strong>
+      {{optionsInput.abbreviation}}</p>
     <p *ngIf="optionsInput.priority"><strong>Priority:</strong> {{optionsInput.priority}}</p>
+    <p *ngIf="optionsInput.time"><strong>Time:</strong> {{optionsInput.time}}</p>
   </div>
 </div>

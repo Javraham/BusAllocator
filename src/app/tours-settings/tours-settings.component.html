@@ -1,0 +1,65 @@
+<style>
+    .add-button {
+        border: 1px solid #4B7FCC;
+        background: none;
+        border-radius: 5px;
+        color: #4B7FCC;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .form>div {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .form-buttons button {
+        padding: 5px 10px 5px 10px;
+        border-radius: 5px;
+        color: white;
+        border: none;
+    }
+
+    .add-bus {
+        background-color: #4B7FCC;
+    }
+
+    .delete-bus {
+        background-color: crimson;
+    }
+
+    h4 {
+        margin-top: 20px;
+        color: grey;
+    }
+</style>
+
+<h4>Tours Management</h4>
+<button class="add-button" (click)="openNewTourForm()"><i class="bi bi-plus"></i> Add Tour</button>
+<form [formGroup]="toursForm" *ngIf="isTourFormOpen" (ngSubmit)="isEditingTour ? updateTour() : addNewTour()"
+    class="form-group" style="margin-top: 10px">
+    <div class="row form" style="margin: 0">
+        <div class="input-group col-md-3 col-sm-6">
+            <span class="input-group-addon">Time</span>
+            <input class="form-control" formControlName="time" type="text" required />
+        </div>
+        <div class="input-group col-md-3 col-sm-6">
+            <span class="input-group-addon">Tour Name</span>
+            <input class="form-control" formControlName="tourName" type="text" required />
+        </div>
+    </div>
+    <ng-container *ngIf="errorMsg">
+        <p style="color: #FC5923; font-weight: 500">{{errorMsg}}</p>
+    </ng-container>
+    <div class="form-buttons" style="display: flex; gap: 10px">
+        <button type="submit" class="add-bus">Save</button>
+        <button *ngIf="isEditingTour" type="button" (click)="deleteTour()" class="delete-bus">Delete Tour</button>
+        <button type="button" class="add-bus" (click)="cancelNewTour()">Cancel</button>
+    </div>
+</form>
+<div class="row g-3">
+    <app-option-object class="col-lg-4 col-md-6 col-sm-12" (openEdit)="editTour($event)"
+        *ngFor="let tourObject of tours"
+        [optionsInput]="{time: tourObject.time, name: tourObject.tourName, nameLabel: 'Tour Name', docId: tourObject.docId}">
+    </app-option-object>
+</div>

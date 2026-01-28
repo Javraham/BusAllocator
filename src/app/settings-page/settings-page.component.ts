@@ -13,6 +13,7 @@ import { PickupsSettingsComponent } from "../pickups-settings/pickups-settings.c
 import { ExperienceSettingsPageComponent } from "../experience-settings-page/experience-settings-page.component";
 import { EmailTemplatesComponent } from "../email-templates-settings/email-templates.component";
 import { DriversSettingsComponent } from "../drivers-settings/drivers-settings.component";
+import { ToursSettingsComponent } from "../tours-settings/tours-settings.component";
 
 @Component({
   selector: 'app-settings-page',
@@ -29,13 +30,14 @@ import { DriversSettingsComponent } from "../drivers-settings/drivers-settings.c
     PickupsSettingsComponent,
     ExperienceSettingsPageComponent,
     EmailTemplatesComponent,
-    DriversSettingsComponent
+    DriversSettingsComponent,
+    ToursSettingsComponent
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.css'
 })
 export class SettingsPageComponent implements OnInit {
-  navOptions = ["Buses", "Bus Drivers", "Pickups", "Options", "Experiences", "Email Templates"];
+  navOptions = ["Buses", "Bus Drivers", "Pickups", "Options", "Tours", "Experiences", "Email Templates"];
   selectOption = "Buses"
   pickupLocations !: IPickup[];
 

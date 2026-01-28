@@ -100,6 +100,10 @@
       <app-options-settings-page></app-options-settings-page>
     </ng-container>
 
+    <ng-container *ngIf="selectOption === 'Tours'">
+      <app-tours-settings></app-tours-settings>
+    </ng-container>
+
     <ng-container *ngIf="selectOption === 'Experiences'">
       <app-experience-settings-page></app-experience-settings-page>
     </ng-container>

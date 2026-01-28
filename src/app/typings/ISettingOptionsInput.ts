@@ -1,9 +1,10 @@
-export interface ISettingOptionsInput{
+export interface ISettingOptionsInput {
   nameLabel: string,
   abbreviationLabel?: string,
   name: string,
   abbreviation?: string,
   emailTemplateBody?: string,
   docId: string | undefined,
-  priority?: number
+  priority?: number,
+  time?: string
 }
