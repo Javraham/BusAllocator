@@ -22,6 +22,8 @@ import { DriversService } from "../services/drivers.service";
 import { IDriver } from "../typings/IDriver";
 import { PublishedAssignmentsService } from "../services/published-assignments.service";
 import { IPublishedAssignment, IBusAssignment, IAssignedPassenger } from "../typings/IPublishedAssignment";
+import { ToursService } from "../services/tours.service";
+import { ITour } from "../typings/itour";
 
 @Component({
   selector: 'app-bus-automation',
@@ -79,6 +81,9 @@ export class BusAutomationComponent implements OnInit {
   savedAssignment: IPublishedAssignment | null = null;
   unsortedPassengers: Passenger[] = [];
 
+  // Tours data
+  tours: ITour[] = [];
+
 
   trackByConfirmationID(index: number, passenger: Passenger) {
     return passenger.confirmationCode
@@ -117,7 +122,8 @@ export class BusAutomationComponent implements OnInit {
     private driversService: DriversService,
     private publishedAssignmentsService: PublishedAssignmentsService,
     private messageService: MessageService,
-    private eRef: ElementRef
+    private eRef: ElementRef,
+    private toursService: ToursService
   ) {
   }
 
@@ -326,6 +332,10 @@ export class BusAutomationComponent implements OnInit {
       // Load drivers
       const driversResult = await lastValueFrom(this.driversService.getDrivers())
       this.drivers = driversResult.data || [];
+
+      // Load tours
+      const toursResult = await lastValueFrom(this.toursService.getTours())
+      this.tours = toursResult.data || [];
 
       this.allBuses = busesResult.data.sort((a: any, b: any) => {
         return a.sortOrder - b.sortOrder;
@@ -781,11 +791,15 @@ export class BusAutomationComponent implements OnInit {
             status: "not-set"
           }));
 
+          // Find the tour name by matching time
+          const tour = this.tours.find(t => t.time === time);
+
           assignments.push({
             busId,
             driverId,
             driverName: driver?.name || 'Unknown',
             time,
+            tourName: tour?.tourName,
             passengers: assignedPassengers,
           });
         }

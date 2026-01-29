@@ -51,7 +51,11 @@ export class DriversSettingsComponent implements OnInit {
     addDriver() {
         if (this.driverForm.valid) {
             this.errorMsg = "";
-            this.driversService.addDriver({ name: this.driverForm.value.name, pin: this.driverForm.value.pin }).subscribe({
+            this.driversService.addDriver({
+                name: this.driverForm.value.name,
+                pin: this.driverForm.value.pin,
+                isAdmin: false
+            }).subscribe({
                 next: response => {
                     this.drivers.push(response.data);
                     this.isDriverFormOpen = false;
@@ -69,12 +73,19 @@ export class DriversSettingsComponent implements OnInit {
     updateDriver() {
         if (this.driverForm.valid) {
             this.errorMsg = "";
-            this.driversService.updateDriver({ docId: this.driverDocId, name: this.driverForm.value.name, pin: this.driverForm.value.pin }).subscribe({
+            const driverToUpdate = this.drivers.find(d => d.docId === this.driverDocId);
+            this.driversService.updateDriver({
+                docId: this.driverDocId,
+                name: this.driverForm.value.name,
+                pin: this.driverForm.value.pin,
+                isAdmin: driverToUpdate?.isAdmin || false
+            }).subscribe({
                 next: response => {
                     const driverFound = this.drivers.find(d => response.data.docId === d.docId)
                     if (driverFound) {
                         driverFound.name = response.data.name;
                         driverFound.pin = response.data.pin;
+                        driverFound.isAdmin = response.data.isAdmin;
                     }
                     this.isDriverFormOpen = false;
                 },
@@ -116,5 +127,14 @@ export class DriversSettingsComponent implements OnInit {
             },
             error: err => this.errorMsg = err.message
         })
+    }
+
+    changeAdminStatus(eventData: { event: any, driver: IDriver }) {
+        eventData.driver.isAdmin = eventData.event.target.checked;
+
+        this.driversService.updateDriver(eventData.driver).subscribe({
+            next: response => console.log('Admin status updated', response),
+            error: err => console.error('Error updating admin status', err)
+        });
     }
 }

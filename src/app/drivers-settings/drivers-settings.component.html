@@ -61,6 +61,6 @@
     </div>
 </form>
 <div class="row">
-    <app-driver-object (editDriver)="editDriver($event)" class="col-lg-4 col-md-6 col-sm-12"
-        *ngFor="let driver of drivers" [driverObject]="driver"></app-driver-object>
+    <app-driver-object (editDriver)="editDriver($event)" (adminChange)="changeAdminStatus($event)"
+        class="col-lg-4 col-md-6 col-sm-12" *ngFor="let driver of drivers" [driverObject]="driver"></app-driver-object>
 </div>

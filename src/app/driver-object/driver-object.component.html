@@ -9,20 +9,33 @@
     margin-top: 20px;
     border-radius: 5px;
     background-color: white;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    border-right: 10px solid #4B7FCC;
   }
 
   p {
     margin: 0;
   }
+
+  .admin-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 </style>
 
 <div class="content">
-  <button (click)="sendDriverObjectToParent()"><i class="bi bi-pencil"></i></button>
-  <div>
-    <p><strong>Name:</strong> {{driverObject.name}}</p>
-    <p><strong>PIN:</strong> {{driverObject.pin}}</p>
+  <div class="d-flex align-items-start gap-3">
+    <button (click)="sendDriverObjectToParent()"><i class="bi bi-pencil"></i></button>
+    <div>
+      <p><strong>Name:</strong> {{driverObject.name}}</p>
+      <p><strong>PIN:</strong> {{driverObject.pin}}</p>
+      <div class="admin-field">
+        <p><strong>Admin:</strong></p>
+        <div class="form-check form-switch">
+          <input class="form-check-input" (change)="onAdminChange($event)" [(ngModel)]="driverObject.isAdmin"
+            type="checkbox" role="switch" />
+        </div>
+      </div>
+    </div>
   </div>
 </div>
