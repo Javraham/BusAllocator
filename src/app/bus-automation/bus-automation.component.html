@@ -279,31 +279,17 @@
       <div class="driver-grid">
         <div class="driver-row" *ngFor="let busId of usedBuses.get(time[0])">
           <span class="chip-label">{{ busId }}</span>
-          <!-- Custom dropdown to avoid native select scroll issues -->
-          <div class="custom-dropdown">
-            <div class="custom-dropdown-trigger" [class.open]="openDropdowns.get(busId + '-' + time[0])"
-              (click)="toggleDropdown(busId, time[0])">
-              <span>{{ getDriverNameById(getSelectedDriver(busId, time[0])) }}</span>
-              <i class="bi bi-chevron-down"></i>
-            </div>
-            <div class="custom-dropdown-menu" *ngIf="openDropdowns.get(busId + '-' + time[0])">
-              <!-- <div class="custom-dropdown-option" (click)="selectDriver(busId, '', time[0])">
-                -- Select Driver --
-              </div> -->
-              <!-- <div *ngFor="let driver of drivers" class="custom-dropdown-option"
-                [class.selected]="getSelectedDriver(busId, time[0]) === driver.docId"
-                [class.disabled]="isDriverAssignedElsewhere(driver.docId || '', busId, time[0])"
-                (click)="!isDriverAssignedElsewhere(driver.docId || '', busId, time[0]) && selectDriver(busId, driver.docId || '', time[0])">
-                {{ driver.name }}
-              </div> -->
-              <select class="form-control" (change)="selectDriver(busId, '', time[0])">
-                <option value="">-- Select Driver --</option>
-                <option *ngFor="let driver of drivers" [value]="driver.docId">
-                  {{ driver.name }}
-                </option>
-              </select>
-            </div>
-          </div>
+
+          <!-- Native select for driver selection -->
+          <select class="driver-select form-control" [ngModel]="getSelectedDriver(busId, time[0])"
+            (ngModelChange)="onDriverAssigned({ busId: busId, driverId: $event, time: time[0] })">
+            <option value="">-- Select Driver --</option>
+            <option *ngFor="let driver of drivers" [value]="driver.docId"
+              [disabled]="isDriverAssignedElsewhere(driver.docId || '', busId, time[0])">
+              {{ driver.name }}
+            </option>
+          </select>
+
           <i class="bi bi-check-circle-fill" style="color: #10b981;" *ngIf="getSelectedDriver(busId, time[0])"></i>
         </div>
       </div>
