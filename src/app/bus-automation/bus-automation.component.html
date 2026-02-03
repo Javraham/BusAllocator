@@ -211,6 +211,33 @@
       (click)="getNextDayPassengers()">Next day</button>
   </div>
 </div>
+
+<!-- Driver Notes Modal -->
+<div class="modal-backdrop" *ngIf="isNotesModalOpen" (click)="closeNotesModal()"></div>
+<div class="modal-dialog" *ngIf="isNotesModalOpen">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h5 class="modal-title">
+        <i class="bi bi-sticky"></i>
+        Notes for {{ getDriverNameById(getSelectedDriver(currentNotesBusId, currentNotesTime)) }} - Bus {{
+        currentNotesBusId }}
+      </h5>
+      <button type="button" class="btn-close" (click)="closeNotesModal()" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <textarea class="form-control notes-textarea" [(ngModel)]="editingNotes"
+        placeholder="Add special instructions, pickup changes, or important information for the driver..." rows="6"
+        autofocus></textarea>
+      <small class="text-muted">These notes will be visible to the driver in the driver portal.</small>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeNotesModal()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="saveNotes()">Save Notes</button>
+    </div>
+  </div>
+</div>
 <div *ngIf="errorMsg.length > 0" class="error-msg col-md-6">
   <i class="bi bi-exclamation-circle" style="color: #b63f3f"></i>
   <p class="error-text">{{errorMsg}}</p>
@@ -290,6 +317,14 @@
             </option>
           </select>
 
+          <!-- Notes button - appears when driver is selected -->
+          <button type="button" class="btn btn-sm notes-btn" [class.has-notes]="hasNotes(busId, time[0])"
+            *ngIf="getSelectedDriver(busId, time[0])" (click)="openNotesModal(busId, time[0])"
+            title="Add notes for driver">
+            <i class="bi" [class.bi-sticky]="!hasNotes(busId, time[0])"
+              [class.bi-sticky-fill]="hasNotes(busId, time[0])"></i>
+          </button>
+
           <i class="bi bi-check-circle-fill" style="color: #10b981;" *ngIf="getSelectedDriver(busId, time[0])"></i>
         </div>
       </div>
@@ -363,7 +398,7 @@
     <div class="action-buttons-container">
       <div class="left-buttons">
         <button type="button" class="styled-button" (click)="getHTML()" [disabled]="sendingEmail">
-          <span *ngIf="!sendingEmail">Generate List</span>
+          <span *ngIf="!sendingEmail">Generate & Email List</span>
           <span *ngIf="sendingEmail">Generating & Sending...</span>
         </button>
         <button type="button" class="styled-button copy-btn" (click)="copyText()">Copy Text</button>

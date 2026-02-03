@@ -67,10 +67,18 @@ export class BusAutomationComponent implements OnInit {
   // Driver assignment properties
   drivers: IDriver[] = [];
   busToDriverMap = new Map<string, string>();  // busId -> driverId
+  busToDriverNotesMap = new Map<string, string>();  // busId-time -> notes
   publishMessage: string = '';
   publishError: string = '';
   isPublishing: boolean = false;
   openDropdowns = new Map<string, boolean>(); // Track which dropdowns are open
+
+  // Notes modal properties
+  isNotesModalOpen: boolean = false;
+  currentNotesKey: string = '';
+  currentNotesBusId: string = '';
+  currentNotesTime: string = '';
+  editingNotes: string = '';
 
   // Email sending properties
   sendingEmail: boolean = false;
@@ -361,6 +369,7 @@ export class BusAutomationComponent implements OnInit {
       this.usedBuses = new Map<string, string[]>();
       this.successMap = new Map<string, [boolean, boolean]>();
       this.busToDriverMap = new Map<string, string>();  // Reset driver assignments
+      this.busToDriverNotesMap = new Map<string, string>();  // Reset driver notes
       this.publishMessage = '';
       this.publishError = '';
       this.resetBusSelection()
@@ -447,9 +456,12 @@ export class BusAutomationComponent implements OnInit {
         busesForTime.push(bus);
         busIdsUsed.push(assignment.busId);
 
-        // Restore driver assignment
+        // Restore driver assignment and notes
         if (assignment.driverId) {
           this.busToDriverMap.set(`${assignment.busId}-${time}`, assignment.driverId);
+        }
+        if (assignment.notes) {
+          this.busToDriverNotesMap.set(`${assignment.busId}-${time}`, assignment.notes);
         }
       }
 
@@ -741,6 +753,39 @@ export class BusAutomationComponent implements OnInit {
     return driver?.name || '-- Select Driver --';
   }
 
+  // Notes modal methods
+  openNotesModal(busId: string, time: string) {
+    this.currentNotesBusId = busId;
+    this.currentNotesTime = time;
+    this.currentNotesKey = `${busId}-${time}`;
+    this.editingNotes = this.busToDriverNotesMap.get(this.currentNotesKey) || '';
+    this.isNotesModalOpen = true;
+  }
+
+  closeNotesModal() {
+    this.isNotesModalOpen = false;
+    this.currentNotesKey = '';
+    this.currentNotesBusId = '';
+    this.currentNotesTime = '';
+    this.editingNotes = '';
+  }
+
+  saveNotes() {
+    if (this.editingNotes.trim()) {
+      this.busToDriverNotesMap.set(this.currentNotesKey, this.editingNotes.trim());
+    } else {
+      // Remove notes if empty
+      this.busToDriverNotesMap.delete(this.currentNotesKey);
+    }
+    this.closeNotesModal();
+  }
+
+  hasNotes(busId: string, time: string): boolean {
+    const key = `${busId}-${time}`;
+    const notes = this.busToDriverNotesMap.get(key);
+    return !!notes && notes.trim().length > 0;
+  }
+
   @HostListener('document:click', ['$event'])
   clickout(event: any) {
     if (!this.eRef.nativeElement.contains(event.target)) {
@@ -810,12 +855,16 @@ export class BusAutomationComponent implements OnInit {
           // Find the tour name by matching time
           const tour = this.tours.find(t => t.time === time);
 
+          // Get notes for this driver assignment
+          const notes = this.busToDriverNotesMap.get(`${busId}-${time}`);
+
           assignments.push({
             busId,
             driverId,
             driverName: driver?.name || 'Unknown',
             time,
             tourName: tour?.tourName,
+            notes: notes || undefined,  // Only include if exists
             passengers: assignedPassengers,
           });
         }
