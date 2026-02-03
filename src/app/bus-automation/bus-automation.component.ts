@@ -84,9 +84,17 @@ export class BusAutomationComponent implements OnInit {
   // Tours data
   tours: ITour[] = [];
 
+  // Cached time slots to prevent re-rendering on every change detection
+  cachedTimeSlots: [string, number][] = [];
+
 
   trackByConfirmationID(index: number, passenger: Passenger) {
     return passenger.confirmationCode
+  }
+
+  // TrackBy function for time slots to prevent re-rendering
+  trackByTimeSlot(index: number, timeSlot: [string, number]): string {
+    return timeSlot[0]; // Track by the time string
   }
 
   updateBusSelections(event: [string[], string]) {
@@ -251,6 +259,11 @@ export class BusAutomationComponent implements OnInit {
     });
   }
 
+  // Call this method when passenger data changes to update the cached time slots
+  refreshTimeSlots() {
+    this.cachedTimeSlots = this.getNumOfPassengersByTime();
+  }
+
   getPassengersByTime(time: string) {
     return this.passengers.filter(val => val.startTime == time)
   }
@@ -331,7 +344,7 @@ export class BusAutomationComponent implements OnInit {
 
       // Load drivers
       const driversResult = await lastValueFrom(this.driversService.getDrivers())
-      this.drivers = driversResult.data || [];
+      this.drivers = driversResult.data.filter((driver: IDriver) => !driver.isAdmin).sort((a: IDriver, b: IDriver) => a.name.localeCompare(b.name)) || [];
 
       // Load tours
       const toursResult = await lastValueFrom(this.toursService.getTours())
@@ -370,6 +383,9 @@ export class BusAutomationComponent implements OnInit {
         console.log('No saved assignment for this date');
         this.tourBusOrganizer.setTimeToPassengersMap(this.passengerService.getPassengersByTime(this.passengers))
       }
+
+      // Refresh cached time slots after loading passengers
+      this.refreshTimeSlots();
 
       console.log(this.passengerService.getPickupLocationsFromPassengers(passengers, this.pickupAbbrevs));
     }

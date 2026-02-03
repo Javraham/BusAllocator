@@ -231,7 +231,7 @@
     </div>
   </div>
   <h4>Passenger List</h4>
-  <div *ngFor="let time of getNumOfPassengersByTime()">
+  <div *ngFor="let time of cachedTimeSlots; trackBy: trackByTimeSlot">
     <h5>{{time[0][0] === "0" ? time[0].slice(1) : time[0]}} - {{time[1]}} Passengers</h5>
     <app-bus-selection-buttons (removeBuses)="resetBusesForTime($event)" [time]="time[0]" [usedBuses]="usedBuses"
       (updatedUsedBuses)="updateUsedBuses($event)" (updateCheckList)="updateBusSelections($event)"
@@ -287,15 +287,21 @@
               <i class="bi bi-chevron-down"></i>
             </div>
             <div class="custom-dropdown-menu" *ngIf="openDropdowns.get(busId + '-' + time[0])">
-              <div class="custom-dropdown-option" (click)="selectDriver(busId, '', time[0])">
+              <!-- <div class="custom-dropdown-option" (click)="selectDriver(busId, '', time[0])">
                 -- Select Driver --
-              </div>
-              <div *ngFor="let driver of drivers" class="custom-dropdown-option"
+              </div> -->
+              <!-- <div *ngFor="let driver of drivers" class="custom-dropdown-option"
                 [class.selected]="getSelectedDriver(busId, time[0]) === driver.docId"
                 [class.disabled]="isDriverAssignedElsewhere(driver.docId || '', busId, time[0])"
                 (click)="!isDriverAssignedElsewhere(driver.docId || '', busId, time[0]) && selectDriver(busId, driver.docId || '', time[0])">
                 {{ driver.name }}
-              </div>
+              </div> -->
+              <select class="form-control" (change)="selectDriver(busId, '', time[0])">
+                <option value="">-- Select Driver --</option>
+                <option *ngFor="let driver of drivers" [value]="driver.docId">
+                  {{ driver.name }}
+                </option>
+              </select>
             </div>
           </div>
           <i class="bi bi-check-circle-fill" style="color: #10b981;" *ngIf="getSelectedDriver(busId, time[0])"></i>
