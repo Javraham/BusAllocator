@@ -403,3 +403,29 @@
         /* Prevent zoom on iOS */
     }
 }
+
+/* Floating Action Button */
+.floating-action-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 50px;
+    padding: 12px 24px;
+}
+
+.floating-action-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+@media (max-width: 768px) {
+    .floating-action-btn.styled-button {
+        width: auto;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 20px;
+    }
+}

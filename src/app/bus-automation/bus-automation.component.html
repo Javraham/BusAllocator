@@ -24,7 +24,6 @@
   }
 
   .styled-button:hover {
-    background: linear-gradient(135deg, #4169E0 0%, #FC5923 100%);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
@@ -410,15 +409,15 @@
         </button>
         <button type="button" class="styled-button copy-btn" (click)="copyText()">Copy Text</button>
       </div>
-      <div class="right-buttons">
-        <button type="button" class="styled-button publish-btn" (click)="publishToDriverPortal()"
-          [disabled]="isPublishing || usedBuses.size === 0">
-          <span *ngIf="!isPublishing"><i class="bi bi-cloud-upload" style="margin-right: 5px; "></i>Save &
-            Publish</span>
-          <span *ngIf="isPublishing">Publishing...</span>
-        </button>
-      </div>
     </div>
+
+    <!-- Floating Publish Button -->
+    <button type="button" class="styled-button publish-btn floating-action-btn" (click)="publishToDriverPortal()"
+      [disabled]="isPublishing || usedBuses.size === 0">
+      <span *ngIf="!isPublishing"><i class="bi bi-cloud-upload" style="margin-right: 5px; "></i>Save &
+        Publish</span>
+      <span *ngIf="isPublishing">Publishing...</span>
+    </button>
 
     <div class="text-area" id="generated-txt" contenteditable="true" [innerHTML]="htmlContent">
     </div>
