@@ -272,6 +272,23 @@ export class BusAutomationComponent implements OnInit {
     this.cachedTimeSlots = this.getNumOfPassengersByTime();
   }
 
+  getUnsortedPassengerTimes(): string[] {
+    // Get array of times that have unsorted passengers
+    const times: string[] = [];
+    for (const [time, passengers] of this.excludedPassengersMap.entries()) {
+      if (passengers && passengers.length > 0) {
+        times.push(time);
+      }
+    }
+    return times;
+  }
+
+  getUnsortedTimesFormatted(): string {
+    // Format the times for display (remove leading zero if present)
+    const times = this.getUnsortedPassengerTimes();
+    return times.map(t => t[0] === '0' ? t.slice(1) : t).join(', ');
+  }
+
   getPassengersByTime(time: string) {
     return this.passengers.filter(val => val.startTime == time)
   }
@@ -818,6 +835,17 @@ export class BusAutomationComponent implements OnInit {
   async publishToDriverPortal() {
     this.publishMessage = '';
     this.publishError = '';
+
+    // Check for unsorted passengers and confirm
+    const unsortedTimes = this.getUnsortedPassengerTimes();
+    if (unsortedTimes.length > 0) {
+      const formattedTimes = this.getUnsortedTimesFormatted();
+      const confirmMessage = `There are unsorted passengers at: ${formattedTimes}.\n\nAre you sure you want to publish assignments?`;
+
+      if (!confirm(confirmMessage)) {
+        return; // User cancelled
+      }
+    }
 
     // Validate all buses have drivers
     if (!this.allBusesHaveDrivers()) {

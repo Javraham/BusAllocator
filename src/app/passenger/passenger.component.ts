@@ -60,7 +60,7 @@ export class PassengerComponent {
     return this.excludedPassengers.filter(val => this.passengerInfo.confirmationCode == val.confirmationCode).length == 0 ? {
       "border": "1px solid " + this.busColor,
       "color": this.busColor,
-      "background-color": this.busColor + 9,
+      "background-color": "white",
       "font-weight": "600"
     }
       :
