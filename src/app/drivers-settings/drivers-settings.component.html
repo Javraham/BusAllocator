@@ -46,8 +46,11 @@
             <input class="form-control" formControlName="name" type="text" required />
         </div>
         <div class="input-group col-lg-3 col-md-4 col-sm-6">
-            <span class="input-group-addon">PIN</span>
             <input class="form-control" formControlName="pin" type="text" required />
+        </div>
+        <div class="input-group col-lg-3 col-md-4 col-sm-6">
+            <span class="input-group-addon">Username</span>
+            <input class="form-control" formControlName="username" type="text" />
         </div>
     </div>
     <ng-container *ngIf="errorMsg">

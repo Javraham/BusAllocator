@@ -28,6 +28,7 @@
     <button (click)="sendDriverObjectToParent()"><i class="bi bi-pencil"></i></button>
     <div>
       <p><strong>Name:</strong> {{driverObject.name}}</p>
+      <p><strong>Username:</strong> {{driverObject.username || '-'}}</p>
       <p><strong>PIN:</strong> {{driverObject.pin}}</p>
       <div class="admin-field">
         <p><strong>Admin:</strong></p>

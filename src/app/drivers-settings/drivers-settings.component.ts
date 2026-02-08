@@ -21,7 +21,8 @@ import { IDriver } from "../typings/IDriver";
 export class DriversSettingsComponent implements OnInit {
     driverForm: FormGroup = new FormGroup({
         name: new FormControl('', [Validators.required]),
-        pin: new FormControl('', [Validators.required])
+        pin: new FormControl('', [Validators.required]),
+        username: new FormControl('')
     });
     errorMsg = '';
     isEditingDriver = false;
@@ -54,6 +55,7 @@ export class DriversSettingsComponent implements OnInit {
             this.driversService.addDriver({
                 name: this.driverForm.value.name,
                 pin: this.driverForm.value.pin,
+                username: this.driverForm.value.username,
                 isAdmin: false
             }).subscribe({
                 next: response => {
@@ -78,6 +80,7 @@ export class DriversSettingsComponent implements OnInit {
                 docId: this.driverDocId,
                 name: this.driverForm.value.name,
                 pin: this.driverForm.value.pin,
+                username: this.driverForm.value.username,
                 isAdmin: driverToUpdate?.isAdmin || false
             }).subscribe({
                 next: response => {
@@ -85,6 +88,7 @@ export class DriversSettingsComponent implements OnInit {
                     if (driverFound) {
                         driverFound.name = response.data.name;
                         driverFound.pin = response.data.pin;
+                        driverFound.username = response.data.username;
                         driverFound.isAdmin = response.data.isAdmin;
                     }
                     this.isDriverFormOpen = false;
@@ -111,7 +115,8 @@ export class DriversSettingsComponent implements OnInit {
 
         this.driverForm.patchValue({
             name: driverObject.name,
-            pin: driverObject.pin
+            pin: driverObject.pin,
+            username: driverObject.username
         });
     }
 
