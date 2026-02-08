@@ -1,13 +1,12 @@
 <style>
-
-  *{
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: sans-serif;
   }
 
-  nav{
+  nav {
     padding: 10px 20px;
     display: flex;
     align-items: center;
@@ -15,11 +14,11 @@
     background-color: white;
   }
 
-  li{
+  li {
     list-style-type: none;
   }
 
-  a{
+  a {
     text-decoration: none;
     color: #4B7FCC;
     font-weight: 600;
@@ -31,23 +30,23 @@
     font-size: 2em;
   }
 
-  h1{
+  h1 {
     color: black;
   }
 
-  h5{
+  h5 {
     font-weight: bold;
     font-size: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
   }
 
-  button i{
+  button i {
     color: #4B7FCC;
   }
 
 
-  nav ul{
+  nav ul {
     position: absolute;
     left: 0;
     right: 0;
@@ -60,39 +59,42 @@
     gap: 0;
   }
 
-  nav ul li{
+  nav ul li {
     width: 100%;
     padding: 20px 30px;
   }
 
-  li:hover{
+  li:hover {
     background-color: #f1faff;
   }
 
-  a i{
+  a i {
     display: inline-block;
     margin-right: 10px;
   }
 
-  .side-panel-button{
+  .side-panel-button {
     display: block;
     background: none;
     border: none;
     font-size: 22px;
   }
 </style>
-  <nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
-    <img src="assets/logo-2.png" alt="Logo" width="40" height="39" />
-    <ul #navList id="navList">
-      <li>
-        <a routerLink="/" (click)="turnOffMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
-      </li>
-      <li>
-        <a routerLink="/email-automation" (click)="turnOffMenu()"><i class="bi bi-envelope"></i><span>Email Automation</span></a>
-      </li>
-      <li>
-        <a routerLink="/settings" (click)="turnOffMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
-      </li>
-    </ul>
-    <button class="side-panel-button" (click)="toggleMenu()"><i class="bi bi-list" ></i></button>
-  </nav>
+<nav class="navbar-default sticky-md-top sticky-lg-top navbar-fixed-top" #navbar>
+  <img
+    src="https://mlyzq52kv3tt.i.optimole.com/cb:CZU-.baa/w:auto/h:auto/q:mauto/f:best/ig:avif/https://tourstoniagarafalls.com/wp-content/uploads/2026/01/Queen-Tour-Logo.svg"
+    alt="Logo" width="50" height="39" />
+  <ul #navList id="navList">
+    <li>
+      <a routerLink="/" (click)="turnOffMenu()"><i class="bi bi-bus-front"></i><span>Bus Automation</span></a>
+    </li>
+    <li>
+      <a routerLink="/email-automation" (click)="turnOffMenu()"><i class="bi bi-envelope"></i><span>Email
+          Automation</span></a>
+    </li>
+    <li>
+      <a routerLink="/settings" (click)="turnOffMenu()"><i class="bi bi-gear"></i><span>Setting</span></a>
+    </li>
+  </ul>
+  <button class="side-panel-button" (click)="toggleMenu()"><i class="bi bi-list"></i></button>
+</nav>

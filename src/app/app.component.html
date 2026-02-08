@@ -1,23 +1,27 @@
 <style>
-  *{
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
   }
 
-  #content{
+  #content {
     padding: 3em;
     position: relative;
     margin-top: 20px;
   }
 
+  @media screen and (max-width: 650px) {
+    #content {
+      padding: 3em 1.5em;
+    }
+  }
 </style>
 <main>
-  <app-sidenav *ngIf="!useHorizontalNav" [isClosed] = isClosed (changeIsClosed)="toggleMenu($event)"></app-sidenav>
+  <app-sidenav *ngIf="!useHorizontalNav" [isClosed]=isClosed (changeIsClosed)="toggleMenu($event)"></app-sidenav>
   <app-horizontal-nav *ngIf="useHorizontalNav"></app-horizontal-nav>
   <section class="container-fluid" id="content" [ngStyle]="getStyles()" #content>
     <router-outlet />
   </section>
 </main>
-

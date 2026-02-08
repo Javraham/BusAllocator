@@ -1,28 +1,28 @@
 <style>
-  *{
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
   }
 
-  .sidebar .menu{
+  .sidebar .menu {
     margin-top: 10px;
   }
 
-  .header-text .name{
+  .header-text .name {
     font-weight: 600;
   }
 
-  .header-text .profession{
+  .header-text .profession {
     margin-top: -2px;
   }
 
-  .sidebar header{
+  .sidebar header {
     position: relative;
   }
 
-  .toggle{
+  .toggle {
     position: absolute;
     top: 50%;
     right: -25px;
@@ -32,7 +32,7 @@
     cursor: pointer;
   }
 
-  .sidebar{
+  .sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -44,39 +44,40 @@
     z-index: 100;
   }
 
-  .sidebar .image{
+  .sidebar .image {
     min-width: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .sidebar header .image-text{
+  .sidebar header .image-text {
     display: flex;
     align-items: center;
   }
 
-  .sidebar .text{
+  .sidebar .text {
     font-size: 16px;
     font-weight: 500;
     transition: all 0.4s ease;
     white-space: nowrap;
   }
 
-  header .image-text .header-text{
+  header .image-text .header-text {
     display: flex;
     flex-direction: column;
     overflow: hidden;
   }
 
-  .image i{
+  .image i {
     border-radius: 6px;
     background-color: #4B7FCC;
     padding: 2px 5px;
     font-size: 22px;
     color: white;
   }
-  .sidebar li{
+
+  .sidebar li {
     height: 50px;
     margin-top: 10px;
     list-style: none;
@@ -85,36 +86,38 @@
     width: 100%;
   }
 
-  .sidebar li a:hover{
+  .sidebar li a:hover {
     background: #FC5923;
     border-radius: 5px;
     transition: all 0.5s ease;
   }
-  .sidebar li .icon{
+
+  .sidebar li .icon {
     display: flex;
     justify-content: center;
     align-items: center;
     min-width: 60px;
     font-size: 20px;
   }
+
   .sidebar li .icon,
-  .sidebar li .text{
+  .sidebar li .text {
     color: #707070;
   }
 
   .sidebar li a:hover .icon,
-  .sidebar li a:hover .text{
+  .sidebar li a:hover .text {
     color: white;
     transition: all 0.5s ease;
   }
 
   .sidebar li a.active-link:hover .icon,
-  .sidebar li a.active-link:hover .text{
+  .sidebar li a.active-link:hover .text {
     color: white;
     transition: all 0.5s ease;
   }
 
-  .sidebar li a{
+  .sidebar li a {
     text-decoration: none;
     height: 100%;
     width: 100%;
@@ -123,11 +126,11 @@
     overflow: hidden;
   }
 
-  .sidebar.closed{
+  .sidebar.closed {
     width: 88px;
   }
 
-  .sidebar.closed .text{
+  .sidebar.closed .text {
     opacity: 0;
   }
 
@@ -136,11 +139,12 @@
     border-radius: 5px;
   }
 
-  .sidebar li a.active-link .icon, .sidebar li a.active-link .text {
+  .sidebar li a.active-link .icon,
+  .sidebar li a.active-link .text {
     color: #FC5923;
   }
 
-  img{
+  img {
     cursor: pointer;
     border-radius: 5px;
   }
@@ -149,9 +153,11 @@
 <nav class="sidebar" [ngClass]="{closed: isClosed}">
   <header>
     <div class="image-text">
-        <span class="image">
-          <img src="assets/logo-2.png" alt="Logo" width="40" height="40" />
-        </span>
+      <span class="image">
+        <img
+          src="https://mlyzq52kv3tt.i.optimole.com/cb:CZU-.baa/w:auto/h:auto/q:mauto/f:best/ig:avif/https://tourstoniagarafalls.com/wp-content/uploads/2026/01/Queen-Tour-Logo.svg"
+          alt="Logo" width="50" height="50" />
+      </span>
       <div class="text header-text">
         <span class="name">Queen Tours</span>
         <span class="profession">Niagara Falls</span>
@@ -160,27 +166,24 @@
     <i *ngIf="isClosed" class="bi bi-arrow-right-circle-fill toggle" (click)="toggleMenu()"></i>
     <i *ngIf="!isClosed" class="bi bi-arrow-left-circle-fill toggle" (click)="toggleMenu()"></i>
   </header>
-  <hr style="margin-top: 10px; height: 2px; background: #707070"/>
+  <hr style="margin-top: 10px; height: 2px; background: #707070" />
   <div class="menu-bar">
     <div class="menu">
       <ul class="menu-links">
         <li class="nav-link">
-          <a routerLink="/bus-automation" routerLinkActive="active-link"
-             [routerLinkActiveOptions]="{ exact: false }" >
+          <a routerLink="/bus-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
             <i class="bi bi-bus-front icon"></i>
             <span class="text nav-text">Bus Automation</span>
           </a>
         </li>
         <li class="nav-link">
-          <a routerLink="/email-automation" routerLinkActive="active-link"
-             [routerLinkActiveOptions]="{ exact: false }">
+          <a routerLink="/email-automation" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
             <i class="bi bi-envelope icon"></i>
             <span class="text nav-text">Email Automation</span>
           </a>
         </li>
         <li class="nav-link">
-          <a routerLink="/settings" routerLinkActive="active-link"
-             [routerLinkActiveOptions]="{ exact: false }">
+          <a routerLink="/settings" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: false }">
             <i class="bi bi-gear icon"></i>
             <span class="text nav-text">Setting</span>
           </a>
