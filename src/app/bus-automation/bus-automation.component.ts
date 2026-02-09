@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { BusSelectionButtonsComponent } from "../bus-selection-buttons/bus-selection-buttons.component";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { NgForOf, NgIf } from "@angular/common";
+import { NgForOf, NgIf, NgClass } from "@angular/common";
 import { PassengerComponent } from "../passenger/passenger.component";
 import { FetchBookingDataOptions } from "../typings/fetch-data-booking-options";
 import { Passenger } from "../typings/passenger";
@@ -69,8 +69,6 @@ export class BusAutomationComponent implements OnInit {
   drivers: IDriver[] = [];
   busToDriverMap = new Map<string, string>();  // busId -> driverId
   busToDriverNotesMap = new Map<string, string>();  // busId-time -> notes
-  publishMessage: string = '';
-  publishError: string = '';
   isPublishing: boolean = false;
   openDropdowns = new Map<string, boolean>(); // Track which dropdowns are open
 
@@ -98,7 +96,9 @@ export class BusAutomationComponent implements OnInit {
 
   // Announcements
   announcementText: string = '';
-  includeAnnouncement = new Map<string, boolean>();
+  includeAnnouncement: Map<string, boolean> = new Map(); // time -> boolean
+  toast: { message: string, type: 'success' | 'error' } | null = null;
+  private toastTimeout: any;
 
 
   trackByConfirmationID(index: number, passenger: Passenger) {
@@ -153,6 +153,14 @@ export class BusAutomationComponent implements OnInit {
     this.includeAnnouncement.set(time, event.target.checked);
   }
 
+  showToast(message: string, type: 'success' | 'error' = 'success') {
+    this.toast = { message, type };
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
+    this.toastTimeout = setTimeout(() => {
+      this.toast = null;
+    }, 3000);
+  }
+
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const storedDate = params['date'];
@@ -198,8 +206,8 @@ export class BusAutomationComponent implements OnInit {
 
   async sendListToEmail(htmlContent: string) {
     this.sendingEmail = true;
-    this.emailMessage = '';
-    this.emailError = '';
+    // this.emailMessage = '';
+    // this.emailError = '';
 
     try {
 
@@ -209,11 +217,14 @@ export class BusAutomationComponent implements OnInit {
         date: this.date
       };
 
-      await lastValueFrom(this.messageService.sendAdminEmail(emailData));
-      this.emailMessage = 'List successfully sent to your email!';
+      const result = await lastValueFrom(this.messageService.sendAdminEmail(emailData));
+      if (result && (result.success === false || result.error)) {
+        throw new Error(result.message || result.error || 'Failed to send email');
+      }
+      this.showToast('List successfully sent to your email!', 'success');
     } catch (error: any) {
       console.error('Failed to send email:', error);
-      this.emailError = `Failed to send email: ${error.message || 'Unknown error'}`;
+      this.showToast(`Failed to send email: ${error.message || 'Unknown error'}`, 'error');
     } finally {
       this.sendingEmail = false;
     }
@@ -411,14 +422,13 @@ export class BusAutomationComponent implements OnInit {
       this.successMap = new Map<string, [boolean, boolean]>();
       this.busToDriverMap = new Map<string, string>();  // Reset driver assignments
       this.busToDriverNotesMap = new Map<string, string>();  // Reset driver notes
-      this.publishMessage = '';
-      this.publishError = '';
       this.resetBusSelection()
       this.tourBusOrganizer.resetBuses();
       this.unsortedPassengers = [];
       this.savedAssignment = null;
 
-      // Fetch saved assignments for this date
+      // this.emailMessage = '';
+      // this.emailError = '';
       try {
         const savedResult = await lastValueFrom(this.publishedAssignmentsService.getAssignmentsByDate(this.date));
         if (savedResult && savedResult.data) {
@@ -860,8 +870,11 @@ export class BusAutomationComponent implements OnInit {
 
   // Publish assignments to driver portal
   async publishToDriverPortal() {
-    this.publishMessage = '';
-    this.publishError = '';
+
+
+
+
+
 
     // Check for unsorted passengers and confirm
     const unsortedTimes = this.getUnsortedPassengerTimes();
@@ -876,7 +889,7 @@ export class BusAutomationComponent implements OnInit {
 
     // Validate all buses have drivers
     if (!this.allBusesHaveDrivers()) {
-      this.publishError = 'Please assign a driver to each bus before publishing.';
+      this.showToast(`Please assign a driver to each bus before publishing.`, 'error');
       return;
     }
 
@@ -936,14 +949,20 @@ export class BusAutomationComponent implements OnInit {
       };
 
       // Call the backend API
-      await lastValueFrom(this.publishedAssignmentsService.publishAssignment(publishedAssignment));
+      const response = await lastValueFrom(this.publishedAssignmentsService.publishAssignment(publishedAssignment));
+
+      console.log('✅ Publish response:', response);
+
+      if (response && (response.success === false || response.error)) {
+        throw new Error(response.message || response.error || 'Publish failed');
+      }
 
       console.log('✅ Successfully published to backend!', publishedAssignment);
-      this.publishMessage = 'Successfully published to Driver Portal!';
+      this.showToast('Successfully published to Driver Portal!', 'success');
       this.isPublishing = false;
     } catch (e: any) {
       console.error('❌ Publish failed:', e);
-      this.publishError = `Failed to publish: ${e.message || 'Unknown error'}`;
+      this.showToast(`Failed to publish: ${e.message || 'Unknown error'}`, 'error');
       this.isPublishing = false;
     }
   }

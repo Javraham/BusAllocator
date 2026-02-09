@@ -389,25 +389,12 @@
     </ng-template>
   </div>
   <div style="margin-top: 20px" class="">
-    <!-- Messages Section -->
-    <div class="status-msg success" *ngIf="publishMessage">
-      <i class="bi bi-check-circle-fill"></i>
-      <span>{{publishMessage}}</span>
-    </div>
-
-    <div class="status-msg error" *ngIf="publishError">
-      <i class="bi bi-exclamation-circle-fill"></i>
-      <span>{{publishError}}</span>
-    </div>
-
-    <div class="status-msg success" *ngIf="emailMessage">
-      <i class="bi bi-check-circle-fill"></i>
-      <span>{{emailMessage}}</span>
-    </div>
-
-    <div class="status-msg error" *ngIf="emailError">
-      <i class="bi bi-exclamation-circle-fill"></i>
-      <span>{{emailError}}</span>
+    <!-- Toast Notification -->
+    <div *ngIf="toast" class="toast-notification" [class.success]="toast.type === 'success'"
+      [class.error]="toast.type === 'error'">
+      <i class="bi" [class.bi-check-circle-fill]="toast.type === 'success'"
+        [class.bi-exclamation-circle-fill]="toast.type === 'error'"></i>
+      <span>{{ toast.message }}</span>
     </div>
 
     <!-- Buttons Row -->
