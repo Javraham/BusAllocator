@@ -20,6 +20,7 @@ export interface IBusAssignment {
     time: string;                    // The time slot (e.g., "9:00 AM")
     tourName?: string;               // The tour name from tours service
     notes?: string;                  // Optional notes for the driver
+    announcement?: string;           // Optional announcement for the driver
     passengers: IAssignedPassenger[];
 }
 

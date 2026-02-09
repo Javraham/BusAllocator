@@ -24,6 +24,7 @@ import { PublishedAssignmentsService } from "../services/published-assignments.s
 import { IPublishedAssignment, IBusAssignment, IAssignedPassenger } from "../typings/IPublishedAssignment";
 import { ToursService } from "../services/tours.service";
 import { ITour } from "../typings/itour";
+import { AnnouncementsService } from "../services/announcements.service";
 
 @Component({
   selector: 'app-bus-automation',
@@ -95,6 +96,10 @@ export class BusAutomationComponent implements OnInit {
   // Cached time slots to prevent re-rendering on every change detection
   cachedTimeSlots: [string, number][] = [];
 
+  // Announcements
+  announcementText: string = '';
+  includeAnnouncement = new Map<string, boolean>();
+
 
   trackByConfirmationID(index: number, passenger: Passenger) {
     return passenger.confirmationCode
@@ -139,8 +144,13 @@ export class BusAutomationComponent implements OnInit {
     private publishedAssignmentsService: PublishedAssignmentsService,
     private messageService: MessageService,
     private eRef: ElementRef,
-    private toursService: ToursService
+    private toursService: ToursService,
+    private announcementsService: AnnouncementsService
   ) {
+  }
+
+  toggleAnnouncement(time: string, event: any) {
+    this.includeAnnouncement.set(time, event.target.checked);
   }
 
   ngOnInit() {
@@ -163,6 +173,20 @@ export class BusAutomationComponent implements OnInit {
       console.log(localStorage.getItem('access'))
       console.log(this.isAuthorized)
     })
+
+    // Fetch announcement
+    this.announcementsService.getAnnouncement().subscribe({
+      next: (response) => {
+        // Handle various response structures depending on API/Local Mock
+        const message = response.data?.message || response.message || response || '';
+        if (typeof message === 'string') {
+          this.announcementText = message;
+        } else if (response.data && typeof response.data === 'string') {
+          this.announcementText = response.data;
+        }
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   async getHTML() {
@@ -479,6 +503,9 @@ export class BusAutomationComponent implements OnInit {
         }
         if (assignment.notes) {
           this.busToDriverNotesMap.set(`${assignment.busId}-${time}`, assignment.notes);
+        }
+        if (assignment.announcement) {
+          this.includeAnnouncement.set(time, true);
         }
       }
 
@@ -886,6 +913,9 @@ export class BusAutomationComponent implements OnInit {
           // Get notes for this driver assignment
           const notes = this.busToDriverNotesMap.get(`${busId}-${time}`);
 
+          // Check if announcement should be included
+          const includeAnnouncement = this.includeAnnouncement.get(time);
+
           assignments.push({
             busId,
             driverId,
@@ -893,6 +923,7 @@ export class BusAutomationComponent implements OnInit {
             time,
             tourName: tour?.tourName,
             notes: notes || undefined,  // Only include if exists
+            announcement: includeAnnouncement ? this.announcementText : undefined,
             passengers: assignedPassengers,
           });
         }
