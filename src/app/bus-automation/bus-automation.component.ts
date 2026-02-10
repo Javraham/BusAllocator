@@ -871,10 +871,19 @@ export class BusAutomationComponent implements OnInit {
   // Publish assignments to driver portal
   async publishToDriverPortal() {
 
+    // Validate all active time slots have been sorted or attempted sorted
+    const allTimes = new Set(this.passengers.map(p => p.startTime));
+    for (const time of allTimes) {
+      if (!this.successMap.has(time)) {
+        this.showToast(`Tour time ${time} has not been sorted. Please sort all tours before publishing.`, 'error');
+        return;
+      }
+    }
 
-
-
-
+    if (!this.allBusesHaveDrivers()) {
+      this.showToast(`Please assign a driver to each bus before publishing.`, 'error');
+      return;
+    }
 
     // Check for unsorted passengers and confirm
     const unsortedTimes = this.getUnsortedPassengerTimes();
@@ -888,10 +897,6 @@ export class BusAutomationComponent implements OnInit {
     }
 
     // Validate all buses have drivers
-    if (!this.allBusesHaveDrivers()) {
-      this.showToast(`Please assign a driver to each bus before publishing.`, 'error');
-      return;
-    }
 
     this.isPublishing = true;
 
