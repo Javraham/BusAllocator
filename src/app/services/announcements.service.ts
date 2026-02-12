@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
     providedIn: 'root'
 })
 export class AnnouncementsService {
-    private url = 'http://localhost:3000/';
+    private url = 'https://phpstack-128687-4846902.cloudwaysapps.com/';
 
     constructor(private http: HttpClient) { }
 

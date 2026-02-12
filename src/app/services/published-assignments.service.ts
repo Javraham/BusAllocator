@@ -7,7 +7,7 @@ import { IPublishedAssignment } from '../typings/IPublishedAssignment';
     providedIn: 'root'
 })
 export class PublishedAssignmentsService {
-    private url: string = 'http://localhost:3000/';
+    private url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/';
 
     constructor(private http: HttpClient) { }
 

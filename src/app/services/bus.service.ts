@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 })
 export class BusService {
   buses: IBus[] = []
-  url: string = 'http://localhost:3000/'
+  url: string = 'https://phpstack-128687-4846902.cloudwaysapps.com/'
   constructor(private http: HttpClient) { }
 
   setBuses() {
