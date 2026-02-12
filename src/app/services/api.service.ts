@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import CryptoJS from 'crypto-js';
-import {FetchBookingDataOptions} from "../typings/fetch-data-booking-options";
-import {Passenger} from "../typings/passenger";
-import {IBookingOptions} from "../typings/IBookingOptions";
-import {OptionsService} from "./options.service";
-import {lastValueFrom} from "rxjs";
-import {ExperiencesService} from "./experiences.service";
-import {IExperience} from "../typings/ipickup";
+import { FetchBookingDataOptions } from "../typings/fetch-data-booking-options";
+import { Passenger } from "../typings/passenger";
+import { IBookingOptions } from "../typings/IBookingOptions";
+import { OptionsService } from "./options.service";
+import { lastValueFrom } from "rxjs";
+import { ExperiencesService } from "./experiences.service";
+import { IExperience } from "../typings/ipickup";
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,8 @@ import {IExperience} from "../typings/ipickup";
 export class ApiService {
   url: string = "https://api.bokun.io";
   fetchOptions: FetchBookingDataOptions = {
-    endpoint: '/booking.json/product-booking-search',  // Replace with your actual endpoint
-    date: new Date().toISOString().replace('T', ' ').substring(0, 19),
+    endpoint: '/booking.json/product-booking-search',
+    date: '',  // Will be generated fresh on each API call
     httpMethod: "POST",
   };
 
@@ -32,21 +32,27 @@ export class ApiService {
 
   setKeys(form: any) {
     localStorage.setItem("access", form.accessKey);
-    localStorage.setItem("secret", form.secretKey)
+    localStorage.setItem("secret", form.secretKey);
+    localStorage.removeItem("validated");
   }
 
   clearKeys() {
     localStorage.clear()
   }
 
+  markValidated() {
+    localStorage.setItem("validated", "true");
+  }
+
   fetchBokunData = async (props: FetchBookingDataOptions): Promise<any> => {
-    const { endpoint, httpMethod, date, body } = props;
+    const { endpoint, httpMethod, body } = props;
     const url = `${this.url}${endpoint}`;
+    const freshDate = new Date().toISOString().replace('T', ' ').substring(0, 19);
 
     const headers = {
       'Content-Type': 'application/json',
-      'X-Bokun-Date': date,
-      'X-Bokun-Signature': this.generateBokunSignature(date, localStorage.getItem("access") || "", httpMethod, endpoint, localStorage.getItem("secret") || ""),
+      'X-Bokun-Date': freshDate,
+      'X-Bokun-Signature': this.generateBokunSignature(freshDate, localStorage.getItem("access") || "", httpMethod, endpoint, localStorage.getItem("secret") || ""),
       'X-Bokun-AccessKey': localStorage.getItem("access") || ""
     };
 
@@ -128,7 +134,7 @@ export class ApiService {
         .filter((val: any) => {
           const experienceFound = experiences.data.find((exp: IExperience) => exp.experienceId === val.productExternalId)
           console.log(experienceFound)
-          if(!experienceFound){
+          if (!experienceFound) {
             return val.status !== "CANCELLED"
           }
 
@@ -144,7 +150,7 @@ export class ApiService {
           const numOfChildren = productBooking?.priceCategoryBookings.reduce((total: number, val: any) => {
             return val?.pricingCategory.ticketCategory === "CHILD" ? total + 1 : total;
           }, 0);
-          const option = result.data.find((option: IBookingOptions)=> productBooking.rateId == option.option)?.abbrev || "Missing Option";
+          const option = result.data.find((option: IBookingOptions) => productBooking.rateId == option.option)?.abbrev || "Missing Option";
 
           return {
             confirmationCode: val.confirmationCode,

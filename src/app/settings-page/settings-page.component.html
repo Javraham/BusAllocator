@@ -75,45 +75,53 @@
 <div id="container">
   <h3>Settings</h3>
   <p id="sub-header">Manage your settings and configurations here</p>
-  <div class="settings-nav">
-    <button class="nav-item" *ngFor="let option of navOptions" (click)="changeSelectedOption(option)"
-      [ngClass]="{'active': selectOption == option}">
-      {{option}}
-    </button>
+  <div *ngIf="!isAuthorized"
+    style="padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; color: #721c24; margin-bottom: 20px;">
+    <i class="bi bi-lock-fill" style="margin-right: 8px;"></i>
+    <strong>Not Authorized.</strong> Please log in from the Bus Automation page first.
   </div>
-  <hr style="width: 100%; height: 1px; background-color: black" />
-  <div class="content">
 
-    <ng-container *ngIf="selectOption === 'Buses'">
-      <app-bus-settings-page></app-bus-settings-page>
-    </ng-container>
+  <div *ngIf="isAuthorized">
+    <div class="settings-nav">
+      <button class="nav-item" *ngFor="let option of navOptions" (click)="changeSelectedOption(option)"
+        [ngClass]="{'active': selectOption == option}">
+        {{option}}
+      </button>
+    </div>
+    <hr style="width: 100%; height: 1px; background-color: black" />
+    <div class="content">
 
-    <ng-container *ngIf="selectOption === 'Bus Drivers'">
-      <app-drivers-settings></app-drivers-settings>
-    </ng-container>
+      <ng-container *ngIf="selectOption === 'Buses'">
+        <app-bus-settings-page></app-bus-settings-page>
+      </ng-container>
 
-    <ng-container *ngIf="selectOption === 'Pickups'">
-      <app-pickups-settings></app-pickups-settings>
-    </ng-container>
+      <ng-container *ngIf="selectOption === 'Bus Drivers'">
+        <app-drivers-settings></app-drivers-settings>
+      </ng-container>
 
-    <ng-container *ngIf="selectOption === 'Options'">
-      <app-options-settings-page></app-options-settings-page>
-    </ng-container>
+      <ng-container *ngIf="selectOption === 'Pickups'">
+        <app-pickups-settings></app-pickups-settings>
+      </ng-container>
 
-    <ng-container *ngIf="selectOption === 'Tours'">
-      <app-tours-settings></app-tours-settings>
-    </ng-container>
+      <ng-container *ngIf="selectOption === 'Options'">
+        <app-options-settings-page></app-options-settings-page>
+      </ng-container>
 
-    <ng-container *ngIf="selectOption === 'Experiences'">
-      <app-experience-settings-page></app-experience-settings-page>
-    </ng-container>
+      <ng-container *ngIf="selectOption === 'Tours'">
+        <app-tours-settings></app-tours-settings>
+      </ng-container>
 
-    <ng-container *ngIf="selectOption === 'Email Templates'">
-      <app-email-template-settings></app-email-template-settings>
-    </ng-container>
+      <ng-container *ngIf="selectOption === 'Experiences'">
+        <app-experience-settings-page></app-experience-settings-page>
+      </ng-container>
 
-    <ng-container *ngIf="selectOption === 'Announcements'">
-      <app-announcements-settings></app-announcements-settings>
-    </ng-container>
+      <ng-container *ngIf="selectOption === 'Email Templates'">
+        <app-email-template-settings></app-email-template-settings>
+      </ng-container>
+
+      <ng-container *ngIf="selectOption === 'Announcements'">
+        <app-announcements-settings></app-announcements-settings>
+      </ng-container>
+    </div>
   </div>
 </div>

@@ -42,6 +42,7 @@ export class SettingsPageComponent implements OnInit {
   navOptions = ["Buses", "Bus Drivers", "Pickups", "Options", "Tours", "Experiences", "Email Templates", "Announcements"];
   selectOption = "Buses"
   pickupLocations !: IPickup[];
+  isAuthorized: boolean = localStorage.getItem('validated') === 'true';
 
   constructor(private pickupsService: PickupsService, private optionsService: OptionsService, private route: ActivatedRoute, private router: Router) {
   }
@@ -53,8 +54,8 @@ export class SettingsPageComponent implements OnInit {
         this.selectOption = option;
       }
     });
-
   }
+
   changeSelectedOption(option: string) {
     this.selectOption = option
     this.router.navigate([], { queryParams: { option } });

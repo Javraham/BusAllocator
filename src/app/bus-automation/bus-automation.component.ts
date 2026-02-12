@@ -418,6 +418,7 @@ export class BusAutomationComponent implements OnInit {
       this.loadContent = true;
       this.passengers = passengers
       this.canEdit = false
+      this.apiService.markValidated();
       this.usedBuses = new Map<string, string[]>();
       this.successMap = new Map<string, [boolean, boolean]>();
       this.busToDriverMap = new Map<string, string>();  // Reset driver assignments
