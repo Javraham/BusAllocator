@@ -954,6 +954,7 @@ export class BusAutomationComponent implements OnInit {
             numOfChildren: p.numOfChildren,
             phoneNumber: p.phoneNumber,
             option: p.option,
+            externalBookingReference: p.externalBookingReference,
             status: "not-set"
           }));
 
