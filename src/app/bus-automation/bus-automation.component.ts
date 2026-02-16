@@ -201,7 +201,7 @@ export class BusAutomationComponent implements OnInit {
     const printedResult = await this.tourBusOrganizer.printResult()
     this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(printedResult);
 
-    await this.sendListToEmail(printedResult);
+    // await this.sendListToEmail(printedResult);
   }
 
   async sendListToEmail(htmlContent: string) {
@@ -325,7 +325,13 @@ export class BusAutomationComponent implements OnInit {
   }
 
   getPassengersByTime(time: string) {
-    return this.passengers.filter(val => val.startTime == time)
+    const filtered = this.passengers.filter(val => val.startTime == time);
+    return this.passengerService.sortByPickupPriority(filtered, this.pickupAbbrevs);
+  }
+
+  /** Sort passengers by pickup priority — used in template for sorted bus display */
+  getSortedPassengers(passengers: Passenger[]): Passenger[] {
+    return this.passengerService.sortByPickupPriority(passengers, this.pickupAbbrevs);
   }
 
   updatePassengerExclusionList(event: Passenger) {
@@ -538,6 +544,8 @@ export class BusAutomationComponent implements OnInit {
     }
 
     // Also put unsorted passengers in excludedPassengers for compatibility
+    // Sort unsorted passengers by pickup priority
+    this.unsortedPassengers = this.passengerService.sortByPickupPriority(this.unsortedPassengers, this.pickupAbbrevs);
     this.excludedPassengers = [...this.unsortedPassengers];
 
     // Group unsorted passengers by time and add to excludedPassengersMap
@@ -712,7 +720,8 @@ export class BusAutomationComponent implements OnInit {
     const timeExcluded = this.excludedPassengersMap.get(time) || [];
     if (!timeExcluded.find(p => p.confirmationCode === passenger.confirmationCode)) {
       timeExcluded.push(passenger);
-      this.excludedPassengersMap.set(time, timeExcluded);
+      // Re-sort by pickup priority
+      this.excludedPassengersMap.set(time, this.passengerService.sortByPickupPriority(timeExcluded, this.pickupAbbrevs));
     }
 
     console.log(`Moved ${passenger.firstName} ${passenger.lastName} to unsorted`);

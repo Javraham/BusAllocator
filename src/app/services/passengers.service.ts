@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import {Passenger} from "../typings/passenger";
-import {PickupsService} from "./pickups.service";
-import {lastValueFrom} from "rxjs";
-import {IPickup} from "../typings/ipickup";
-import {OptionsService} from "./options.service";
-import {IBookingOptions} from "../typings/IBookingOptions";
+import { Passenger } from "../typings/passenger";
+import { PickupsService } from "./pickups.service";
+import { lastValueFrom } from "rxjs";
+import { IPickup } from "../typings/ipickup";
+import { OptionsService } from "./options.service";
+import { IBookingOptions } from "../typings/IBookingOptions";
 
 @Injectable({
   providedIn: 'root'
@@ -15,31 +15,31 @@ export class PassengersService {
 
   getPassengersByTime(passengers: Passenger[]): Map<string, Passenger[]> {
     const map: Map<string, Passenger[]> = new Map<string, Passenger[]>();
-    for(const passenger of passengers){
-      if(map.has(passenger.startTime)){
+    for (const passenger of passengers) {
+      if (map.has(passenger.startTime)) {
         let passengers = map.get(passenger.startTime) as Passenger[]
         passengers.push(passenger)
         map.set(passenger.startTime, passengers)
       }
-      else{
+      else {
         map.set(passenger.startTime, [passenger])
       }
     }
     return map
   }
 
-  getPassengerByConfirmationID(passengers: Passenger[], confirmationID: string): Passenger | undefined{
+  getPassengerByConfirmationID(passengers: Passenger[], confirmationID: string): Passenger | undefined {
     return passengers.find(passenger => passenger.confirmationCode === confirmationID)
   }
 
-  getTotalPassengers(passengers: Passenger[] | undefined){
-    if(passengers)
+  getTotalPassengers(passengers: Passenger[] | undefined) {
+    if (passengers)
       return passengers.reduce((total, passenger) => total + passenger.numOfPassengers, 0);
 
     return 0
   }
 
-  getPassengersByPickupLocation(location: string, passengers: Passenger[]): Passenger[]{
+  getPassengersByPickupLocation(location: string, passengers: Passenger[]): Passenger[] {
     return passengers.filter(passenger => passenger.pickup === location)
   }
 
@@ -59,11 +59,11 @@ export class PassengersService {
     const map = this.getPassengersByTime(passengers);
     const pickupMap: Map<string, string[]> = new Map<string, string[]>
 
-    for(const [key, passengers] of map.entries()){
+    for (const [key, passengers] of map.entries()) {
       const set: Set<string> = new Set();
-      for(const passenger of passengers){
-        for(const pickup of pickupAbbrevs){
-          if(passenger.pickup.includes(pickup.name)){
+      for (const passenger of passengers) {
+        for (const pickup of pickupAbbrevs) {
+          if (passenger.pickup.includes(pickup.name)) {
             set.add(pickup.name)
           }
         }
@@ -95,7 +95,7 @@ export class PassengersService {
       const extractTime = (str: any) => {
         const timeMatch = str.match(/\b(\d{1,2}):(\d{2})\s*(AM|PM)\b/);
         if (timeMatch) {
-          let [ , hours, minutes, period ] = timeMatch;
+          let [, hours, minutes, period] = timeMatch;
           hours = parseInt(hours);
           minutes = parseInt(minutes);
           if (period === "PM" && hours !== 12) hours += 12;
@@ -126,11 +126,11 @@ export class PassengersService {
   }
 
   getOptionsToPassengers(passengers: Passenger[], sortedOptions?: any) {
-    function getNumber (str: string){
+    function getNumber(str: string) {
       const match = str.match(/[\[(](\d+(\.\d+)?)[\])]/);
       return match ? parseFloat(match[1]) : -1;
     }
-    const  sortKeys = (map: Map<string, Passenger[]>, sortedOptions?: any) => {
+    const sortKeys = (map: Map<string, Passenger[]>, sortedOptions?: any) => {
 
       // Get the map's keys and sort them according to the sortOrder array
       const sortedKeys = Array.from(map.keys()).sort((a: string, b: string) => {
@@ -164,7 +164,7 @@ export class PassengersService {
       // Update the map with the sorted array
       optionsMap.set(key, passengers);
     }
-    if(sortedOptions) return sortKeys(optionsMap, sortedOptions)
+    if (sortedOptions) return sortKeys(optionsMap, sortedOptions)
     else return optionsMap
   }
 
@@ -177,10 +177,10 @@ export class PassengersService {
 
   getNumOfPassengersByTime(passengers: Passenger[], time: string) {
     return passengers.reduce((prev: number, curr) => {
-      if(curr.startTime === time){
+      if (curr.startTime === time) {
         return prev + curr.numOfPassengers
       }
-      else{
+      else {
         return prev
       }
     }, 0)
@@ -210,5 +210,17 @@ export class PassengersService {
 
   getNoBoatPassengers(passengers: Passenger[]): Passenger[] {
     return passengers.filter(passenger => !passenger.hasBoat);
+  }
+
+  /**
+   * Sort passengers by their pickup location's priority.
+   * Passengers whose pickup doesn't match any known pickup are pushed to the end.
+   */
+  sortByPickupPriority(passengers: Passenger[], pickupAbbrevs: IPickup[]): Passenger[] {
+    const getPriority = (pickup: string): number => {
+      const match = pickupAbbrevs.find(p => pickup.toLowerCase().includes(p.name.toLowerCase()));
+      return match?.priority ?? Number.MAX_SAFE_INTEGER;
+    };
+    return [...passengers].sort((a, b) => getPriority(a.pickup) - getPriority(b.pickup));
   }
 }
