@@ -932,8 +932,8 @@ export class BusAutomationComponent implements OnInit {
           // Get notes for this driver assignment
           const notes = this.busToDriverNotesMap.get(`${busId}-${time}`);
 
-          // Check if announcement should be included
-          const includeAnnouncement = this.includeAnnouncement.get(time);
+          // Check if announcement should be included (defaults to true)
+          const includeAnnouncement = this.includeAnnouncement.get(time) ?? true;
 
           assignments.push({
             busId,

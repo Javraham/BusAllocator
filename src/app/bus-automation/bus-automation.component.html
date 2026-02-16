@@ -314,7 +314,7 @@
       <div class="form-check form-switch" *ngIf="announcementText"
         style="margin-bottom: 15px; display: flex; align-items: center;">
         <input class="form-check-input" type="checkbox" role="switch" [id]="'announcement-'+time[0]"
-          (change)="toggleAnnouncement(time[0], $event)" [checked]="includeAnnouncement.get(time[0])">
+          (change)="toggleAnnouncement(time[0], $event)" [checked]="includeAnnouncement.get(time[0]) ?? true">
         <label class="form-check-label" [for]="'announcement-'+time[0]"
           style="margin-left: 8px; margin-bottom: 0; cursor: pointer; font-weight: normal;">Include Announcement</label>
       </div>
