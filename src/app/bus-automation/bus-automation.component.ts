@@ -200,7 +200,7 @@ export class BusAutomationComponent implements OnInit {
   /** Auto-regenerate the HTML list content whenever state changes */
   async refreshHTMLContent() {
     try {
-      const printedResult = await this.tourBusOrganizer.printResult();
+      const printedResult = await this.tourBusOrganizer.printResult(this.busToDriverMap, this.drivers);
       this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(printedResult);
     } catch (e) {
       console.error('Failed to refresh HTML content:', e);
@@ -791,6 +791,7 @@ export class BusAutomationComponent implements OnInit {
   onDriverAssigned(event: { busId: string, driverId: string, time: string }) {
     this.busToDriverMap.set(`${event.busId}-${event.time}`, event.driverId);
     console.log('Driver assigned:', event, this.busToDriverMap);
+    this.refreshHTMLContent()
   }
 
   getDriverById(driverId: string): IDriver | undefined {
