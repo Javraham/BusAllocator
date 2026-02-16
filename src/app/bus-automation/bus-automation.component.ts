@@ -197,11 +197,25 @@ export class BusAutomationComponent implements OnInit {
     });
   }
 
-  async getHTML() {
-    const printedResult = await this.tourBusOrganizer.printResult()
-    this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(printedResult);
+  /** Auto-regenerate the HTML list content whenever state changes */
+  async refreshHTMLContent() {
+    try {
+      const printedResult = await this.tourBusOrganizer.printResult();
+      this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(printedResult);
+    } catch (e) {
+      console.error('Failed to refresh HTML content:', e);
+    }
+  }
 
-    // await this.sendListToEmail(printedResult);
+  /** Send the already-generated list via email */
+  async emailList() {
+    const el = document.getElementById('generated-txt');
+    const htmlContent = el?.innerHTML || '';
+    if (!htmlContent.trim()) {
+      this.showToast('No list content to email.', 'error');
+      return;
+    }
+    await this.sendListToEmail(htmlContent);
   }
 
   async sendListToEmail(htmlContent: string) {
@@ -250,6 +264,7 @@ export class BusAutomationComponent implements OnInit {
     }
     console.log(this.passengerToBusMap)
     this.tourBusOrganizer.resetBusesForTime(event[0]);
+    this.refreshHTMLContent();
   }
 
   resetBusSelection() {
@@ -279,6 +294,7 @@ export class BusAutomationComponent implements OnInit {
     }
 
     this.busList = organizer.buses;
+    this.refreshHTMLContent();
   }
 
   getNumOfPassengersByTime() {
@@ -453,6 +469,9 @@ export class BusAutomationComponent implements OnInit {
 
       // Refresh cached time slots after loading passengers
       this.refreshTimeSlots();
+
+      // Auto-generate the HTML list
+      this.refreshHTMLContent();
 
       console.log(this.passengerService.getPickupLocationsFromPassengers(passengers, this.pickupAbbrevs));
     }
@@ -685,6 +704,7 @@ export class BusAutomationComponent implements OnInit {
     targetBus.passengers.push(passenger);
 
     console.log(`Moved ${passenger.firstName} ${passenger.lastName} to bus ${targetBusId}`);
+    this.refreshHTMLContent();
   }
 
   /**
@@ -725,6 +745,7 @@ export class BusAutomationComponent implements OnInit {
     }
 
     console.log(`Moved ${passenger.firstName} ${passenger.lastName} to unsorted`);
+    this.refreshHTMLContent();
   }
 
   updatePickupBusList(pickup: string, busId: string, time: string) {

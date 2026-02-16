@@ -400,9 +400,9 @@
     <!-- Buttons Row -->
     <div class="action-buttons-container">
       <div class="left-buttons">
-        <button type="button" class="styled-button" (click)="getHTML()" [disabled]="sendingEmail">
-          <span *ngIf="!sendingEmail">Generate & Email List</span>
-          <span *ngIf="sendingEmail">Generating & Sending...</span>
+        <button type="button" class="styled-button" (click)="emailList()" [disabled]="sendingEmail">
+          <span *ngIf="!sendingEmail"><i class="bi bi-envelope" style="margin-right: 5px;"></i>Email List</span>
+          <span *ngIf="sendingEmail">Sending...</span>
         </button>
         <button type="button" class="styled-button copy-btn" (click)="copyText()">Copy Text</button>
       </div>
