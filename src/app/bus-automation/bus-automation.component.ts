@@ -404,7 +404,7 @@ export class BusAutomationComponent implements OnInit {
 
       // Load drivers
       const driversResult = await lastValueFrom(this.driversService.getDrivers())
-      this.drivers = driversResult.data.filter((driver: IDriver) => !driver.isAdmin).sort((a: IDriver, b: IDriver) => a.name.localeCompare(b.name)) || [];
+      this.drivers = driversResult.data.sort((a: IDriver, b: IDriver) => a.name.localeCompare(b.name)) || [];
 
       // Load tours
       const toursResult = await lastValueFrom(this.toursService.getTours())
