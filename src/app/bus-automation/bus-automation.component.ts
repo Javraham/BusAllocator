@@ -51,7 +51,7 @@ export class BusAutomationComponent implements OnInit {
   excludedPassengersMap: Map<string, Passenger[]> = new Map<string, Passenger[]>();
   excludedPassengers: Passenger[] = [];
   loadContent: boolean = false;
-  isAuthorized: boolean = localStorage.getItem('access') != null && localStorage.getItem('secret') != null;
+  isAuthorized: boolean = false; // Will be set in ngOnInit after expiration check
   errorMsg: string = "";
   loading: boolean = false;
   canEdit: boolean = false;
@@ -173,6 +173,17 @@ export class BusAutomationComponent implements OnInit {
         const day = String(today.getDate()).padStart(2, '0');
         this.date = `${year}-${month}-${day}`;
       }
+
+      // Check if keys exist and are not expired
+      const hasKeys = localStorage.getItem('access') != null && localStorage.getItem('secret') != null;
+      if (hasKeys && this.apiService.areKeysExpired()) {
+        // Keys expired, clear them
+        this.apiService.clearKeys();
+        this.isAuthorized = false;
+      } else {
+        this.isAuthorized = hasKeys;
+      }
+
       if (this.isAuthorized) {
         this.loadPassengers()
         this.form.get('accessKey')?.disable();

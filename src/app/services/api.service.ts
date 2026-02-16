@@ -33,11 +33,23 @@ export class ApiService {
   setKeys(form: any) {
     localStorage.setItem("access", form.accessKey);
     localStorage.setItem("secret", form.secretKey);
+    localStorage.setItem("keysTimestamp", Date.now().toString());
     localStorage.removeItem("validated");
   }
 
   clearKeys() {
-    localStorage.clear()
+    localStorage.clear();
+  }
+
+  areKeysExpired(): boolean {
+    const timestamp = localStorage.getItem("keysTimestamp");
+    if (!timestamp) return true;
+
+    const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const keyAge = now - parseInt(timestamp);
+
+    return keyAge > thirtyDaysInMs;
   }
 
   markValidated() {
