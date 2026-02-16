@@ -154,6 +154,7 @@ export class ApiService {
 
           return {
             confirmationCode: val.confirmationCode,
+            externalBookingReference: val.externalBookingReference,
             startTime,
             firstName: val.customer.firstName,
             lastName: val.customer.lastName,

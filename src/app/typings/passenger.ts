@@ -10,5 +10,6 @@ export interface Passenger {
   numOfChildren: number,
   hasJourney: boolean,
   phoneNumber: string,
-  option: string
+  option: string,
+  externalBookingReference: string
 }
