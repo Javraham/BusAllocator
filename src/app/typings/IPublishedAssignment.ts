@@ -32,6 +32,7 @@ export interface IAssignedPassenger {
     firstName: string;
     lastName: string;
     pickup: string;
+    fullPickupName: string;
     numOfPassengers: number;
     numOfChildren: number;
     phoneNumber: string;
