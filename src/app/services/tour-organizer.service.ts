@@ -73,7 +73,7 @@ export class TourOrganizerService {
         htmlResult += `<p style="font-weight: 700">${busLabel}</p>`
         const driverNotes = busToDriverNotesMap?.get(driverKey);
         if (driverNotes) {
-          htmlResult += `<p style="font-style: italic; margin-top: 0">${driverNotes}</p>`
+          htmlResult += `<p style="font-style: italic; margin-top: 0">${driverNotes}</p><br/>`
         }
         htmlResult += `<p style="font-weight: 700">Pickups: ${bus.getCurrentLoad()} TOTAL PAX</p>`
         const pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(bus.getPassengers());
