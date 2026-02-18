@@ -41,7 +41,7 @@ export class TourOrganizerService {
     this.buses.delete(time);
   }
 
-  async printResult(busToDriverMap?: Map<string, string>, drivers?: any[]) {
+  async printResult(busToDriverMap?: Map<string, string>, drivers?: any[], busToDriverNotesMap?: Map<string, string>) {
     const response = await lastValueFrom(this.pickupService.getPickupLocations())
     console.log(response)
     const optionsResponse = await lastValueFrom(this.optionsService.getOptions())
@@ -70,8 +70,12 @@ export class TourOrganizerService {
         const driver = drivers?.find(d => d.docId === driverId);
         const busLabel = driver?.name ? `${driver.name} - Bus (${bus.busId})` : `Bus (${bus.busId})`;
 
-        htmlResult += `<p style="font-weight: 700">${busLabel}</p>
-                     <p style="font-weight: 700">Pickups: ${bus.getCurrentLoad()} TOTAL PAX</p>`
+        htmlResult += `<p style="font-weight: 700">${busLabel}</p>`
+        const driverNotes = busToDriverNotesMap?.get(driverKey);
+        if (driverNotes) {
+          htmlResult += `<p style="font-style: italic; margin-top: 0">${driverNotes}</p>`
+        }
+        htmlResult += `<p style="font-weight: 700">Pickups: ${bus.getCurrentLoad()} TOTAL PAX</p>`
         const pickupLocations = this.passengerService.getTotalPassengersByPickupLocations(bus.getPassengers());
 
         Array.from(pickupLocations.entries()).forEach(val => {

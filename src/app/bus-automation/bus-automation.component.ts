@@ -211,7 +211,7 @@ export class BusAutomationComponent implements OnInit {
   /** Auto-regenerate the HTML list content whenever state changes */
   async refreshHTMLContent() {
     try {
-      const printedResult = await this.tourBusOrganizer.printResult(this.busToDriverMap, this.drivers);
+      const printedResult = await this.tourBusOrganizer.printResult(this.busToDriverMap, this.drivers, this.busToDriverNotesMap);
       this.htmlContent = this.sanitizer.bypassSecurityTrustHtml(printedResult);
     } catch (e) {
       console.error('Failed to refresh HTML content:', e);
@@ -874,6 +874,7 @@ export class BusAutomationComponent implements OnInit {
       // Remove notes if empty
       this.busToDriverNotesMap.delete(this.currentNotesKey);
     }
+    this.refreshHTMLContent();
     this.closeNotesModal();
   }
 
